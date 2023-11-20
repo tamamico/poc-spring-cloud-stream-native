@@ -28,7 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class ScsNativeApplicationTests {
 
-    @Container private static RedpandaContainer container = new RedpandaContainer(
+    @Container
+    private static RedpandaContainer container = new RedpandaContainer(
             "docker.redpanda.com/redpandadata/redpanda:v23.1.2");
 
     @DynamicPropertySource
