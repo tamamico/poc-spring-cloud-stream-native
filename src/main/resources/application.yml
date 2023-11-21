@@ -1,10 +1,11 @@
 spring:
+  application:
+    name: say-hi-app
   cloud:
     stream:
       bindings:
         sayHi-in-0:
           destination: input-test
-          group: say-hi
           consumer:
             use-native-decoding: true
         sayHi-out-0:
