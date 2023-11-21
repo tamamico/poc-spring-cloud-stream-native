@@ -83,6 +83,7 @@
                     <image>
                         <builder>paketobuildpacks/builder-jammy-tiny:latest</builder>
                     </image>
+                    <createdDate>now</createdDate>
                 </configuration>
             </plugin>
         </plugins>
