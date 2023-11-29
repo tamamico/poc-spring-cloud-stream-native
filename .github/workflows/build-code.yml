@@ -6,10 +6,12 @@ on:
       - main
     paths:
       - code/**
+      - .github/**
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - code/**
+      - .github/**
 
 defaults:
   run:
