@@ -22,6 +22,7 @@
         <spring-cloud.version>2022.0.4</spring-cloud.version>
         <!-- Plugin versions -->
         <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
+        <snyk-maven-plugin.version>2.0.0</snyk-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
         <maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
         <maven-javadoc-plugin.version>3.6.2</maven-javadoc-plugin.version>
@@ -96,6 +97,31 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>io.snyk</groupId>
+                <artifactId>snyk-maven-plugin</artifactId>
+                <version>${snyk-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>monitor</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <apiToken>${env.SNYK_TOKEN}</apiToken>
+                    <args>
+                        <arg>--all-projects</arg>
+                        <arg>--sarif-file-output=snyk-code.sarif</arg>
+                    </args>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
