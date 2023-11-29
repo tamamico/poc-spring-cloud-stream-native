@@ -104,11 +104,13 @@
                 <version>${snyk-maven-plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>test</id>
                         <goals>
                             <goal>test</goal>
                         </goals>
                     </execution>
                     <execution>
+                        <id>monitor</id>
                         <goals>
                             <goal>monitor</goal>
                         </goals>
