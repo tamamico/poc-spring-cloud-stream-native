@@ -15,6 +15,10 @@ defaults:
   run:
     working-directory: ./code
 
+permissions:
+  pull-requests: read
+  contents: read
+
 jobs:
   build:
     name: Build and analyze
@@ -46,5 +50,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./mvnw -B sonar:sonar -Dsonar.projectKey=tamamico_poc-spring-cloud-stream-native-code
+      - name: Set-up Snyk CLI
+        uses: snyk/actions/setup@0.4.0
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Snyk Code test
+        run: snyk code test --sarif > snyk-code.sarif
+      - name: Snyk Open Source monitor
+        run: snyk monitor --all-projects
       - name: Build Docker image
         run: ./mvnw -B clean spring-boot:build-image -Pnative
+      - name: Snyk Container monitor
+        run: snyk container monitor scs-native
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk-code.sarif
