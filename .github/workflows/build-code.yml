@@ -57,7 +57,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --sarif-file-output=snyk-code.sarif
+          command: code test
+          args: --sarif-file-output=snyk-code.sarif --file=./code/pom.xml --maven-aggregate-project
       - name: Build Docker image
         run: ./mvnw -B clean spring-boot:build-image -Pnative
       - name: Run Snyk to check Docker image for vulnerabilities
