@@ -30,10 +30,10 @@ class ScsNativeApplicationTests {
 
     @Container
     private static RedpandaContainer container = new RedpandaContainer(
-            "docker.redpanda.com/redpandadata/redpanda:v23.1.2");
+            "docker.redpanda.com/redpandadata/redpanda:v23.2.18");
 
     @DynamicPropertySource
-    static void registerPgProperties(DynamicPropertyRegistry registry) {
+    static void registerProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.cloud.stream.kafka.binder.brokers", () -> container.getBootstrapServers());
     }
 
