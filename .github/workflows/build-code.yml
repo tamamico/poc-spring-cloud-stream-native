@@ -63,12 +63,12 @@ jobs:
         with:
           image: poc-scs-native
       - name: Upload result to GitHub Code Scanning (source code)
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: snyk-code.sarif
           category: source-code
       - name: Upload result to GitHub Code Scanning (Docker image)
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: snyk.sarif
           category: docker
