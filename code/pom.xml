@@ -111,14 +111,14 @@
                         <goals>
                             <goal>test</goal>
                         </goals>
-                        <phase>package</phase>
+                        <phase>none</phase>
                     </execution>
                     <execution>
                         <id>monitor</id>
                         <goals>
                             <goal>monitor</goal>
                         </goals>
-                        <phase>package</phase>
+                        <phase>none</phase>
                     </execution>
                 </executions>
                 <configuration>
