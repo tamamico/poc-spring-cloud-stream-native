@@ -1,4 +1,5 @@
 HELP.md
+code/snyk-code.sarif
 code/target/
 !code/.mvn/wrapper/maven-wrapper.jar
 !code/src/main/**/target/
