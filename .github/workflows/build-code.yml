@@ -54,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Run Snyk analysis
-        run: ./mvnw -B snyk:test snyk:monitor
+        run: ./mvnw -B snyk:test && ./mvnw -B snyk:monitor
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
