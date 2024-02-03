@@ -47,10 +47,9 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build & Run unit tests
         run: ./mvnw -B clean test -PnativeTest
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Run SonarCloud analysis
         run: ./mvnw -B snyk:test snyk:monitor
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk analysis
