@@ -36,6 +36,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-binder-kafka-reactive</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Test dependencies -->
         <dependency>
@@ -60,7 +66,7 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>redpanda</artifactId>
+            <artifactId>kafka</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -87,9 +93,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <image>
-                        <builder>paketobuildpacks/builder-jammy-tiny:latest</builder>
-                    </image>
                     <createdDate>now</createdDate>
                 </configuration>
             </plugin>
@@ -108,6 +111,7 @@
                         <goals>
                             <goal>test</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                     <execution>
                         <id>monitor</id>

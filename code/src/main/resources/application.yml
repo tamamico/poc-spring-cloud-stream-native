@@ -7,28 +7,8 @@ spring:
         sayHi-in-0:
           group: say-hi-app
           destination: input-test
-          consumer:
-            use-native-decoding: true
         sayHi-out-0:
           destination: output-test
-          producer:
-            use-native-encoding: true
-      kafka:
-        bindings:
-          sayHi-in-0:
-            consumer:
-              configuration:
-                key:
-                  deserializer: org.apache.kafka.common.serialization.StringDeserializer
-                value:
-                  deserializer: org.apache.kafka.common.serialization.StringDeserializer
-          sayHi-out-0:
-            producer:
-              configuration:
-                key:
-                  serializer: org.apache.kafka.common.serialization.StringSerializer
-                value:
-                  serializer: org.apache.kafka.common.serialization.StringSerializer
   threads:
     virtual:
       enabled: true
