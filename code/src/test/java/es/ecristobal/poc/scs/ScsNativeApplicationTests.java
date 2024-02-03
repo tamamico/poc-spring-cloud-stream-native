@@ -39,7 +39,6 @@ class ScsNativeApplicationTests {
 
     @Test
     void testSayHi() {
-        final String              name        = "Steve";
         final Map<String, Object> senderProps = KafkaTestUtils.producerProps(container.getBootstrapServers());
         senderProps.put("key.serializer", StringSerializer.class);
         senderProps.put("value.serializer", StringSerializer.class);
@@ -47,7 +46,7 @@ class ScsNativeApplicationTests {
         final DefaultKafkaProducerFactory<String, String> pf       = new DefaultKafkaProducerFactory<>(senderProps);
         final KafkaTemplate<String, String>               template = new KafkaTemplate<>(pf, true);
         template.setDefaultTopic("input-test");
-        template.sendDefault(name);
+        template.sendDefault("Steve");
 
         final Map<String, Object> consumerProps = KafkaTestUtils.consumerProps(container.getBootstrapServers(),
                                                                                "test",
@@ -59,7 +58,7 @@ class ScsNativeApplicationTests {
 
         final DefaultKafkaConsumerFactory<String, String> cf       = new DefaultKafkaConsumerFactory<>(consumerProps);
         final Consumer<String, String>                    consumer = cf.createConsumer();
-        consumer.assign(Collections.singleton(new TopicPartition("output-test", 0)));
+        consumer.subscribe(Collections.singleton("output-test"));
 
         final ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(10));
         consumer.commitSync();

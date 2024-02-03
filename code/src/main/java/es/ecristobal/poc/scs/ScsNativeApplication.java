@@ -16,7 +16,7 @@ public class ScsNativeApplication {
 
     @Bean
     Function<Flux<String>, Flux<String>> sayHi() {
-        return mono -> mono.doOnNext(name -> LOGGER.info("Received name: {}", name)).map("Hello, "::concat);
+        return flux -> flux.doOnNext(name -> LOGGER.info("Received name: {}", name)).map("Hello, "::concat);
     }
 
     public static void main(String[] args) {
