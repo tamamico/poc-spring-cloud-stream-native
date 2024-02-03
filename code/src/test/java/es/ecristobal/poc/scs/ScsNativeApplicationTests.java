@@ -30,7 +30,7 @@ class ScsNativeApplicationTests {
 
     @Container
     private static RedpandaContainer container = new RedpandaContainer(
-            "docker.redpanda.com/redpandadata/redpanda:v23.2.18");
+            "docker.redpanda.com/redpandadata/redpanda:v23.3.4");
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
