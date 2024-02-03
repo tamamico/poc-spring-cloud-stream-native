@@ -61,7 +61,7 @@ jobs:
       - name: Upload result to GitHub Code Scanning (source code)
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: snyk-code.sarif
+          sarif_file: /home/runner/work/poc-spring-cloud-stream-native/poc-spring-cloud-stream-native/code/snyk-code.sarif
           category: source-code
       - name: Build Docker image
         run: ./mvnw -B clean spring-boot:build-image -Pnative
