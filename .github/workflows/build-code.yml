@@ -54,12 +54,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Run Snyk analysis
-        uses: snyk/actions/maven@master
+        run: ./mvnw -B snyk:test
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --sarif-file-output=snyk-code.sarif
       - name: Upload result to GitHub Code Scanning (source code)
         uses: github/codeql-action/upload-sarif@v3
         with:
