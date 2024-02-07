@@ -1,0 +1,10 @@
+{
+    "type": "record",
+    "name": "Output",
+    "namespace": "es.ecristobal.poc.scs.avro",
+    "fields": [
+    {
+        "name": "message",
+        "type": "string"
+    }]
+}
