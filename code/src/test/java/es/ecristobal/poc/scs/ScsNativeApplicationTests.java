@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.KafkaContainer;
@@ -38,14 +39,21 @@ import static org.testcontainers.utility.DockerImageName.parse;
 @SpringBootTest
 class ScsNativeApplicationTests {
 
+    private static final String SCHEMA_REGISTRY_URL = "mock://";
+
     @Container
-    private static KafkaContainer kafkaContainer = new KafkaContainer(parse("confluentinc/cp-kafka:7.5.3")).withKraft();
+    private static KafkaContainer kafkaContainer =
+            new KafkaContainer(parse("confluentinc/cp-kafka:7.5.3")).withKraft();
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.cloud.stream.kafka.binder.brokers", kafkaContainer::getBootstrapServers);
-        registry.add("spring.cloud.stream.kafka.binder.consumer-properties.schema.registry.url", () -> "mock://");
-        registry.add("spring.cloud.stream.kafka.binder.producer-properties.schema.registry.url", () -> "mock://");
+        registry.add("spring.cloud.stream.kafka.binder.consumer-properties.schema.registry.url",
+                     () -> SCHEMA_REGISTRY_URL
+        );
+        registry.add("spring.cloud.stream.kafka.binder.producer-properties.schema.registry.url",
+                     () -> SCHEMA_REGISTRY_URL
+        );
     }
 
     @Test
@@ -53,9 +61,9 @@ class ScsNativeApplicationTests {
         final Map<String, Object> producerProperties = producerProps(kafkaContainer.getBootstrapServers());
         producerProperties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         producerProperties.put(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-        producerProperties.put("schema.registry.url", "mock://");
-        final DefaultKafkaProducerFactory<String, Input> pf = new DefaultKafkaProducerFactory<>(producerProperties);
-        final KafkaTemplate<String, Input>               template = new KafkaTemplate<>(pf, true);
+        producerProperties.put("schema.registry.url", SCHEMA_REGISTRY_URL);
+        final ProducerFactory<String, Input> producerFactory = new DefaultKafkaProducerFactory<>(producerProperties);
+        final KafkaTemplate<String, Input>   template        = new KafkaTemplate<>(producerFactory, true);
         template.setDefaultTopic("input-test");
         template.sendDefault(Input.newBuilder().setName("Steve").build());
         final Map<String, Object> consumerProperties = consumerProps(kafkaContainer.getBootstrapServers(),
@@ -65,7 +73,7 @@ class ScsNativeApplicationTests {
         consumerProperties.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProperties.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProperties.put(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        consumerProperties.put("schema.registry.url", "mock://");
+        consumerProperties.put("schema.registry.url", SCHEMA_REGISTRY_URL);
         consumerProperties.put("specific.avro.reader", true);
         final DefaultKafkaConsumerFactory<String, Output> cf = new DefaultKafkaConsumerFactory<>(consumerProperties);
         try(Consumer<String, Output> consumer = cf.createConsumer()) {

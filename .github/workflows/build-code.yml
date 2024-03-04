@@ -47,7 +47,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build & Run unit tests
-        run: ./mvnw -B clean test -PnativeTest
+        run: ./mvnw -B clean verify
       - name: Run SonarCloud analysis
         run: ./mvnw -B sonar:sonar -Dsonar.projectKey=tamamico_poc-spring-cloud-stream-native-code
         env:
