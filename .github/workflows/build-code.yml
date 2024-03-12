@@ -8,7 +8,7 @@ on:
       - code/**
       - .github/**
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
     paths:
       - code/**
       - .github/**
@@ -27,10 +27,12 @@ jobs:
     name: Build and analyze
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: graalvm/setup-graalvm@v1
+      - name: Set-up GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
           java-version: '21'
           distribution: 'graalvm'
@@ -46,10 +48,10 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build & Run unit tests
+      - name: Build & Run tests
         run: ./mvnw -B clean verify
       - name: Run SonarCloud analysis
-        run: ./mvnw -B sonar:sonar -Dsonar.projectKey=tamamico_poc-spring-cloud-stream-native-code
+        run: ./mvnw -B sonar:sonar -Dsonar.projectKey={{ vars.SONAR_PROJECT_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -61,20 +63,23 @@ jobs:
       - name: Upload result to GitHub Code Scanning (source code)
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: /home/runner/work/poc-spring-cloud-stream-native/poc-spring-cloud-stream-native/code/snyk-code.sarif
+          sarif_file: /home/runner/work/poc-spring-cloud-stream-native/poc-spring-cloud-stream-native/code/code.sarif
           category: source-code
       - name: Build Docker image
         run: ./mvnw -B clean spring-boot:build-image -Pnative
+      - name: Get artifact version
+        id: get-artifact-version
+        run: echo value=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
       - name: Run Snyk to check Docker image for vulnerabilities
         uses: snyk/actions/docker@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: docker.io/library/poc-scs-native:0.0.1-SNAPSHOT
-          args: --sarif-file-output=snyk-docker.sarif
+          image: docker.io/library/poc-scs-native:{{ steps.get-artifact-version.value }}
+          args: --sarif-file-output=docker.sarif
       - name: Upload result to GitHub Code Scanning (Docker image)
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: snyk-docker.sarif
+          sarif_file: docker.sarif
           category: docker

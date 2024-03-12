@@ -26,9 +26,6 @@
         <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
         <snyk-maven-plugin.version>2.2.0</snyk-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-        <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
-        <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <!-- SonarCloud settings -->
         <sonar.organization>tamamico</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -158,7 +155,7 @@
                     <apiToken>${env.SNYK_TOKEN}</apiToken>
                     <args>
                         <arg>--all-projects</arg>
-                        <arg>--sarif-file-output=snyk-code.sarif</arg>
+                        <arg>--sarif-file-output=code.sarif</arg>
                     </args>
                 </configuration>
             </plugin>
@@ -186,17 +183,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-failsafe-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
