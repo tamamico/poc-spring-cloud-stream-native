@@ -69,14 +69,14 @@ jobs:
         run: ./mvnw -B clean spring-boot:build-image -Pnative
       - name: Get artifact version
         id: get-artifact-version
-        run: echo value=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
+        run: echo value=$(./mvnw -B help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
       - name: Run Snyk to check Docker image for vulnerabilities
         uses: snyk/actions/docker@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: docker.io/library/poc-scs-native:${{ steps.get-artifact-version.value }}
+          image: docker.io/library/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
           args: --sarif-file-output=docker.sarif
       - name: Upload result to GitHub Code Scanning (Docker image)
         uses: github/codeql-action/upload-sarif@v3
