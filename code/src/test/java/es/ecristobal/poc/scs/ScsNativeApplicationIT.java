@@ -37,7 +37,7 @@ import static org.testcontainers.utility.DockerImageName.parse;
 
 @Testcontainers
 @SpringBootTest
-class ScsNativeApplicationTests {
+class ScsNativeApplicationIT {
 
     private static final String SCHEMA_REGISTRY_URL = "mock://";
 
