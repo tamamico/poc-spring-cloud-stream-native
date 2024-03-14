@@ -8,15 +8,15 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -36,29 +36,30 @@ import static org.springframework.kafka.test.utils.KafkaTestUtils.producerProps;
 import static org.testcontainers.utility.DockerImageName.parse;
 
 @Testcontainers
-@SpringBootTest
 class ScsNativeApplicationIT {
 
     private static final String SCHEMA_REGISTRY_URL = "mock://";
 
     @Container
-    private static KafkaContainer kafkaContainer =
+    private static KafkaContainer kafka =
             new KafkaContainer(parse("confluentinc/cp-kafka:7.5.3")).withKraft();
 
-    @DynamicPropertySource
-    static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.cloud.stream.kafka.binder.brokers", kafkaContainer::getBootstrapServers);
-        registry.add("spring.cloud.stream.kafka.binder.consumer-properties.schema.registry.url",
-                     () -> SCHEMA_REGISTRY_URL
-        );
-        registry.add("spring.cloud.stream.kafka.binder.producer-properties.schema.registry.url",
-                     () -> SCHEMA_REGISTRY_URL
-        );
+    @Container
+    private static GenericContainer<?> app = new GenericContainer<>(parse("poc-scs-native:0.1.0-SNAPSHOT"))
+            .dependsOn(kafka);
+
+    @BeforeAll
+    public static void setUp() {
+        kafka.start();
+        app.withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", kafka.getBootstrapServers())
+           .withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_CONSUMERPROPERTIES_SCHEMA_REGISTRY_URL", SCHEMA_REGISTRY_URL)
+           .withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_PRODUCERPROPERTIES_SCHEMA_REGISTRY_URL", SCHEMA_REGISTRY_URL)
+           .start();
     }
 
     @Test
     void testSayHi() {
-        final Map<String, Object> producerProperties = producerProps(kafkaContainer.getBootstrapServers());
+        final Map<String, Object> producerProperties = producerProps(kafka.getBootstrapServers());
         producerProperties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         producerProperties.put(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
         producerProperties.put("schema.registry.url", SCHEMA_REGISTRY_URL);
@@ -66,10 +67,7 @@ class ScsNativeApplicationIT {
         final KafkaTemplate<String, Input>   template        = new KafkaTemplate<>(producerFactory, true);
         template.setDefaultTopic("input-test");
         template.sendDefault(Input.newBuilder().setName("Steve").build());
-        final Map<String, Object> consumerProperties = consumerProps(kafkaContainer.getBootstrapServers(),
-                                                                     "test",
-                                                                     "false"
-        );
+        final Map<String, Object> consumerProperties = consumerProps(kafka.getBootstrapServers(), "test", "false");
         consumerProperties.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProperties.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProperties.put(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
