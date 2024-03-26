@@ -47,13 +47,15 @@ class ScsNativeApplicationIT {
     private static final DockerImageName SCHEMA_REGISTRY_IMAGE = parse("confluentinc/cp-schema-registry:latest");
     private static final DockerImageName APP_IMAGE             = parse("poc-scs-native:0.1.0-SNAPSHOT");
 
+    private static final int SCHEMA_REGISTRY_PORT = 8081;
+
     private static final Network             network  = Network.newNetwork();
     private static final KafkaContainer      kafka    = new KafkaContainer(KAFKA_IMAGE)
             .withNetwork(network)
             .withKraft();
     private static final GenericContainer<?> registry = new GenericContainer<>(SCHEMA_REGISTRY_IMAGE)
             .withNetwork(network)
-            .withExposedPorts(8081);
+            .withExposedPorts(SCHEMA_REGISTRY_PORT);
     private static final GenericContainer<?> app      = new GenericContainer<>(APP_IMAGE)
             .withNetwork(network);
 
@@ -62,12 +64,13 @@ class ScsNativeApplicationIT {
     @BeforeAll
     public static void setUp() {
         kafka.start();
-        registry.withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS", format("%s:9092", kafka.getContainerName()))
+        final String bootstrapServers = format("%s:9092", kafka.getContainerName());
+        registry.withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS", bootstrapServers)
                 .withEnv("SCHEMA_REGISTRY_HOST_NAME", "schema_registry")
                 .start();
-        schemaRegistryUrl = format("http://%s:%d", registry.getHost(), registry.getFirstMappedPort());
-        final String dockerSchemaRegistryUrl = format("http:/%s:8081", registry.getContainerName());
-        app.withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", kafka.getContainerName())
+        schemaRegistryUrl = format("http://%s:%d", registry.getHost(), registry.getMappedPort(SCHEMA_REGISTRY_PORT));
+        final String dockerSchemaRegistryUrl = format("http:/%s:%d", registry.getContainerName(), SCHEMA_REGISTRY_PORT);
+        app.withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", bootstrapServers)
            .withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_CONSUMERPROPERTIES_SCHEMA_REGISTRY_URL", dockerSchemaRegistryUrl)
            .withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_PRODUCERPROPERTIES_SCHEMA_REGISTRY_URL", dockerSchemaRegistryUrl)
            .start();
