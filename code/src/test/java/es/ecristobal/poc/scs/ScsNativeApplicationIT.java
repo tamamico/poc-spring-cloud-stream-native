@@ -68,7 +68,8 @@ class ScsNativeApplicationIT {
         registry.withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS", bootstrapServers)
                 .withEnv("SCHEMA_REGISTRY_HOST_NAME", "schema_registry")
                 .start();
-        schemaRegistryUrl = format("http://%s:%d", registry.getHost(), registry.getMappedPort(SCHEMA_REGISTRY_PORT));
+        schemaRegistryUrl = format("http://%s:%d", registry.getHost(), registry.getMappedPort(SCHEMA_REGISTRY_PORT)
+        );
         final String dockerSchemaRegistryUrl = format("http:/%s:%d", registry.getContainerName(), SCHEMA_REGISTRY_PORT);
         app.withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", bootstrapServers)
            .withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_CONSUMERPROPERTIES_SCHEMA_REGISTRY_URL", dockerSchemaRegistryUrl)
