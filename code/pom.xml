@@ -132,6 +132,13 @@
                             <createdDate>now</createdDate>
                             <publish>true</publish>
                             <imageName>ecristobalr/${project.artifactId}:${project.version}</imageName>
+                            <docker>
+                                <publishRegistry>
+                                    <url>docker.io</url>
+                                    <username>${docker.registry.username}</username>
+                                    <token>${docker.registry.token}</token>
+                                </publishRegistry>
+                            </docker>
                         </configuration>
                     </execution>
                 </executions>
