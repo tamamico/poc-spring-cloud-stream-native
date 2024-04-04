@@ -131,12 +131,7 @@
                         <configuration>
                             <createdDate>now</createdDate>
                             <publish>true</publish>
-                            <docker>
-                                <publishRegistry>
-                                    <username>ecristobalr</username>
-                                    <token>${docker.registry.token}</token>
-                                </publishRegistry>
-                            </docker>
+                            <imageName>ecristobalr/${project.artifactId}:${project.version}</imageName>
                         </configuration>
                     </execution>
                 </executions>
