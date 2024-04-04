@@ -130,6 +130,12 @@
                         <phase>package</phase>
                         <configuration>
                             <createdDate>now</createdDate>
+                            <publish>true</publish>
+                            <docker>
+                                <publishRegistry>
+                                    <token>${docker.registry.token}</token>
+                                </publishRegistry>
+                            </docker>
                         </configuration>
                     </execution>
                 </executions>
