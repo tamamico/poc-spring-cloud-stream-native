@@ -133,6 +133,7 @@
                             <publish>true</publish>
                             <docker>
                                 <publishRegistry>
+                                    <username>ecristobalr</username>
                                     <token>${docker.registry.token}</token>
                                 </publishRegistry>
                             </docker>
