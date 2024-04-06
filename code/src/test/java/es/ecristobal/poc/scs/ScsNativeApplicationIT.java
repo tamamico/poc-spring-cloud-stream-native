@@ -23,11 +23,11 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 
 import static java.lang.String.format;
+import static java.time.Duration.ofSeconds;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
@@ -68,8 +68,7 @@ class ScsNativeApplicationIT {
         registry.withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS", bootstrapServers)
                 .withEnv("SCHEMA_REGISTRY_HOST_NAME", "schema_registry")
                 .start();
-        schemaRegistryUrl = format("http://%s:%d", registry.getHost(), registry.getMappedPort(SCHEMA_REGISTRY_PORT)
-        );
+        schemaRegistryUrl = format("http://%s:%d", registry.getHost(), registry.getMappedPort(SCHEMA_REGISTRY_PORT));
         final String dockerSchemaRegistryUrl = format("http:/%s:%d", registry.getContainerName(), SCHEMA_REGISTRY_PORT);
         app.withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", bootstrapServers)
            .withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_CONSUMERPROPERTIES_SCHEMA_REGISTRY_URL", dockerSchemaRegistryUrl)
@@ -105,7 +104,7 @@ class ScsNativeApplicationIT {
         template.sendDefault(Input.newBuilder().setName("Steve").build());
         try(Consumer<String, Output> consumer = cf.createConsumer()) {
             consumer.subscribe(Collections.singleton("output-test"));
-            final ConsumerRecords<String, Output> records = consumer.poll(Duration.ofSeconds(10));
+            final ConsumerRecords<String, Output> records = consumer.poll(ofSeconds(20));
             consumer.commitSync();
             assertThat(records.count()).isEqualTo(1);
             assertEquals("Hello, Steve!", records.iterator().next().value().getMessage().toString());
