@@ -45,7 +45,7 @@ class ScsNativeApplicationIT {
 
     private static final DockerImageName KAFKA_IMAGE           = parse("confluentinc/cp-kafka:latest");
     private static final DockerImageName SCHEMA_REGISTRY_IMAGE = parse("confluentinc/cp-schema-registry:latest");
-    private static final DockerImageName APP_IMAGE             = parse("poc-scs-native:0.1.0-SNAPSHOT");
+    private static final DockerImageName APP_IMAGE             = parse("ecristobalr/poc-scs-native:0.1.0-SNAPSHOT");
 
     private static final int SCHEMA_REGISTRY_PORT = 8081;
 
