@@ -134,7 +134,8 @@
                             <imageName>ecristobalr/${project.artifactId}:${project.version}</imageName>
                             <docker>
                                 <publishRegistry>
-                                    <token>${docker.registry.token}</token>
+                                    <username>${docker.registry.username}</username>
+                                    <password>${docker.registry.password}</password>
                                 </publishRegistry>
                             </docker>
                         </configuration>

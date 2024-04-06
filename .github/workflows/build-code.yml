@@ -55,7 +55,8 @@ jobs:
       - name: Build & Deploy
         run: >
           ./mvnw -B clean verify -Pnative
-          -Ddocker.registry.token=${{ secrets.DOCKER_HUB_TOKEN }}
+          -Ddocker.registry.username=${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          -Ddocker.registry.password=${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       - name: Run SonarCloud analysis
         run: ./mvnw -B sonar:sonar -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
         env:
