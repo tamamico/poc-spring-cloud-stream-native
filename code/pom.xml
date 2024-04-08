@@ -25,7 +25,7 @@
         <avro-maven-plugin.version>1.11.3</avro-maven-plugin.version>
         <sonar-maven-plugin.version>3.11.0.3922</sonar-maven-plugin.version>
         <snyk-maven-plugin.version>2.2.0</snyk-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <!-- SonarCloud settings -->
         <sonar.organization>tamamico</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
