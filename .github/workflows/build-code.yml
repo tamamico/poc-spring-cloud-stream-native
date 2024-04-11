@@ -53,7 +53,7 @@ jobs:
         with:
           username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      - name: Setup Testcontainers Cloud Client
+      - name: Setup Testcontainers Cloud client
         uses: atomicjar/testcontainers-cloud-setup-action@v1
         with:
           token: ${{ secrets.TC_CLOUD_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Run Snyk analysis
+      - name: Run Snyk analysis in source code
         run: ./mvnw -B snyk:test
         continue-on-error: true
         env:
@@ -81,13 +81,13 @@ jobs:
       - name: Get artifact version
         id: get-artifact-version
         run: echo value=$(./mvnw -B help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
-      - name: Run Snyk to check Docker image for vulnerabilities
+      - name: Run Snyk analysis in Docker image
         uses: snyk/actions/docker@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: docker.io/library/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
+          image: ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
           args: --sarif-file-output=docker.sarif
       - name: Upload result to GitHub Code Scanning (Docker image)
         uses: github/codeql-action/upload-sarif@v3
