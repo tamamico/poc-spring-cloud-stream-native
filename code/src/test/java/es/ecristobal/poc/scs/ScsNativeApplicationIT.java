@@ -49,7 +49,7 @@ class ScsNativeApplicationIT {
 
     private static final int SCHEMA_REGISTRY_PORT = 8081;
 
-    private static final Network             network  = Network.newNetwork();
+    private static final Network             network  = Network.SHARED;
     private static final KafkaContainer      kafka    = new KafkaContainer(KAFKA_IMAGE)
             .withNetwork(network)
             .withKraft();
