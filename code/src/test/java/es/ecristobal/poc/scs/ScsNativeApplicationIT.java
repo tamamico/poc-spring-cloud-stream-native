@@ -64,7 +64,7 @@ class ScsNativeApplicationIT {
     @BeforeAll
     public static void setUp() {
         kafka.start();
-        final String bootstrapServers = format("%s:9092", kafka.getContainerName());
+        final String bootstrapServers = format("%s:9092", kafka.getContainerName().substring(1));
         registry.withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS", bootstrapServers)
                 .withEnv("SCHEMA_REGISTRY_HOST_NAME", "schema_registry")
                 .start();
