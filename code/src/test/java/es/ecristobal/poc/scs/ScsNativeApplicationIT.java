@@ -93,7 +93,7 @@ class ScsNativeApplicationIT {
         producerProperties.put("schema.registry.url", schemaRegistryUrl);
         final ProducerFactory<String, Input> producerFactory = new DefaultKafkaProducerFactory<>(producerProperties);
         final KafkaTemplate<String, Input>   template        = new KafkaTemplate<>(producerFactory, true);
-        template.setDefaultTopic("input-test");
+        template.send("input-test", Input.newBuilder().setName("Steve").build());
         final Map<String, Object> consumerProperties = consumerProps(kafka.getBootstrapServers(), "test", "false");
         consumerProperties.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProperties.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -101,10 +101,9 @@ class ScsNativeApplicationIT {
         consumerProperties.put("schema.registry.url", schemaRegistryUrl);
         consumerProperties.put("specific.avro.reader", true);
         final DefaultKafkaConsumerFactory<String, Output> cf = new DefaultKafkaConsumerFactory<>(consumerProperties);
-        template.sendDefault(Input.newBuilder().setName("Steve").build());
         try(Consumer<String, Output> consumer = cf.createConsumer()) {
             consumer.subscribe(Collections.singleton("output-test"));
-            final ConsumerRecords<String, Output> records = consumer.poll(ofSeconds(20));
+            final ConsumerRecords<String, Output> records = consumer.poll(ofSeconds(10));
             consumer.commitSync();
             assertThat(records.count()).isEqualTo(1);
             assertEquals("Hello, Steve!", records.iterator().next().value().getMessage().toString());

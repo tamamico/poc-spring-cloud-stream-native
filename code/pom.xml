@@ -130,7 +130,6 @@
                         <phase>package</phase>
                         <configuration>
                             <createdDate>now</createdDate>
-                            <publish>true</publish>
                             <imageName>ecristobalr/${project.artifactId}:${project.version}</imageName>
                             <docker>
                                 <publishRegistry>

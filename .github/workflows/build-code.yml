@@ -59,7 +59,8 @@ jobs:
           token: ${{ secrets.TC_CLOUD_TOKEN }}
       - name: Build & Deploy
         run: >
-          ./mvnw -B clean verify -Pnative
+          ./mvnw -B clean verify
+          -Dspring-boot.build-image.publish=true
           -Ddocker.registry.username=${{ vars.DOCKER_REGISTRY_USERNAME }}
           -Ddocker.registry.password=${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       - name: Run SonarCloud analysis
