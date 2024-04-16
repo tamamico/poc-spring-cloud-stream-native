@@ -43,8 +43,8 @@ class ScsNativeApplicationIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScsNativeApplicationIT.class);
 
-    private static final DockerImageName KAFKA_IMAGE           = parse("confluentinc/cp-kafka:7.6.0");
-    private static final DockerImageName SCHEMA_REGISTRY_IMAGE = parse("confluentinc/cp-schema-registry:7.6.0");
+    private static final DockerImageName KAFKA_IMAGE           = parse("confluentinc/cp-kafka:7.6.1");
+    private static final DockerImageName SCHEMA_REGISTRY_IMAGE = parse("confluentinc/cp-schema-registry:7.6.1");
     private static final DockerImageName APP_IMAGE             = parse("ecristobalr/poc-scs-native:0.1.0-SNAPSHOT");
 
     private static final int SCHEMA_REGISTRY_PORT = 8081;
