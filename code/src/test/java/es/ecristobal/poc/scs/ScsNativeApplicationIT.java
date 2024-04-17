@@ -63,7 +63,7 @@ class ScsNativeApplicationIT {
         kafka.start();
         schemaRegistry.withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS",
                                format("%s:9092", kafka.getContainerName().substring(1))
-        ).withEnv("SCHEMA_REGISTRY_HOST_NAME", "localhost").start();
+        ).withEnv("SCHEMA_REGISTRY_HOST_NAME", "schema-registry").start();
         schemaRegistryUrl = format("http://%s:%d",
                                    schemaRegistry.getHost(),
                                    schemaRegistry.getMappedPort(SCHEMA_REGISTRY_PORT)
