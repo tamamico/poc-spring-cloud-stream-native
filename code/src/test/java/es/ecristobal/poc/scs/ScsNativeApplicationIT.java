@@ -11,16 +11,16 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.Collections;
@@ -39,49 +39,51 @@ import static org.springframework.kafka.test.utils.KafkaTestUtils.consumerProps;
 import static org.springframework.kafka.test.utils.KafkaTestUtils.producerProps;
 import static org.testcontainers.utility.DockerImageName.parse;
 
+@SpringBootTest
 class ScsNativeApplicationIT {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScsNativeApplicationIT.class);
 
     private static final DockerImageName KAFKA_IMAGE           = parse("confluentinc/cp-kafka:7.6.1");
     private static final DockerImageName SCHEMA_REGISTRY_IMAGE = parse("confluentinc/cp-schema-registry:7.6.1");
-    private static final DockerImageName APP_IMAGE             = parse("ecristobalr/poc-scs-native:0.1.0-SNAPSHOT");
 
     private static final int SCHEMA_REGISTRY_PORT = 8081;
 
-    private static final Network             network  = Network.SHARED;
-    private static final KafkaContainer      kafka    = new KafkaContainer(KAFKA_IMAGE)
+    private static final Network network = Network.SHARED;
+
+    private static final KafkaContainer      kafka          = new KafkaContainer(KAFKA_IMAGE)
             .withNetwork(network)
             .withKraft();
-    private static final GenericContainer<?> registry = new GenericContainer<>(SCHEMA_REGISTRY_IMAGE)
+    private static final GenericContainer<?> schemaRegistry = new GenericContainer<>(SCHEMA_REGISTRY_IMAGE)
             .withNetwork(network)
             .withExposedPorts(SCHEMA_REGISTRY_PORT);
-    private static final GenericContainer<?> app      = new GenericContainer<>(APP_IMAGE)
-            .withNetwork(network);
 
     private static String schemaRegistryUrl;
 
     @BeforeAll
     public static void setUp() {
         kafka.start();
-        final String bootstrapServers = format("%s:9092", kafka.getContainerName().substring(1));
-        registry.withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS", bootstrapServers)
-                .withEnv("SCHEMA_REGISTRY_HOST_NAME", "schema_registry")
-                .start();
-        schemaRegistryUrl = format("http://%s:%d", registry.getHost(), registry.getMappedPort(SCHEMA_REGISTRY_PORT));
-        final String dockerSchemaRegistryUrl = format("http:/%s:%d", registry.getContainerName(), SCHEMA_REGISTRY_PORT);
-        app.withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", bootstrapServers)
-           .withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_CONSUMERPROPERTIES_SCHEMA_REGISTRY_URL", dockerSchemaRegistryUrl)
-           .withEnv("SPRING_CLOUD_STREAM_KAFKA_BINDER_PRODUCERPROPERTIES_SCHEMA_REGISTRY_URL", dockerSchemaRegistryUrl)
-           .start();
-        final Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER).withSeparateOutputStreams();
-        app.followOutput(logConsumer);
+        schemaRegistry.withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS",
+                               format("%s:9092", kafka.getContainerName().substring(1))
+        ).withEnv("SCHEMA_REGISTRY_HOST_NAME", "localhost").start();
+        schemaRegistryUrl = format("http://%s:%d",
+                                   schemaRegistry.getHost(),
+                                   schemaRegistry.getMappedPort(SCHEMA_REGISTRY_PORT)
+        );
+    }
+
+    @DynamicPropertySource
+    static void registerProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.cloud.stream.kafka.binder.brokers", kafka::getBootstrapServers);
+        registry.add("spring.cloud.stream.kafka.binder.consumer-properties.schema.registry.url",
+                     () -> schemaRegistryUrl
+        );
+        registry.add("spring.cloud.stream.kafka.binder.producer-properties.schema.registry.url",
+                     () -> schemaRegistryUrl
+        );
     }
 
     @AfterAll
     public static void tearDown() {
-        app.stop();
-        registry.stop();
+        schemaRegistry.stop();
         kafka.stop();
     }
 
