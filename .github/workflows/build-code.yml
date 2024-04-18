@@ -53,13 +53,8 @@ jobs:
         with:
           username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      - name: Setup Testcontainers Cloud client
-        uses: atomicjar/testcontainers-cloud-setup-action@v1
-        with:
-          token: ${{ secrets.TC_CLOUD_TOKEN }}
       - name: Build & Test
-        run: >
-          ./mvnw -B clean verify
+        run: ./mvnw -B clean verify
       - name: Run SonarCloud analysis
         run: ./mvnw -B sonar:sonar -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
         env:
