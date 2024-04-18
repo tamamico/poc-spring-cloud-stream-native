@@ -38,6 +38,7 @@
         <!-- Plugin versions -->
         <avro-maven-plugin.version>1.11.3</avro-maven-plugin.version>
         <sonar-maven-plugin.version>3.11.0.3922</sonar-maven-plugin.version>
+        <snyk-maven-plugin.version>2.2.0</snyk-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
         <!-- SonarCloud settings -->
@@ -164,6 +165,27 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>io.snyk</groupId>
+                <artifactId>snyk-maven-plugin</artifactId>
+                <version>${snyk-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <apiToken>${env.SNYK_TOKEN}</apiToken>
+                    <args>
+                        <arg>--all-projects</arg>
+                        <arg>--sarif-file-output=code.sarif</arg>
+                    </args>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
