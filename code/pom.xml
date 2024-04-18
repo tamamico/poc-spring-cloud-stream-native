@@ -153,12 +153,6 @@
                 <configuration>
                     <createdDate>now</createdDate>
                     <imageName>ecristobalr/${project.artifactId}:${project.version}</imageName>
-                    <docker>
-                        <publishRegistry>
-                            <username>${docker.registry.username}</username>
-                            <password>${docker.registry.password}</password>
-                        </publishRegistry>
-                    </docker>
                 </configuration>
             </plugin>
             <plugin>
@@ -180,7 +174,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <apiToken>${env.SNYK_TOKEN}</apiToken>
                     <args>
                         <arg>--all-projects</arg>
                         <arg>--sarif-file-output=code.sarif</arg>
