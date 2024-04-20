@@ -2,8 +2,6 @@ name: Build Code
 
 on:
   push:
-    branches:
-      - main
     paths:
       - code/**
       - .github/**
