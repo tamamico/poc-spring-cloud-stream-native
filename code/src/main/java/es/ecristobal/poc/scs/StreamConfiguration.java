@@ -18,9 +18,7 @@ class StreamConfiguration {
     @Bean
     Function<Flux<Input>, Flux<Output>> sayHi() {
         return flux -> flux.doOnNext(name -> LOGGER.info("Received name: {}", name))
-                           .map(message -> Output.newBuilder()
-                                                 .setMessage("Hello, {}!".replace("{}", message.getName()))
-                                                 .build());
+                           .map(message -> Output.newBuilder().setMessage("Hello, {}!".replace("{}", message.getName())).build());
     }
 
 }
