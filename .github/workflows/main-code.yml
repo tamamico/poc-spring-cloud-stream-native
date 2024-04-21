@@ -8,14 +8,6 @@ on:
       - code/**
       - .github/**
 
-defaults:
-  run:
-    working-directory: ./code
-
-permissions:
-  contents: read
-  security-events: write
-
 jobs:
   build-code:
     uses: ./.github/workflows/build-code.yml

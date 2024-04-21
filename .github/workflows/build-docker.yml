@@ -4,8 +4,13 @@ on:
   workflow_call:
 
 permissions:
+  pull-requests: read
   contents: read
   security-events: write
+
+defaults:
+  run:
+    working-directory: ./code
 
 jobs:
   build:
