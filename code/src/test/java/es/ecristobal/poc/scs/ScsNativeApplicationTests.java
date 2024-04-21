@@ -36,7 +36,7 @@ import static org.springframework.kafka.test.utils.KafkaTestUtils.producerProps;
 
 @SpringBootTest
 @Testcontainers
-class ScsNativeApplicationIT {
+class ScsNativeApplicationTests {
 
     @Container
     private static RedpandaContainer broker = new RedpandaContainer("docker.redpanda.com/redpandadata/redpanda:v23.1.2");
