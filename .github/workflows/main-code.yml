@@ -19,7 +19,7 @@ jobs:
     uses: ./.github/workflows/build-code.yml
     secrets: inherit
   build-application-deliverable:
-    needs: build-code
+    needs: build-source-code
     name: Build application deliverable
     uses: ./.github/workflows/build-docker.yml
     secrets: inherit
