@@ -1,0 +1,25 @@
+name: Build Code
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - code/**
+      - .github/**
+
+defaults:
+  run:
+    working-directory: ./code
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  build-code:
+    uses: ./.github/workflows/build-code.yml
+    secrets: inherit
+  build-docker:
+    needs: build-code
+    uses: ./.github/workflows/build-docker.yml

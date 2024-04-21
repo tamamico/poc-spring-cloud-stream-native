@@ -1,0 +1,54 @@
+name: Build Code
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  build:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set-up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      - name: Build Docker native image
+        run: ./mvnw -B spring-boot:build-image -Pnative
+      - name: Get Maven artifact version
+        id: get-artifact-version
+        run: echo value=$(./mvnw -B help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
+      - name: Run Snyk analysis in Docker image
+        uses: snyk/actions/docker@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
+          args: --sarif-file-output=docker.sarif
+      - name: Upload Docker image analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: docker.sarif
+          category: docker
+      - name: Deploy Docker native image
+        run: docker push ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}

@@ -1,22 +1,9 @@
 name: Build Code
 
 on:
-  push:
-    paths:
-      - code/**
-      - .github/**
-  pull_request:
-    types: [ opened, synchronize, reopened ]
-    paths:
-      - code/**
-      - .github/**
-
-defaults:
-  run:
-    working-directory: ./code
+  workflow_call:
 
 permissions:
-  pull-requests: read
   contents: read
   security-events: write
 
@@ -72,23 +59,3 @@ jobs:
         with:
           sarif_file: /home/runner/work/poc-spring-cloud-stream-native/poc-spring-cloud-stream-native/code/code.sarif
           category: source-code
-      - name: Build Docker native image
-        run: ./mvnw -B spring-boot:build-image -Pnative
-      - name: Get Maven artifact version
-        id: get-artifact-version
-        run: echo value=$(./mvnw -B help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
-      - name: Run Snyk analysis in Docker image
-        uses: snyk/actions/docker@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
-          args: --sarif-file-output=docker.sarif
-      - name: Upload Docker image analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: docker.sarif
-          category: docker
-      - name: Deploy Docker native image
-        run: docker push ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
