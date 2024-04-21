@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<cache xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-       xmlns = "http://maven.apache.org/BUILD-CACHE-CONFIG/1.0.0"
+<cache xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://maven.apache.org/BUILD-CACHE-CONFIG/1.0.0"
        xsi:schemaLocation = "http://maven.apache.org/BUILD-CACHE-CONFIG/1.0.0 https://maven.apache.org/xsd/build-cache-config-1.0.0.xsd">
     <configuration>
         <enabled>true</enabled>
@@ -10,6 +9,11 @@
             <maxBuildsCached>3</maxBuildsCached>
         </local>
         <projectVersioning adjustMetaInf = "true" />
+        <attachedOutputs>
+            <dirNames>
+                <dirName>target</dirName>
+            </dirNames>
+        </attachedOutputs>
     </configuration>
     <input>
         <global>
@@ -39,7 +43,7 @@
                 </goalsList>
             </goalsLists>
         </runAlways>
-        <reconcile logAllProperties = "true">
+        <reconcile>
             <plugins>
                 <plugin artifactId = "maven-compiler-plugin" goal = "compile">
                     <reconciles>
