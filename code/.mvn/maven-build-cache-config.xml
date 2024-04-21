@@ -9,11 +9,6 @@
             <maxBuildsCached>3</maxBuildsCached>
         </local>
         <projectVersioning adjustMetaInf = "true" />
-        <attachedOutputs>
-            <dirNames>
-                <dirName>target</dirName>
-            </dirNames>
-        </attachedOutputs>
     </configuration>
     <input>
         <global>
