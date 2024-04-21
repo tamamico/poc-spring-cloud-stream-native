@@ -28,6 +28,10 @@
         </developer>
     </developers>
 
+    <scm>
+        <developerConnection>scm:git:https://github.com/tamamico/poc-spring-cloud-stream-native.git</developerConnection>
+    </scm>
+
     <properties>
         <!-- Maven settings -->
         <java.version>21</java.version>
@@ -41,6 +45,7 @@
         <snyk-maven-plugin.version>2.2.0</snyk-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
+        <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <!-- SonarCloud settings -->
         <sonar.organization>tamamico</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -232,7 +237,8 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-help-plugin</artifactId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
