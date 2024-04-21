@@ -14,7 +14,7 @@ defaults:
 
 jobs:
   build:
-    name: Build code
+    name: Build Maven artifact
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

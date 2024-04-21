@@ -14,10 +14,12 @@ permissions:
   security-events: write
 
 jobs:
-  build-code:
+  build-source-code:
+    name: Build source code
     uses: ./.github/workflows/build-code.yml
     secrets: inherit
-  build-docker:
+  build-application-deliverable:
     needs: build-code
+    name: Build application deliverable
     uses: ./.github/workflows/build-docker.yml
     secrets: inherit
