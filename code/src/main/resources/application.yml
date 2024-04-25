@@ -1,3 +1,9 @@
+logging:
+  level:
+    root: info
+    org.apache: warn
+    io.confluent: warn
+
 spring:
   application:
     name: say-hi-app
