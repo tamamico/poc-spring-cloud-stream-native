@@ -162,6 +162,9 @@
                 <configuration>
                     <createdDate>now</createdDate>
                     <imageName>ecristobalr/${project.artifactId}:${project.version}</imageName>
+                    <image>
+                        <builder>dashaun/builder:tiny</builder>
+                    </image>
                 </configuration>
             </plugin>
             <plugin>
