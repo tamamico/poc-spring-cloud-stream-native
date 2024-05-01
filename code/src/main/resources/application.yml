@@ -6,17 +6,15 @@ logging:
 
 spring:
   application:
-    name: say-hi-app
+    name: greeter
   cloud:
     stream:
       bindings:
-        sayHi-in-0:
-          group: say-hi-app
-          destination: input-test
+        greeter-in-0:
+          group: greeter
           consumer:
             use-native-decoding: true
-        sayHi-out-0:
-          destination: output-test
+        greeter-out-0:
           producer:
             use-native-encoding: true
       kafka:

@@ -13,13 +13,13 @@ import reactor.core.publisher.Flux;
 import java.util.function.Function;
 
 @Configuration
-class StreamConfiguration {
+class SpringConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StreamConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringConfiguration.class);
 
     @Bean
-    Function<Flux<Input>, Flux<Output>> sayHi(final ObservationRegistry registry) {
-        return flux -> flux.doOnNext(input -> LOGGER.info("Received name: {}", input.getName()))
+    Function<Flux<Input>, Flux<Output>> greeter(final ObservationRegistry registry) {
+        return flux -> flux.doOnNext(input -> LOGGER.info("Greeting {}", input.getName()))
                            .map(input -> Output.newBuilder().setMessage("Hello, {}!".replace("{}", input.getName())).build())
                            .tap(Micrometer.observation(registry));
     }
