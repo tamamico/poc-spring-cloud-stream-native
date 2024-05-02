@@ -22,8 +22,12 @@ class SpringConfiguration {
     @Bean
     Function<Flux<Input>, Flux<Output>> greeter(final ObservationRegistry registry) {
         return flux -> flux.doOnNext(input -> LOGGER.info("Greeting {}", input.getName()))
-                           .map(input -> Output.newBuilder().setMessage(format("Hello, %S!", input.getName())).build())
+                           .map(this.greeter())
                            .tap(Micrometer.observation(registry));
+    }
+
+    private Function<Input, Output> greeter() {
+        return input -> Output.newBuilder().setMessage(format("Hello, %S!", input.getName())).build();
     }
 
 }

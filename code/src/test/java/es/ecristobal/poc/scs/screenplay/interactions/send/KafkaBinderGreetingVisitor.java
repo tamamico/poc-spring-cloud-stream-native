@@ -1,4 +1,4 @@
-package es.ecristobal.poc.scs.screenplay.interactions;
+package es.ecristobal.poc.scs.screenplay.interactions.send;
 
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.screenplay.actors.Customer;
@@ -14,11 +14,12 @@ import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CL
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 import static org.springframework.kafka.test.utils.KafkaTestUtils.producerProps;
 
-public class SendGreeting {
+public class KafkaBinderGreetingVisitor
+        implements GreetingVisitor {
 
     private final KafkaTemplate<String, Input> template;
 
-    public SendGreeting(
+    public KafkaBinderGreetingVisitor(
             final String brokerUrl,
             final String schemaRegistryUrl,
             final String topic
@@ -32,7 +33,8 @@ public class SendGreeting {
         this.template.setDefaultTopic(topic);
     }
 
-    public void to(final Customer customer) {
+    @Override
+    public void visit(final Customer customer) {
         this.template.sendDefault(this.buildFrom(customer));
     }
 

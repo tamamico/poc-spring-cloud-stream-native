@@ -5,11 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import reactor.core.publisher.Hooks;
 
 @SpringBootApplication
-public class PocApplication {
+public class GreeterApplication {
 
     public static void main(String[] args) {
         Hooks.enableAutomaticContextPropagation();
-        SpringApplication.run(PocApplication.class, args);
+        SpringApplication.run(GreeterApplication.class, args);
     }
 
 }
