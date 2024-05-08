@@ -38,8 +38,6 @@ jobs:
           organization: ${{ env.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
-        env:
-          CONFLUENT_CLOUD_API_SECRET: ${{ secrets.CONFLUENT_CLOUD_API_SECRET }}
 
       - name: Apply
         uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.0
@@ -50,5 +48,3 @@ jobs:
           organization: ${{ env.TF_CLOUD_ORGANIZATION }}
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
-        env:
-          CONFLUENT_CLOUD_API_SECRET: ${{ secrets.CONFLUENT_CLOUD_API_SECRET }}
