@@ -8,10 +8,6 @@ on:
       - infrastructure/**
       - .github/workflows/build-infrastructure.yml
 
-defaults:
-  run:
-    working-directory: ./infrastructure
-
 jobs:
   terraform:
     name: "Run Terraform"
@@ -29,7 +25,7 @@ jobs:
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ vars.TF_WORKSPACE }}
-          directory: ./
+          directory: ./infrastructure
 
       - name: Create Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.0
