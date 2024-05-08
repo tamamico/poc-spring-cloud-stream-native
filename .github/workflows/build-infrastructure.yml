@@ -8,10 +8,6 @@ on:
       - infrastructure/**
       - .github/workflows/build-infrastructure.yml
 
-env:
-  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  CONFLUENT_CLOUD_API_SECRET: "${{ secrets.CONFLUENT_CLOUD_API_SECRET }}"
-
 defaults:
   run:
     working-directory: ./infrastructure
@@ -30,19 +26,30 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
         id: plan-upload
         with:
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ env.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ env.TF_WORKSPACE }}
+
 
       - name: Create Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
         id: apply-run
         with:
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ env.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+        env:
+          CONFLUENT_CLOUD_API_SECRET: ${{ secrets.CONFLUENT_CLOUD_API_SECRET }}
 
       - name: Apply
         uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
         if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
         id: apply
         with:
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ env.TF_CLOUD_ORGANIZATION }}
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+        env:
+          CONFLUENT_CLOUD_API_SECRET: ${{ secrets.CONFLUENT_CLOUD_API_SECRET }}
