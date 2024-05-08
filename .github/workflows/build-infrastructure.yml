@@ -29,6 +29,7 @@ jobs:
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ vars.TF_WORKSPACE }}
+          directory: ./
 
       - name: Create Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.0
