@@ -6,10 +6,11 @@ on:
       - main
     paths:
       - infrastructure/**
+      - .github/workflows/build-infrastructure.yml
 
 env:
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  CONFLUENT_CLOUD_API_SECRET: "${{ CONFLUENT_CLOUD_API_SECRET }}"
+  CONFLUENT_CLOUD_API_SECRET: "${{ secrets.CONFLUENT_CLOUD_API_SECRET }}"
 
 defaults:
   run:
