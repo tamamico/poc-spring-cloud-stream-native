@@ -27,16 +27,16 @@ jobs:
         id: plan-upload
         with:
           token: ${{ secrets.TF_API_TOKEN }}
-          organization: ${{ env.TF_CLOUD_ORGANIZATION }}
-          workspace: ${{ env.TF_WORKSPACE }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace: ${{ vars.TF_WORKSPACE }}
 
       - name: Create Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.0
         id: apply-run
         with:
           token: ${{ secrets.TF_API_TOKEN }}
-          organization: ${{ env.TF_CLOUD_ORGANIZATION }}
-          workspace: ${{ env.TF_WORKSPACE }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace: ${{ vars.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
 
       - name: Apply
@@ -45,6 +45,6 @@ jobs:
         id: apply
         with:
           token: ${{ secrets.TF_API_TOKEN }}
-          organization: ${{ env.TF_CLOUD_ORGANIZATION }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
