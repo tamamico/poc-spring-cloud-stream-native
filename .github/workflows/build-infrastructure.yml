@@ -23,16 +23,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.0
         id: plan-upload
         with:
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ env.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ env.TF_WORKSPACE }}
 
-
       - name: Create Apply Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.0
         id: apply-run
         with:
           token: ${{ secrets.TF_API_TOKEN }}
@@ -43,7 +42,7 @@ jobs:
           CONFLUENT_CLOUD_API_SECRET: ${{ secrets.CONFLUENT_CLOUD_API_SECRET }}
 
       - name: Apply
-        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
+        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.0
         if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
         id: apply
         with:

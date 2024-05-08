@@ -10,7 +10,6 @@ on:
       - !.github/workflows/dependabot-code.yml
 
 permissions:
-  pull-requests: read
   contents: read
   security-events: write
 
