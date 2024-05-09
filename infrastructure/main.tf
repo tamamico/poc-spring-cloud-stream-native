@@ -69,10 +69,6 @@ data "confluent_schema_registry_cluster_config" "essentials" {
     id = data.confluent_schema_registry_cluster.essentials.id
   }
   rest_endpoint = data.confluent_schema_registry_cluster.essentials.rest_endpoint
-  credentials {
-    key    = confluent_api_key.basic-cluster-api-key.id
-    secret = confluent_api_key.basic-cluster-api-key.secret
-  }
 }
 
 resource "confluent_kafka_topic" "input-men" {
@@ -86,10 +82,6 @@ resource "confluent_kafka_topic" "input-men" {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
   }
-  credentials {
-    key    = confluent_api_key.basic-cluster-api-key.id
-    secret = confluent_api_key.basic-cluster-api-key.secret
-  }
 }
 
 resource "confluent_kafka_topic" "output" {
@@ -102,10 +94,6 @@ resource "confluent_kafka_topic" "output" {
   config = {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
-  }
-  credentials {
-    key    = confluent_api_key.basic-cluster-api-key.id
-    secret = confluent_api_key.basic-cluster-api-key.secret
   }
 }
 
@@ -121,10 +109,6 @@ resource "confluent_kafka_acl" "input-men" {
   operation     = "DESCRIBE"
   permission    = "ALLOW"
   rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
-  credentials {
-    key    = confluent_api_key.basic-cluster-api-key.id
-    secret = confluent_api_key.basic-cluster-api-key.secret
-  }
 }
 
 resource "confluent_kafka_acl" "output" {
@@ -139,10 +123,6 @@ resource "confluent_kafka_acl" "output" {
   operation     = "DESCRIBE"
   permission    = "ALLOW"
   rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
-  credentials {
-    key    = confluent_api_key.basic-cluster-api-key.id
-    secret = confluent_api_key.basic-cluster-api-key.secret
-  }
 }
 
 resource "confluent_kafka_acl" "basic" {
@@ -157,10 +137,6 @@ resource "confluent_kafka_acl" "basic" {
   operation     = "DESCRIBE"
   permission    = "ALLOW"
   rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
-  credentials {
-    key    = confluent_api_key.basic-cluster-api-key.id
-    secret = confluent_api_key.basic-cluster-api-key.secret
-  }
 }
 
 output "kafka_broker_address" {
