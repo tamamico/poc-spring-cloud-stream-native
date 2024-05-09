@@ -30,3 +30,29 @@ resource "confluent_kafka_cluster" "basic" {
     prevent_destroy = true
   }
 }
+
+data "confluent_schema_registry_region" "essentials" {
+  cloud   = "AWS"
+  region  = "eu-south-2"
+  package = "ESSENTIALS"
+}
+
+resource "confluent_schema_registry_cluster" "essentials" {
+  package = data.confluent_schema_registry_region.essentials.package
+
+  environment {
+    id = confluent_environment.development.id
+  }
+
+  region {
+    id = data.confluent_schema_registry_region.essentials.id
+  }
+}
+
+output "kafka_broker_address" {
+  value = confluent_kafka_cluster.basic.bootstrap_endpoint
+}
+
+output "schema_registry_url" {
+  value = confluent_schema_registry_cluster.essentials.rest_endpoint
+}
