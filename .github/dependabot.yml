@@ -4,6 +4,10 @@ updates:
     directory: "/code"
     schedule:
       interval: "weekly"
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure"
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
