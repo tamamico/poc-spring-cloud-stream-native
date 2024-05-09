@@ -82,7 +82,7 @@ resource "confluent_kafka_topic" "input-men" {
   kafka_cluster    = confluent_kafka_cluster.basic.id
   topic_name       = "greet.men"
   partitions_count = 4
-  http_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
+  rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
   config = {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
@@ -97,7 +97,7 @@ resource "confluent_kafka_topic" "output" {
   kafka_cluster    = confluent_kafka_cluster.basic.id
   topic_name       = "greeting"
   partitions_count = 4
-  http_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
+  rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
   config = {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
@@ -117,7 +117,7 @@ resource "confluent_kafka_acl" "input-men" {
   host          = "*"
   operation     = "DESCRIBE"
   permission    = "ALLOW"
-  http_endpoint = confluent_kafka_cluster.basic.rest_endpoint
+  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
   credentials {
     key    = confluent_api_key.basic-cluster-api-key.id
     secret = confluent_api_key.basic-cluster-api-key.secret
@@ -133,7 +133,7 @@ resource "confluent_kafka_acl" "output" {
   host          = "*"
   operation     = "DESCRIBE"
   permission    = "ALLOW"
-  http_endpoint = confluent_kafka_cluster.basic.rest_endpoint
+  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
   credentials {
     key    = confluent_api_key.basic-cluster-api-key.id
     secret = confluent_api_key.basic-cluster-api-key.secret
@@ -149,7 +149,7 @@ resource "confluent_kafka_acl" "basic" {
   host          = "*"
   operation     = "DESCRIBE"
   permission    = "ALLOW"
-  http_endpoint = confluent_kafka_cluster.basic.rest_endpoint
+  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
   credentials {
     key    = confluent_api_key.basic-cluster-api-key.id
     secret = confluent_api_key.basic-cluster-api-key.secret

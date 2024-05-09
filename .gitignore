@@ -1,18 +1,10 @@
 HELP.md
-code/snyk-code.sarif
+
+### Maven ###
 code/target/
 !code/.mvn/wrapper/maven-wrapper.jar
 !code/src/main/**/target/
 !code/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
 
 ### IntelliJ IDEA ###
 .idea
@@ -20,15 +12,15 @@ code/target/
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+### Terraform ###
+/infrastructure/.terraform/providers/registry.terraform.io/confluentinc/confluent/1.75.0/darwin_arm64/
+/infrastructure/.terraform/providers/registry.terraform.io/confluentinc/confluent/1.75.0/
+/infrastructure/.terraform/providers/registry.terraform.io/confluentinc/confluent/
+/infrastructure/.terraform/providers/registry.terraform.io/confluentinc/
+/infrastructure/.terraform/providers/registry.terraform.io/
+/infrastructure/.terraform/providers/
+/infrastructure/.terraform/
+/infrastructure/.terraform.lock.hcl
 
-### VS Code ###
-.vscode/
+### Snyk ###
+code/snyk-code.sarif
