@@ -26,7 +26,6 @@ resource "confluent_kafka_cluster" "basic" {
   cloud        = "AWS"
   region       = "eu-south-2"
   basic {}
-
   environment {
     id = confluent_environment.development.id
   }
@@ -44,12 +43,10 @@ resource "confluent_api_key" "basic-cluster-api-key" {
     api_version = confluent_service_account.sa.api_version
     kind        = confluent_service_account.sa.kind
   }
-
   managed_resource {
     id          = confluent_kafka_cluster.basic.id
     api_version = confluent_kafka_cluster.basic.api_version
     kind        = confluent_kafka_cluster.basic.kind
-
     environment {
       id = confluent_environment.development.id
     }
@@ -79,7 +76,9 @@ data "confluent_schema_registry_cluster_config" "essentials" {
 }
 
 resource "confluent_kafka_topic" "input-men" {
-  kafka_cluster    = confluent_kafka_cluster.basic.id
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
   topic_name       = "greet.men"
   partitions_count = 4
   rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
@@ -94,7 +93,9 @@ resource "confluent_kafka_topic" "input-men" {
 }
 
 resource "confluent_kafka_topic" "output" {
-  kafka_cluster    = confluent_kafka_cluster.basic.id
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
   topic_name       = "greeting"
   partitions_count = 4
   rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
@@ -109,7 +110,9 @@ resource "confluent_kafka_topic" "output" {
 }
 
 resource "confluent_kafka_acl" "input-men" {
-  kafka_cluster = confluent_kafka_cluster.basic.id
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
   resource_type = "TOPIC"
   resource_name = confluent_kafka_topic.input-men.topic_name
   pattern_type  = "LITERAL"
@@ -125,7 +128,9 @@ resource "confluent_kafka_acl" "input-men" {
 }
 
 resource "confluent_kafka_acl" "output" {
-  kafka_cluster = confluent_kafka_cluster.basic.id
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
   resource_type = "TOPIC"
   resource_name = confluent_kafka_topic.output.topic_name
   pattern_type  = "LITERAL"
@@ -141,7 +146,9 @@ resource "confluent_kafka_acl" "output" {
 }
 
 resource "confluent_kafka_acl" "basic" {
-  kafka_cluster = confluent_kafka_cluster.basic.id
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
   resource_type = "CLUSTER"
   resource_name = confluent_kafka_cluster.basic.display_name
   pattern_type  = "LITERAL"
