@@ -71,7 +71,7 @@ data "confluent_schema_registry_cluster_config" "essentials" {
   credentials {
     key    = confluent_api_key.basic.id
     secret = confluent_api_key.basic.secret
-  )
+  }
   rest_endpoint = data.confluent_schema_registry_cluster.essentials.rest_endpoint
 }
 
