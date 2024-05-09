@@ -1,4 +1,4 @@
-name: "Build infrastructure"
+name: "Apply infrastructure"
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - infrastructure/**
-      - .github/workflows/build-infrastructure.yml
+      - .github/workflows/apply-infrastructure.yml
 
 jobs:
   terraform:
@@ -44,3 +44,11 @@ jobs:
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+
+      - name: Get output
+        uses: hashicorp/tfc-workflows-github/actions/workspace-output@v1.3.0
+        id: output
+        with:
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace: ${{ vars.TF_WORKSPACE }}
