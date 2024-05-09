@@ -35,7 +35,7 @@ resource "confluent_kafka_cluster" "basic" {
   }
 }
 
-resource "confluent_api_key" "basic-cluster-api-key" {
+resource "confluent_api_key" "basic" {
   display_name = "api-key"
   description  = "Cluster API Key"
   owner {
@@ -68,6 +68,10 @@ data "confluent_schema_registry_cluster_config" "essentials" {
   schema_registry_cluster {
     id = data.confluent_schema_registry_cluster.essentials.id
   }
+  credentials {
+    key    = confluent_api_key.basic.id
+    secret = confluent_api_key.basic.secret
+  )
   rest_endpoint = data.confluent_schema_registry_cluster.essentials.rest_endpoint
 }
 
