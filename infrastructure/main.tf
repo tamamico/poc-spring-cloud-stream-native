@@ -32,15 +32,10 @@ resource "confluent_kafka_cluster" "basic" {
 }
 
 data "confluent_schema_registry_cluster" "essentials" {
-  package = "ESSENTIALS"
-
   environment {
     id = confluent_environment.development.id
   }
 
-  region {
-    id = "eu-south-2"
-  }
 }
 
 output "kafka_broker_address" {
