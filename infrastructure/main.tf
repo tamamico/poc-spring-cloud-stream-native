@@ -15,9 +15,15 @@ resource "confluent_environment" "development" {
   }
 }
 
-resource "confluent_service_account" "sa" {
-  display_name = "sa"
-  description  = "Service account created by Terraform"
+resource "confluent_service_account" "cluster-manager" {
+  display_name = "cluster-manager"
+  description  = "Cluster manager service account created by Terraform"
+}
+
+resource "confluent_role_binding" "app-manager-kafka-cluster-admin" {
+  principal   = "User:${confluent_service_account.cluster-manager.id}"
+  role_name   = "CloudClusterAdmin"
+  crn_pattern = confluent_kafka_cluster.basic.rbac_crn
 }
 
 resource "confluent_kafka_cluster" "basic" {
@@ -35,13 +41,13 @@ resource "confluent_kafka_cluster" "basic" {
   }
 }
 
-resource "confluent_api_key" "basic" {
-  display_name = "api-key"
+resource "confluent_api_key" "cluster" {
+  display_name = "cluster-api-key"
   description  = "Cluster API Key"
   owner {
-    id          = confluent_service_account.sa.id
-    api_version = confluent_service_account.sa.api_version
-    kind        = confluent_service_account.sa.kind
+    id          = confluent_service_account.cluster-manager.id
+    api_version = confluent_service_account.cluster-manager.api_version
+    kind        = confluent_service_account.cluster-manager.kind
   }
   managed_resource {
     id          = confluent_kafka_cluster.basic.id
@@ -57,22 +63,29 @@ resource "confluent_api_key" "basic" {
   }
 }
 
+resource "confluent_kafka_acl" "cluster" {
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
+  resource_type = "CLUSTER"
+  resource_name = confluent_kafka_cluster.basic.display_name
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.cluster-manager.id}"
+  host          = "*"
+  operation     = "ALL"
+  permission    = "ALLOW"
+  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
+  credentials {
+    key    = confluent_api_key.cluster.id
+    secret = confluent_api_key.cluster.secret
+  }
+}
+
 data "confluent_schema_registry_cluster" "essentials" {
   environment {
     id = confluent_environment.development.id
   }
 
-}
-
-data "confluent_schema_registry_cluster_config" "essentials" {
-  schema_registry_cluster {
-    id = data.confluent_schema_registry_cluster.essentials.id
-  }
-  credentials {
-    key    = confluent_api_key.basic.id
-    secret = confluent_api_key.basic.secret
-  }
-  rest_endpoint = data.confluent_schema_registry_cluster.essentials.rest_endpoint
 }
 
 resource "confluent_kafka_topic" "input-men" {
@@ -85,6 +98,28 @@ resource "confluent_kafka_topic" "input-men" {
   config = {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
+  }
+  credentials {
+    key    = confluent_api_key.cluster.id
+    secret = confluent_api_key.cluster.secret
+  }
+}
+
+resource "confluent_kafka_acl" "input-men" {
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
+  resource_type = "TOPIC"
+  resource_name = confluent_kafka_topic.input-men.topic_name
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.cluster-manager.id}"
+  host          = "*"
+  operation     = "ALL"
+  permission    = "ALLOW"
+  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
+  credentials {
+    key    = confluent_api_key.cluster.id
+    secret = confluent_api_key.cluster.secret
   }
 }
 
@@ -99,20 +134,10 @@ resource "confluent_kafka_topic" "output" {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
   }
-}
-
-resource "confluent_kafka_acl" "input-men" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
+  credentials {
+    key    = confluent_api_key.cluster.id
+    secret = confluent_api_key.cluster.secret
   }
-  resource_type = "TOPIC"
-  resource_name = confluent_kafka_topic.input-men.topic_name
-  pattern_type  = "LITERAL"
-  principal     = "User:${confluent_service_account.sa.id}"
-  host          = "*"
-  operation     = "DESCRIBE"
-  permission    = "ALLOW"
-  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
 }
 
 resource "confluent_kafka_acl" "output" {
@@ -122,25 +147,15 @@ resource "confluent_kafka_acl" "output" {
   resource_type = "TOPIC"
   resource_name = confluent_kafka_topic.output.topic_name
   pattern_type  = "LITERAL"
-  principal     = "User:${confluent_service_account.sa.id}"
+  principal     = "User:${confluent_service_account.cluster-manager.id}"
   host          = "*"
-  operation     = "DESCRIBE"
+  operation     = "ALL"
   permission    = "ALLOW"
   rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
-}
-
-resource "confluent_kafka_acl" "basic" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
+  credentials {
+    key    = confluent_api_key.cluster.id
+    secret = confluent_api_key.cluster.secret
   }
-  resource_type = "CLUSTER"
-  resource_name = confluent_kafka_cluster.basic.display_name
-  pattern_type  = "LITERAL"
-  principal     = "User:${confluent_service_account.sa.id}"
-  host          = "*"
-  operation     = "DESCRIBE"
-  permission    = "ALLOW"
-  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
 }
 
 output "kafka_broker_address" {
