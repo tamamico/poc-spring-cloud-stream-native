@@ -68,7 +68,7 @@ resource "confluent_kafka_acl" "cluster" {
     id = confluent_kafka_cluster.basic.id
   }
   resource_type = "CLUSTER"
-  resource_name = confluent_kafka_cluster.basic.display_name
+  resource_name = "kafka-cluster"
   pattern_type  = "LITERAL"
   principal     = "User:${confluent_service_account.cluster-manager.id}"
   host          = "*"
