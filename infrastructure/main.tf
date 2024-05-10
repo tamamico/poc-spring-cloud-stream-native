@@ -63,24 +63,6 @@ resource "confluent_api_key" "cluster" {
   }
 }
 
-resource "confluent_kafka_acl" "cluster" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
-  }
-  resource_type = "CLUSTER"
-  resource_name = "kafka-cluster"
-  pattern_type  = "LITERAL"
-  principal     = "User:${confluent_service_account.cluster-manager.id}"
-  host          = "*"
-  operation     = "ALL"
-  permission    = "ALLOW"
-  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
-  credentials {
-    key    = confluent_api_key.cluster.id
-    secret = confluent_api_key.cluster.secret
-  }
-}
-
 data "confluent_schema_registry_cluster" "essentials" {
   environment {
     id = confluent_environment.development.id
@@ -105,24 +87,6 @@ resource "confluent_kafka_topic" "input-men" {
   }
 }
 
-resource "confluent_kafka_acl" "input-men" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
-  }
-  resource_type = "TOPIC"
-  resource_name = confluent_kafka_topic.input-men.topic_name
-  pattern_type  = "LITERAL"
-  principal     = "User:${confluent_service_account.cluster-manager.id}"
-  host          = "*"
-  operation     = "ALL"
-  permission    = "ALLOW"
-  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
-  credentials {
-    key    = confluent_api_key.cluster.id
-    secret = confluent_api_key.cluster.secret
-  }
-}
-
 resource "confluent_kafka_topic" "output" {
   kafka_cluster {
     id = confluent_kafka_cluster.basic.id
@@ -134,24 +98,6 @@ resource "confluent_kafka_topic" "output" {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
   }
-  credentials {
-    key    = confluent_api_key.cluster.id
-    secret = confluent_api_key.cluster.secret
-  }
-}
-
-resource "confluent_kafka_acl" "output" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
-  }
-  resource_type = "TOPIC"
-  resource_name = confluent_kafka_topic.output.topic_name
-  pattern_type  = "LITERAL"
-  principal     = "User:${confluent_service_account.cluster-manager.id}"
-  host          = "*"
-  operation     = "ALL"
-  permission    = "ALLOW"
-  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
   credentials {
     key    = confluent_api_key.cluster.id
     secret = confluent_api_key.cluster.secret
