@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - infrastructure/**
-      - .github/workflows/apply-infrastructure.yml
+      - 'infrastructure/**'
+      - '.github/workflows/apply-infrastructure.yml'
 
 jobs:
   terraform:
