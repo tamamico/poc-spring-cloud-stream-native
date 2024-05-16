@@ -13,6 +13,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.format;
+import static java.time.Duration.ofSeconds;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
@@ -22,7 +24,7 @@ import static org.springframework.kafka.test.utils.KafkaTestUtils.consumerProps;
 public class KafkaBinderGreetingValidator
         implements GreetingValidator {
 
-    private static final Duration POLLING_TIMEOUT = Duration.ofSeconds(10);
+    private static final Duration POLLING_TIMEOUT = ofSeconds(10);
 
     private final Consumer<String, Output> consumer;
     private final List<TopicPartition>     topicPartitions;
@@ -30,7 +32,9 @@ public class KafkaBinderGreetingValidator
     public KafkaBinderGreetingValidator(
             final String brokerUrl,
             final String schemaRegistryUrl,
-            final String topic
+            final String topic,
+            final String username,
+            final String password
     ) {
         final Map<String, Object> consumerProperties = consumerProps(brokerUrl, "greeting-validator", "true");
         consumerProperties.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
@@ -38,6 +42,10 @@ public class KafkaBinderGreetingValidator
         consumerProperties.put(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         consumerProperties.put("schema.registry.url", schemaRegistryUrl);
         consumerProperties.put("specific.avro.reader", true);
+        consumerProperties.put("security.protocol", "SASL_PLAINTEXT");
+        consumerProperties.put("sasl.mechanism", "SCRAM-SHA-256");
+        consumerProperties.put("sasl.jaas.config", format("org.apache.kafka.common.security.scram.ScramLoginModule required " +
+                                                          "username=\"%s\" password=\"%s\";", username, password));
         final ConsumerFactory<String, Output> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerProperties);
         consumer = consumerFactory.createConsumer();
         final TopicPartition topicPartition = new TopicPartition(topic, 0);

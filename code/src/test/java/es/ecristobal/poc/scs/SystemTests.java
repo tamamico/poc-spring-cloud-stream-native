@@ -18,6 +18,8 @@ import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.restassured.RestAssured.given;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,6 +32,14 @@ class SystemTests {
     private static final String INPUT_TOPIC_WOMEN   = "input.women.avro";
     private static final String OUTPUT_TOPIC        = "output.avro";
 
+    private static final String SECURITY_PROTOCOL    = "SASL_PLAINTEXT";
+    private static final String SASL_MECHANISM       = "SCRAM-SHA-256";
+    private static final String JAAS_CONFIG_TEMPLATE = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" " +
+                                                       "password=\"%s\";";
+
+    private static final String KAFKA_BROKER_USER     = "admin";
+    private static final String KAFKA_BROKER_PASSWORD = "test";
+
     private static final Duration METADATA_MAX_AGE = Duration.ofSeconds(1);
 
     private static final Pattern GREETING_PATTERN = Pattern.compile("^Hello, ([A-Z]++)!$");
@@ -39,7 +49,10 @@ class SystemTests {
     private static GreetingValidator greetingValidator;
 
     @Container
-    private static RedpandaContainer broker = new RedpandaContainer("docker.redpanda.com/redpandadata/redpanda:v23.1.2");
+    private static RedpandaContainer broker = new RedpandaContainer("docker.redpanda.com/redpandadata/redpanda:v23.1.2")
+            .enableAuthorization()
+            .enableSasl()
+            .withSuperuser(KAFKA_BROKER_USER);
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
@@ -48,16 +61,27 @@ class SystemTests {
         registry.add("spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms", METADATA_MAX_AGE::toMillis);
         registry.add("spring.cloud.stream.bindings.greeter-in-0.destination", () -> INPUT_TOPIC_PATTERN);
         registry.add("spring.cloud.stream.bindings.greeter-out-0.destination", () -> OUTPUT_TOPIC);
+        registry.add("spring.cloud.stream.kafka.binder.configuration.security.protocol", () -> SECURITY_PROTOCOL);
+        registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.mechanism", () -> SASL_MECHANISM);
+        registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.jaas.config",
+                     () -> format(JAAS_CONFIG_TEMPLATE, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD));
     }
 
     @BeforeAll
     static void setUp() {
+        final String adminUrl = format("%s/v1/security/users", broker.getAdminAddress());
+        given().contentType("application/json")
+               .body(format("{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}", KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD,
+                            SASL_MECHANISM))
+               .post(adminUrl)
+               .then()
+               .statusCode(200);
         menGreetingVisitor   = new KafkaBinderGreetingVisitor(broker.getBootstrapServers(), broker.getSchemaRegistryAddress(),
-                                                              INPUT_TOPIC_MEN);
+                                                              INPUT_TOPIC_MEN, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD);
         womenGreetingVisitor = new KafkaBinderGreetingVisitor(broker.getBootstrapServers(), broker.getSchemaRegistryAddress(),
-                                                              INPUT_TOPIC_WOMEN);
+                                                              INPUT_TOPIC_WOMEN, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD);
         greetingValidator    = new KafkaBinderGreetingValidator(broker.getBootstrapServers(), broker.getSchemaRegistryAddress(),
-                                                                OUTPUT_TOPIC);
+                                                                OUTPUT_TOPIC, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD);
     }
 
     @Test
