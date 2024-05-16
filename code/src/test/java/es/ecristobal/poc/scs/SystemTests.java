@@ -2,9 +2,9 @@ package es.ecristobal.poc.scs;
 
 import es.ecristobal.poc.scs.screenplay.actors.Customer;
 import es.ecristobal.poc.scs.screenplay.interactions.receive.GreetingValidator;
-import es.ecristobal.poc.scs.screenplay.interactions.receive.KafkaBinderGreetingValidator;
+import es.ecristobal.poc.scs.screenplay.interactions.receive.GreetingValidatorBuilder;
 import es.ecristobal.poc.scs.screenplay.interactions.send.GreetingVisitor;
-import es.ecristobal.poc.scs.screenplay.interactions.send.KafkaBinderGreetingVisitor;
+import es.ecristobal.poc.scs.screenplay.interactions.send.GreetingVisitorBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
+import static java.time.Duration.ofSeconds;
+import static java.util.regex.Pattern.compile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,9 +42,9 @@ class SystemTests {
     private static final String KAFKA_BROKER_USER     = "admin";
     private static final String KAFKA_BROKER_PASSWORD = "test";
 
-    private static final Duration METADATA_MAX_AGE = Duration.ofSeconds(1);
+    private static final Duration METADATA_MAX_AGE = ofSeconds(1);
 
-    private static final Pattern GREETING_PATTERN = Pattern.compile("^Hello, ([A-Z]++)!$");
+    private static final Pattern GREETING_PATTERN = compile("^Hello, ([A-Z]++)!$");
 
     private static GreetingVisitor   menGreetingVisitor;
     private static GreetingVisitor   womenGreetingVisitor;
@@ -76,12 +78,18 @@ class SystemTests {
                .post(adminUrl)
                .then()
                .statusCode(200);
-        menGreetingVisitor   = new KafkaBinderGreetingVisitor(broker.getBootstrapServers(), broker.getSchemaRegistryAddress(),
-                                                              INPUT_TOPIC_MEN, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD);
-        womenGreetingVisitor = new KafkaBinderGreetingVisitor(broker.getBootstrapServers(), broker.getSchemaRegistryAddress(),
-                                                              INPUT_TOPIC_WOMEN, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD);
-        greetingValidator    = new KafkaBinderGreetingValidator(broker.getBootstrapServers(), broker.getSchemaRegistryAddress(),
-                                                                OUTPUT_TOPIC, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD);
+        menGreetingVisitor   = GreetingVisitorBuilder.withKafka()
+                                                     .withUrls(broker.getBootstrapServers(), broker.getSchemaRegistryAddress())
+                                                     .withAuthentication(KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD)
+                                                     .build(INPUT_TOPIC_MEN);
+        womenGreetingVisitor = GreetingVisitorBuilder.withKafka()
+                                                     .withUrls(broker.getBootstrapServers(), broker.getSchemaRegistryAddress())
+                                                     .withAuthentication(KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD)
+                                                     .build(INPUT_TOPIC_WOMEN);
+        greetingValidator    = GreetingValidatorBuilder.withKafka()
+                                                       .withUrls(broker.getBootstrapServers(), broker.getSchemaRegistryAddress())
+                                                       .withAuthentication(KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD)
+                                                       .build(OUTPUT_TOPIC);
     }
 
     @Test
