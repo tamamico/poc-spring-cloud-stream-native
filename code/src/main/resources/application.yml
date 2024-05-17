@@ -10,11 +10,11 @@ spring:
   cloud:
     stream:
       bindings:
-        greeter-in-0:
+        greet-in-0:
           group: greeter
           consumer:
             use-native-decoding: true
-        greeter-out-0:
+        greet-out-0:
           producer:
             use-native-encoding: true
       kafka:
@@ -27,7 +27,7 @@ spring:
             key.serializer: org.apache.kafka.common.serialization.StringSerializer
             value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
         bindings:
-          greeter-in-0:
+          greet-in-0:
             consumer:
               destination-is-pattern: true
               reactive-auto-commit: true

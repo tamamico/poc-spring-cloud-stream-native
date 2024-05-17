@@ -25,8 +25,8 @@ import static java.util.regex.Pattern.compile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
 @Testcontainers
+@SpringBootTest
 class SystemTests {
 
     private static final String DOCKER_IMAGE = "docker.redpanda.com/redpandadata/redpanda:v23.1.2";
@@ -60,8 +60,8 @@ class SystemTests {
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.cloud.stream.bindings.greeter-in-0.destination", () -> INPUT_TOPIC_PATTERN);
-        registry.add("spring.cloud.stream.bindings.greeter-out-0.destination", () -> OUTPUT_TOPIC);
+        registry.add("spring.cloud.stream.bindings.greet-in-0.destination", () -> INPUT_TOPIC_PATTERN);
+        registry.add("spring.cloud.stream.bindings.greet-out-0.destination", () -> OUTPUT_TOPIC);
         registry.add("spring.cloud.stream.kafka.binder.brokers", broker::getBootstrapServers);
         registry.add("spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms", METADATA_MAX_AGE::toMillis);
         registry.add("spring.cloud.stream.kafka.binder.configuration.schema.registry.url", broker::getSchemaRegistryAddress);
