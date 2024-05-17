@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'code/**'
-      - '!.github/workflows/apply-infrastructure.yml'
+      - '.github/workflows/**-code.yml'
       - '!.github/workflows/dependabot-code.yml'
 
 permissions:
