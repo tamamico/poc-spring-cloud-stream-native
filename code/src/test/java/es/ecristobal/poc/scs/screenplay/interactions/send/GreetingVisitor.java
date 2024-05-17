@@ -1,8 +1,13 @@
 package es.ecristobal.poc.scs.screenplay.interactions.send;
 
+import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.screenplay.actors.Customer;
 
-public interface GreetingVisitor {
+public abstract class GreetingVisitor {
 
-    void visit(final Customer customer);
+    public abstract void visit(final Customer customer);
+
+    protected Input buildFrom(final Customer customer) {
+        return Input.newBuilder().setName(customer.name()).build();
+    }
 }

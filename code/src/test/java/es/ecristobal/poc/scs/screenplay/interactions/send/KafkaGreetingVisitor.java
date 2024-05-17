@@ -9,7 +9,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import java.util.Map;
 
 class KafkaGreetingVisitor
-        implements GreetingVisitor {
+        extends GreetingVisitor {
 
     private final KafkaTemplate<String, Input> template;
 
@@ -25,9 +25,5 @@ class KafkaGreetingVisitor
     @Override
     public void visit(final Customer customer) {
         this.template.sendDefault(this.buildFrom(customer));
-    }
-
-    private Input buildFrom(final Customer customer) {
-        return Input.newBuilder().setName(customer.name()).build();
     }
 }
