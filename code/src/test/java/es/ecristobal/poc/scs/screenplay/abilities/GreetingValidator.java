@@ -1,4 +1,4 @@
-package es.ecristobal.poc.scs.screenplay.interactions.receive;
+package es.ecristobal.poc.scs.screenplay.abilities;
 
 import java.util.function.Consumer;
 

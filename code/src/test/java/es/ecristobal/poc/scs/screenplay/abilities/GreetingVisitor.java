@@ -1,4 +1,4 @@
-package es.ecristobal.poc.scs.screenplay.interactions.send;
+package es.ecristobal.poc.scs.screenplay.abilities;
 
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.screenplay.actors.Customer;

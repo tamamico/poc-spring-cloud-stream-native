@@ -1,6 +1,7 @@
-package es.ecristobal.poc.scs.screenplay.interactions.receive;
+package es.ecristobal.poc.scs.screenplay.abilities.kafka;
 
 import es.ecristobal.poc.scs.avro.Output;
+import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.TopicPartition;

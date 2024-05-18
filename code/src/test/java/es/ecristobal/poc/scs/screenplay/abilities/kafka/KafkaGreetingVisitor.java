@@ -1,6 +1,7 @@
-package es.ecristobal.poc.scs.screenplay.interactions.send;
+package es.ecristobal.poc.scs.screenplay.abilities.kafka;
 
 import es.ecristobal.poc.scs.avro.Input;
+import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.actors.Customer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
