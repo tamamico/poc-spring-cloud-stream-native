@@ -3,8 +3,6 @@ package es.ecristobal.poc.scs.screenplay.abilities.whiteboard;
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.avro.Output;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 
 import java.util.function.Function;
 
@@ -27,12 +25,12 @@ public class WhiteboardGreetingFactory
     }
 
     @Override
-    public GreetingVisitor greetingVisitor() {
-        return new WhiteboardGreetingVisitor(this.whiteboard);
+    public WhiteboardGreetingVisitorBuilder greetingVisitorBuilder() {
+        return WhiteboardGreetingVisitorBuilder.withWhiteboard(this.whiteboard);
     }
 
     @Override
-    public GreetingValidator greetingValidator() {
-        return new WhiteboardGreetingValidator(this.whiteboard);
+    public WhiteboardGreetingValidatorBuilder greetingValidatorBuilder() {
+        return WhiteboardGreetingValidatorBuilder.withWhiteboard(this.whiteboard);
     }
 }

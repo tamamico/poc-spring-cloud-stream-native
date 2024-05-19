@@ -846,7 +846,7 @@ ij_javascript_wrap_comments = false
 ij_visual_guides = 
 ij_vtl_keep_indents_on_empty_lines = false
 
-[{*.har,*.jsb2,*.jsb3,*.json,*.jsonc,*.postman_collection,*.postman_collection.json,*.postman_environment,*.postman_environment.json,.babelrc,.eslintrc,.prettierrc,.stylelintrc,bowerrc,jest.config}]
+[{*.har,*.jsb2,*.jsb3,*.json,*.jsonc,*.postman_collection,*.postman_collection.json,*.postman_environment,*.postman_environment.json,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,bowerrc,jest.config}]
 indent_size = 2
 ij_visual_guides = 
 ij_json_array_wrapping = on_every_item

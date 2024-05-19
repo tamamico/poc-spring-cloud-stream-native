@@ -1,8 +1,6 @@
 package es.ecristobal.poc.scs.screenplay.abilities.kafka;
 
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -28,9 +26,6 @@ public class KafkaGreetingFactory
 
     private final Map<String, Object> consumerProperties;
     private final Map<String, Object> producerProperties;
-
-    private String inputTopic;
-    private String outputTopic;
 
     private KafkaGreetingFactory() {
         this.producerProperties = new HashMap<>();
@@ -71,23 +66,13 @@ public class KafkaGreetingFactory
         return this;
     }
 
-    public KafkaGreetingFactory withInputTopic(final String inputTopic) {
-        this.inputTopic = inputTopic;
-        return this;
-    }
-
-    public KafkaGreetingFactory withOutputTopic(final String outputTopic) {
-        this.outputTopic = outputTopic;
-        return this;
+    @Override
+    public KafkaGreetingVisitorBuilder greetingVisitorBuilder() {
+        return KafkaGreetingVisitorBuilder.newInstance().withProperties(this.producerProperties);
     }
 
     @Override
-    public GreetingVisitor greetingVisitor() {
-        return new KafkaGreetingVisitor(this.producerProperties, this.inputTopic);
-    }
-
-    @Override
-    public GreetingValidator greetingValidator() {
-        return new KafkaGreetingValidator(this.consumerProperties, this.outputTopic);
+    public KafkaGreetingValidatorBuilder greetingValidatorBuilder() {
+        return KafkaGreetingValidatorBuilder.newInstance().withProperties(this.consumerProperties);
     }
 }

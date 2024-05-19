@@ -1,6 +1,8 @@
 package es.ecristobal.poc.scs;
 
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
+import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
+import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.whiteboard.WhiteboardGreetingFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,16 +12,19 @@ import static es.ecristobal.poc.scs.TestScenarios.greetOk;
 @SuppressWarnings("java:S2699")
 class GreeterTests {
 
-    private static GreetingFactory greetingFactory;
-
-    @BeforeAll
-    static void setUp() {
-        final Greeter greeter = new Greeter();
-        greetingFactory = WhiteboardGreetingFactory.newInstance().withFunction(greeter::greet);
-    }
+    private static GreetingVisitor   greetingVisitor;
+    private static GreetingValidator greetingValidator;
 
     @Test
     void testGreet() {
-        greetOk("Woz", greetingFactory);
+        greetOk("Woz", greetingVisitor, greetingValidator);
+    }
+
+    @BeforeAll
+    static void setUp() {
+        final Greeter         greeter         = new Greeter();
+        final GreetingFactory greetingFactory = WhiteboardGreetingFactory.newInstance().withFunction(greeter::greet);
+        greetingVisitor   = greetingFactory.greetingVisitorBuilder().build();
+        greetingValidator = greetingFactory.greetingValidatorBuilder().build();
     }
 }

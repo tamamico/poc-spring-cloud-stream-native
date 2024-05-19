@@ -2,7 +2,7 @@ package es.ecristobal.poc.scs.screenplay.abilities;
 
 public interface GreetingFactory {
 
-    GreetingVisitor greetingVisitor();
+    GreetingVisitorBuilder greetingVisitorBuilder();
 
-    GreetingValidator greetingValidator();
+    GreetingValidatorBuilder greetingValidatorBuilder();
 }

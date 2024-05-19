@@ -1,7 +1,9 @@
 package es.ecristobal.poc.scs;
 
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
+import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
+import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory;
+import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingVisitorBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,13 +43,25 @@ class GreeterIT {
 
     private static final Duration METADATA_MAX_AGE = ofSeconds(1);
 
-    private static GreetingFactory greetingFactoryMen;
-    private static GreetingFactory greetingFactoryWomen;
+    private static KafkaGreetingVisitorBuilder greetingVisitorBuilder;
+    private static GreetingValidator           greetingValidator;
 
     @Container
     private static RedpandaContainer broker = new RedpandaContainer(DOCKER_IMAGE).enableAuthorization()
                                                                                  .enableSasl()
                                                                                  .withSuperuser(KAFKA_BROKER_USER);
+
+    @Test
+    void testGreetMen() {
+        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.withTopic(INPUT_TOPIC_MEN).build();
+        greetOk("Steve", greetingVisitor, greetingValidator);
+    }
+
+    @Test
+    void testGreetWomen() {
+        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.withTopic(INPUT_TOPIC_WOMEN).build();
+        greetOk("Laurene", greetingVisitor, greetingValidator);
+    }
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
@@ -70,26 +84,12 @@ class GreeterIT {
                .post(adminUrl)
                .then()
                .statusCode(200);
-        greetingFactoryMen   = KafkaGreetingFactory.newInstance()
-                                                   .withUrls(broker.getBootstrapServers(), broker.getSchemaRegistryAddress())
-                                                   .withAuthentication(KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD)
-                                                   .withInputTopic(INPUT_TOPIC_MEN)
-                                                   .withOutputTopic(OUTPUT_TOPIC);
-        greetingFactoryWomen = KafkaGreetingFactory.newInstance()
-                                                   .withUrls(broker.getBootstrapServers(), broker.getSchemaRegistryAddress())
-                                                   .withAuthentication(KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD)
-                                                   .withInputTopic(INPUT_TOPIC_WOMEN)
-                                                   .withOutputTopic(OUTPUT_TOPIC);
-    }
-
-    @Test
-    void testGreetMen() {
-        greetOk("Steve", greetingFactoryMen);
-    }
-
-    @Test
-    void testGreetWomen() {
-        greetOk("Laurene", greetingFactoryWomen);
+        final KafkaGreetingFactory greetingFactory = KafkaGreetingFactory.newInstance()
+                                                                         .withUrls(broker.getBootstrapServers(),
+                                                                                   broker.getSchemaRegistryAddress())
+                                                                         .withAuthentication(KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD);
+        greetingVisitorBuilder = greetingFactory.greetingVisitorBuilder();
+        greetingValidator      = greetingFactory.greetingValidatorBuilder().withTopic(OUTPUT_TOPIC).build();
     }
 
 }
