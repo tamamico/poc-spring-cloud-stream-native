@@ -5,7 +5,7 @@ import es.ecristobal.poc.scs.avro.Output;
 
 import java.util.function.Function;
 
-public class Whiteboard {
+class Whiteboard {
 
     private final Function<Input, Output> function;
 

@@ -1,24 +1,25 @@
 package es.ecristobal.poc.scs;
 
-import es.ecristobal.poc.scs.screenplay.abilities.whiteboard.Whiteboard;
-import es.ecristobal.poc.scs.screenplay.abilities.whiteboard.WhiteboardValidatorBuilder;
-import es.ecristobal.poc.scs.screenplay.abilities.whiteboard.WhiteboardVisitorBuilder;
+import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
+import es.ecristobal.poc.scs.screenplay.abilities.whiteboard.WhiteboardGreetingFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class GreeterTests
-        extends PocTestBase {
+import static es.ecristobal.poc.scs.TestScenarios.greetOk;
+
+@SuppressWarnings("java:S2699")
+class GreeterTests {
+
+    private static GreetingFactory greetingFactory;
 
     @BeforeAll
     static void setUp() {
-        final Greeter    greeter    = new Greeter();
-        final Whiteboard whiteboard = new Whiteboard(greeter::greet);
-        greetingVisitor   = WhiteboardVisitorBuilder.newInstance().withWhiteboard(whiteboard).build();
-        greetingValidator = WhiteboardValidatorBuilder.newInstance().withWhiteboard(whiteboard).build();
+        final Greeter greeter = new Greeter();
+        greetingFactory = WhiteboardGreetingFactory.newInstance().withFunction(greeter::greet);
     }
 
     @Test
     void testGreet() {
-        this.testGreetOk("Woz");
+        greetOk("Woz", greetingFactory);
     }
 }

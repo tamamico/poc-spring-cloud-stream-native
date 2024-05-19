@@ -1,7 +1,6 @@
 package es.ecristobal.poc.scs;
 
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
+import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
 import es.ecristobal.poc.scs.screenplay.actors.Customer;
 
 import java.util.regex.Matcher;
@@ -11,17 +10,17 @@ import static java.util.regex.Pattern.compile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class PocTestBase {
+class TestScenarios {
 
     private static final Pattern GREETING_PATTERN = compile("^Hello, ([A-Z]++)!$");
 
-    protected static GreetingVisitor   greetingVisitor;
-    protected static GreetingValidator greetingValidator;
-
-    protected void testGreetOk(final String customerName) {
+    static void greetOk(
+            final String customerName,
+            final GreetingFactory greetingFactory
+    ) {
         final Customer customer = new Customer(customerName);
-        customer.accept(greetingVisitor);
-        greetingValidator.with(message -> {
+        customer.accept(greetingFactory.greetingVisitor());
+        greetingFactory.greetingValidator().with(message -> {
             final Matcher matcher = GREETING_PATTERN.matcher(message);
             assertTrue(matcher.matches());
             assertEquals(customer.name().toUpperCase(), matcher.group(1));
