@@ -3,10 +3,10 @@ name: Build Code
 on:
   push:
     branches:
-      - dependabot/maven/code/**
+      - dependabot/**
     paths:
       - code/**
-      - .github/**
+      - .github/workflows/**
 
 permissions:
   pull-requests: read

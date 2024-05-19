@@ -25,15 +25,16 @@ import static java.time.Duration.ofSeconds;
 @SuppressWarnings("java:S2699")
 class GreeterIT {
 
-    private static final String DOCKER_IMAGE = "docker.redpanda.com/redpandadata/redpanda:v23.1.2";
+    private static final String DOCKER_IMAGE = "docker.redpanda.com/redpandadata/redpanda:v24.1.2";
 
     private static final String KAFKA_BROKER_USER     = "admin";
     private static final String KAFKA_BROKER_PASSWORD = "test";
-    private static final String USER_SETUP            = "{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}";
 
     private static final String SECURITY_PROTOCOL    = "SASL_PLAINTEXT";
     private static final String SASL_MECHANISM       = "SCRAM-SHA-256";
     private static final String JAAS_LOGIN_MODULE    = "org.apache.kafka.common.security.scram.ScramLoginModule";
+
+    private static final String USER_SETUP            = "{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}";
     private static final String JAAS_CONFIG_TEMPLATE = "%s required username=\"%s\" " + "password=\"%s\";";
 
     private static final String INPUT_TOPIC_PATTERN = "^input\\.(?:men|women)\\.avro$";
