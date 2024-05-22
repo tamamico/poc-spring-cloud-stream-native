@@ -6,6 +6,7 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import javax.security.auth.spi.LoginModule;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +22,7 @@ import static org.springframework.kafka.test.utils.KafkaTestUtils.producerProps;
 public class KafkaGreetingFactory
         implements GreetingFactory {
 
-    private static final String JAAS_CONFIG_TEMPLATE
-            = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";";
+    private static final String JAAS_CONFIG_TEMPLATE = "%s required username=\"%s\" password=\"%s\";";
 
     private final Map<String, Object> consumerProperties;
     private final Map<String, Object> producerProperties;
@@ -54,13 +54,14 @@ public class KafkaGreetingFactory
     }
 
     public KafkaGreetingFactory withAuthentication(
+            final Class<? extends LoginModule> loginModuleClass,
             final String username,
             final String password
     ) {
         final Map<String, Object> authentication = new HashMap<>(3);
         authentication.put("security.protocol", "SASL_PLAINTEXT");
         authentication.put("sasl.mechanism", "SCRAM-SHA-256");
-        authentication.put("sasl.jaas.config", format(JAAS_CONFIG_TEMPLATE, username, password));
+        authentication.put("sasl.jaas.config", format(JAAS_CONFIG_TEMPLATE, loginModuleClass.getName(), username, password));
         this.consumerProperties.putAll(authentication);
         this.producerProperties.putAll(authentication);
         return this;

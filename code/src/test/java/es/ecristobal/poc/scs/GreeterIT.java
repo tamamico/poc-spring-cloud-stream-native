@@ -4,6 +4,7 @@ import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingVisitorBuilder;
+import org.apache.kafka.common.security.scram.ScramLoginModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.redpanda.RedpandaContainer;
 
+import javax.security.auth.spi.LoginModule;
 import java.time.Duration;
 
 import static es.ecristobal.poc.scs.TestScenarios.greetOk;
@@ -30,12 +32,11 @@ class GreeterIT {
     private static final String KAFKA_BROKER_USER     = "admin";
     private static final String KAFKA_BROKER_PASSWORD = "test";
 
-    private static final String SECURITY_PROTOCOL    = "SASL_PLAINTEXT";
-    private static final String SASL_MECHANISM       = "SCRAM-SHA-256";
-    private static final String JAAS_LOGIN_MODULE    = "org.apache.kafka.common.security.scram.ScramLoginModule";
+    private static final String                       SECURITY_PROTOCOL = "SASL_PLAINTEXT";
+    private static final String                       SASL_MECHANISM    = "SCRAM-SHA-256";
+    private static final Class<? extends LoginModule> LOGIN_MODULE      = ScramLoginModule.class;
 
-    private static final String USER_SETUP            = "{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}";
-    private static final String JAAS_CONFIG_TEMPLATE = "%s required username=\"%s\" " + "password=\"%s\";";
+    private static final String USER_SETUP = "{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}";
 
     private static final String INPUT_TOPIC_PATTERN = "^input\\.(?:men|women)\\.avro$";
     private static final String INPUT_TOPIC_MEN     = "input.men.avro";
@@ -73,8 +74,9 @@ class GreeterIT {
         registry.add("spring.cloud.stream.kafka.binder.configuration.schema.registry.url", broker::getSchemaRegistryAddress);
         registry.add("spring.cloud.stream.kafka.binder.configuration.security.protocol", () -> SECURITY_PROTOCOL);
         registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.mechanism", () -> SASL_MECHANISM);
-        registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.jaas.config",
-                     () -> format(JAAS_CONFIG_TEMPLATE, JAAS_LOGIN_MODULE, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD));
+        registry.add("jaas.login.module", LOGIN_MODULE::getName);
+        registry.add("kafka.broker.user", () -> KAFKA_BROKER_USER);
+        registry.add("kafka.broker.password", () -> KAFKA_BROKER_PASSWORD);
     }
 
     @BeforeAll
@@ -88,7 +90,8 @@ class GreeterIT {
         final KafkaGreetingFactory greetingFactory = KafkaGreetingFactory.newInstance()
                                                                          .withUrls(broker.getBootstrapServers(),
                                                                                    broker.getSchemaRegistryAddress())
-                                                                         .withAuthentication(KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD);
+                                                                         .withAuthentication(LOGIN_MODULE, KAFKA_BROKER_USER,
+                                                                                             KAFKA_BROKER_PASSWORD);
         greetingVisitorBuilder = greetingFactory.greetingVisitorBuilder();
         greetingValidator      = greetingFactory.greetingValidatorBuilder().withTopic(OUTPUT_TOPIC).build();
     }
