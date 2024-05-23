@@ -29,7 +29,7 @@ class StreamConfiguration {
             final Greeter greeter,
             final ObservationRegistry registry
     ) {
-        return flux -> flux.flatMap(inner -> inner.map(ConsumerRecord::value)
+        return outer -> outer.flatMap(inner -> inner.map(ConsumerRecord::value)
                                                   .doOnNext(input -> LOGGER.info("Greeting {}", input.getName()))
                                                   .map(greeter::greet)
                                                   .tap(observation(registry)));
