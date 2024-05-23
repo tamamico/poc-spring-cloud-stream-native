@@ -14,6 +14,7 @@ spring:
           group: greeter
           consumer:
             use-native-decoding: true
+
         greet-out-0:
           producer:
             use-native-encoding: true
@@ -35,3 +36,4 @@ spring:
             consumer:
               destination-is-pattern: true
               reactive-auto-commit: true
+              standard-headers: both
