@@ -14,7 +14,6 @@ spring:
           group: greeter
           consumer:
             use-native-decoding: true
-
         greet-out-0:
           producer:
             use-native-encoding: true
