@@ -8,7 +8,7 @@ terraform {
 }
 
 resource "confluent_environment" "development" {
-  display_name = "Development"
+  display_name = "development"
 }
 
 resource "confluent_service_account" "cluster-manager" {
@@ -51,9 +51,21 @@ resource "confluent_api_key" "cluster" {
   }
 }
 
-data "confluent_schema_registry_cluster" "essentials" {
+data "confluent_schema_registry_region" "essentials" {
+  cloud   = "AWS"
+  region  = "us-east-1"
+  package = "ESSENTIALS"
+}
+
+resource "confluent_schema_registry_cluster" "kafka" {
+  package = data.confluent_schema_registry_region.essentials.package
+
   environment {
     id = confluent_environment.development.id
+  }
+
+  region {
+    id = data.confluent_schema_registry_region.essentials.id
   }
 }
 
