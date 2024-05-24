@@ -69,36 +69,11 @@ resource "confluent_schema_registry_cluster" "kafka" {
   }
 }
 
-resource "confluent_kafka_topic" "input-men" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
-  }
-  topic_name       = "greet.men"
-  partitions_count = 1
-  rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
-  config = {
-    "cleanup.policy" = "compact"
-    "retention.ms"   = "86400000"
-  }
-  credentials {
-    key    = confluent_api_key.cluster-manager.id
-    secret = confluent_api_key.cluster-manager.secret
-  }
-}
+module "topics" {
+  source = "./topics"
 
-resource "confluent_kafka_topic" "output" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
-  }
-  topic_name       = "greeting"
-  partitions_count = 1
-  rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
-  config = {
-    "cleanup.policy" = "compact"
-    "retention.ms"   = "86400000"
-  }
-  credentials {
-    key    = confluent_api_key.cluster-manager.id
-    secret = confluent_api_key.cluster-manager.secret
-  }
+  cluster_id            = confluent_kafka_cluster.basic.id
+  cluster_rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
+  api_key_id            = confluent_api_key.cluster-manager.id
+  api_key_secret        = confluent_api_key.cluster-manager.secret
 }
