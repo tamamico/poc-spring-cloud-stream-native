@@ -46,7 +46,11 @@ jobs:
         run: ./mvnw -B clean verify
       - name: Run SonarCloud analysis
         if: github.actor != 'dependabot[bot]'
-        run: ./mvnw -B sonar:sonar -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+        run: >
+          ./mvnw -B sonar:sonar
+          -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+          -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY_CODE }}
+          -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -58,5 +62,5 @@ jobs:
       - name: Upload source code analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: /home/runner/work/poc-spring-cloud-stream-native/poc-spring-cloud-stream-native/code/code.sarif
+          sarif_file: ./code/code.sarif
           category: source-code

@@ -17,7 +17,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Run SonarCloud analysis
+        uses: sonarsource/sonarcloud-github-action@v2.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./infrastructure
+          args: >
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY_INFRA }}
+            -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.0
         id: plan-upload
@@ -26,7 +43,6 @@ jobs:
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ vars.TF_WORKSPACE }}
           directory: ./${{ inputs.folder }}
-
       - name: Create Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.0
         id: apply-run
@@ -35,7 +51,6 @@ jobs:
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ vars.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
-
       - name: Apply
         uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.0
         if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
@@ -45,7 +60,6 @@ jobs:
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
-
       - name: Get output
         uses: hashicorp/tfc-workflows-github/actions/workspace-output@v1.3.0
         id: output
