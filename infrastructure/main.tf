@@ -18,8 +18,8 @@ resource "confluent_service_account" "cluster-manager" {
 
 resource "confluent_role_binding" "app-manager-kafka-cluster-admin" {
   principal   = "User:${confluent_service_account.cluster-manager.id}"
-  role_name   = "CloudClusterAdmin"
-  crn_pattern = confluent_kafka_cluster.basic.rbac_crn
+  role_name   = "EnvironmentAdmin"
+  crn_pattern = confluent_environment.development.resource_name
 }
 
 resource "confluent_kafka_cluster" "basic" {
@@ -33,7 +33,7 @@ resource "confluent_kafka_cluster" "basic" {
   }
 }
 
-resource "confluent_api_key" "cluster" {
+resource "confluent_api_key" "cluster-manager" {
   display_name = "cluster-api-key"
   description  = "Cluster API Key"
   owner {
@@ -74,15 +74,15 @@ resource "confluent_kafka_topic" "input-men" {
     id = confluent_kafka_cluster.basic.id
   }
   topic_name       = "greet.men"
-  partitions_count = 4
+  partitions_count = 1
   rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
   config = {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
   }
   credentials {
-    key    = confluent_api_key.cluster.id
-    secret = confluent_api_key.cluster.secret
+    key    = confluent_api_key.cluster-manager.id
+    secret = confluent_api_key.cluster-manager.secret
   }
 }
 
@@ -91,14 +91,14 @@ resource "confluent_kafka_topic" "output" {
     id = confluent_kafka_cluster.basic.id
   }
   topic_name       = "greeting"
-  partitions_count = 4
+  partitions_count = 1
   rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
   config = {
     "cleanup.policy" = "compact"
     "retention.ms"   = "86400000"
   }
   credentials {
-    key    = confluent_api_key.cluster.id
-    secret = confluent_api_key.cluster.secret
+    key    = confluent_api_key.cluster-manager.id
+    secret = confluent_api_key.cluster-manager.secret
   }
 }
