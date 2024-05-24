@@ -1,5 +1,5 @@
 output "kafka_broker_address" {
-  value = confluent_kafka_cluster.basic.bootstrap_endpoint
+  value = module.cluster.kafka_broker_address
 }
 
 output "schema_registry_url" {
