@@ -1,4 +1,4 @@
-name: Apply Terraform script to Confluent
+name: Update Confluent infrastructure
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
     paths:
       - 'infrastructure/confluent/**'
       - '.github/workflows/main-infra-confluent.yml'
-      - '.github/workflows/build-infrastructure.yml'
+      - '.github/workflows/build-infra.yml'
 
 jobs:
-  terraform:
-    name: Run Terraform scripts
-    uses: ./.github/workflows/build-infrastructure.yml
+  update-infra:
+    name: Update infrastructure
+    uses: ./.github/workflows/build-infra.yml
     secrets: inherit
     with:
       folder: infrastructure/confluent

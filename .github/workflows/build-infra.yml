@@ -1,4 +1,4 @@
-name: Apply Terraform script
+name: Build infrastructure
 
 on:
   workflow_call:

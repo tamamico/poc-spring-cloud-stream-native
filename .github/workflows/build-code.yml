@@ -1,4 +1,4 @@
-name: Build Code
+name: Build source code
 
 on:
   workflow_call:
