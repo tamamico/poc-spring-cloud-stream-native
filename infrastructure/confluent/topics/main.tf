@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    confluent = {
+      source  = "confluentinc/confluent"
+      version = "1.76.0"
+    }
+  }
+}
+
 resource "confluent_kafka_topic" "input-men" {
   kafka_cluster {
     id = var.cluster_id
