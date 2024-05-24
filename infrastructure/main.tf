@@ -9,10 +9,6 @@ terraform {
 
 resource "confluent_environment" "development" {
   display_name = "Development"
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "confluent_service_account" "cluster-manager" {
@@ -59,7 +55,6 @@ data "confluent_schema_registry_cluster" "essentials" {
   environment {
     id = confluent_environment.development.id
   }
-
 }
 
 resource "confluent_kafka_topic" "input-men" {
