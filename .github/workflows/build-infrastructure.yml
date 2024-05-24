@@ -8,10 +8,6 @@ on:
         type: string
         description: Folder containing Terraform scripts
 
-defaults:
-  run:
-    working-directory: ./${{ inputs.folder }}
-
 jobs:
   terraform:
     name: Run Terraform scripts
