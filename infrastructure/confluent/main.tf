@@ -14,8 +14,7 @@ resource "confluent_environment" "development" {
 module "cluster" {
   source = "./cluster"
 
-  environment_id            = confluent_environment.development.id
-  environment_resource_name = confluent_environment.development.resource_name
+  environment = confluent_environment.development.id
 }
 
 module "topics" {
