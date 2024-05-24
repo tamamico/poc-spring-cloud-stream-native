@@ -70,6 +70,7 @@ resource "confluent_schema_registry_cluster" "kafka" {
 }
 
 resource "confluent_kafka_topic" "input-men" {
+  depends_on = [confluent_api_key.cluster-manager]
   kafka_cluster {
     id = confluent_kafka_cluster.basic.id
   }
@@ -87,6 +88,7 @@ resource "confluent_kafka_topic" "input-men" {
 }
 
 resource "confluent_kafka_topic" "output" {
+  depends_on = [confluent_api_key.cluster-manager]
   kafka_cluster {
     id = confluent_kafka_cluster.basic.id
   }
