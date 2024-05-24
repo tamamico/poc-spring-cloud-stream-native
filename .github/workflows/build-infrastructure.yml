@@ -1,16 +1,16 @@
-name: "Apply infrastructure"
+name: Apply Terraform script
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'infrastructure/**'
-      - '.github/workflows/main-infrastructure.yml'
+  workflow_call:
+    inputs:
+      folder:
+        required: true
+        type: string
+        description: Folder containing Terraform scripts
 
 jobs:
   terraform:
-    name: "Run Terraform"
+    name: Run Terraform scripts
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -25,6 +25,7 @@ jobs:
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ vars.TF_WORKSPACE }}
+          directory: ${{ inputs.folder }}
 
       - name: Create Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.0

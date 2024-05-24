@@ -13,14 +13,14 @@ code/target/
 *.ipr
 
 ### Terraform ###
-/infrastructure/.terraform/providers/registry.terraform.io/confluentinc/confluent/1.75.0/darwin_arm64/
-/infrastructure/.terraform/providers/registry.terraform.io/confluentinc/confluent/1.75.0/
-/infrastructure/.terraform/providers/registry.terraform.io/confluentinc/confluent/
-/infrastructure/.terraform/providers/registry.terraform.io/confluentinc/
-/infrastructure/.terraform/providers/registry.terraform.io/
-/infrastructure/.terraform/providers/
-/infrastructure/.terraform/
-/infrastructure/.terraform.lock.hcl
+/infrastructure/confluent/.terraform/providers/registry.terraform.io/confluentinc/confluent/1.75.0/darwin_arm64/
+/infrastructure/confluent/.terraform/providers/registry.terraform.io/confluentinc/confluent/1.75.0/
+/infrastructure/confluent/.terraform/providers/registry.terraform.io/confluentinc/confluent/
+/infrastructure/confluent/.terraform/providers/registry.terraform.io/confluentinc/
+/infrastructure/confluent/.terraform/providers/registry.terraform.io/
+/infrastructure/confluent/.terraform/providers/
+/infrastructure/confluent/.terraform/
+/infrastructure/confluent/.terraform.lock.hcl
 
 ### Snyk ###
 code/snyk-code.sarif
