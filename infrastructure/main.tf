@@ -59,7 +59,7 @@ resource "confluent_api_key" "cluster" {
   }
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
