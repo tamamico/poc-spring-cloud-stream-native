@@ -61,7 +61,7 @@ data "confluent_schema_registry_cluster" "essentials" {
   }
 
 }
-/*
+
 resource "confluent_kafka_topic" "input-men" {
   kafka_cluster {
     id = confluent_kafka_cluster.basic.id
@@ -94,4 +94,4 @@ resource "confluent_kafka_topic" "output" {
     key    = confluent_api_key.cluster.id
     secret = confluent_api_key.cluster.secret
   }
-}*/
+}
