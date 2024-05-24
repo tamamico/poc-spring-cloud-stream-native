@@ -8,6 +8,10 @@ on:
         type: string
         description: Folder containing Terraform scripts
 
+defaults:
+  run:
+    working-directory: ./${{ inputs.folder }}
+
 jobs:
   terraform:
     name: Run Terraform scripts
@@ -25,7 +29,7 @@ jobs:
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ vars.TF_WORKSPACE }}
-          directory: ${{ inputs.folder }}
+          directory: ./${{ inputs.folder }}
 
       - name: Create Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.0
