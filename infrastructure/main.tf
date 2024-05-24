@@ -35,10 +35,6 @@ resource "confluent_kafka_cluster" "basic" {
   environment {
     id = confluent_environment.development.id
   }
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "confluent_api_key" "cluster" {
@@ -56,10 +52,6 @@ resource "confluent_api_key" "cluster" {
     environment {
       id = confluent_environment.development.id
     }
-  }
-
-  lifecycle {
-    prevent_destroy = false
   }
 }
 
