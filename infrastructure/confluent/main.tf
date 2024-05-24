@@ -51,24 +51,6 @@ resource "confluent_api_key" "cluster-manager" {
   }
 }
 
-data "confluent_schema_registry_region" "essentials" {
-  cloud   = "AWS"
-  region  = "us-east-1"
-  package = "ESSENTIALS"
-}
-
-resource "confluent_schema_registry_cluster" "kafka" {
-  package = data.confluent_schema_registry_region.essentials.package
-
-  environment {
-    id = confluent_environment.development.id
-  }
-
-  region {
-    id = data.confluent_schema_registry_region.essentials.id
-  }
-}
-
 module "topics" {
   source = "./topics"
 
@@ -76,4 +58,10 @@ module "topics" {
   cluster_rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
   api_key_id            = confluent_api_key.cluster-manager.id
   api_key_secret        = confluent_api_key.cluster-manager.secret
+}
+
+module "schema-registry" {
+  source = "./schema-registry"
+
+  environment = confluent_environment.development.id
 }
