@@ -3,7 +3,7 @@ output "kafka_broker_address" {
 }
 
 output "schema_registry_url" {
-  value = data.confluent_schema_registry_cluster.kafka.rest_endpoint
+  value = confluent_schema_registry_cluster.kafka.rest_endpoint
 }
 
 output "men-input-topic-name" {
