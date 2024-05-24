@@ -15,7 +15,7 @@ resource "confluent_service_account" "cluster-manager" {
 resource "confluent_role_binding" "app-manager-kafka-cluster-admin" {
   principal   = "User:${confluent_service_account.cluster-manager.id}"
   role_name   = "EnvironmentAdmin"
-  crn_pattern = var.environment
+  crn_pattern = var.environment_resource_name
 }
 
 resource "confluent_kafka_cluster" "basic" {
@@ -25,7 +25,7 @@ resource "confluent_kafka_cluster" "basic" {
   region       = "us-east-1"
   basic {}
   environment {
-    id = var.environment
+    id = var.environment_id
   }
 }
 
@@ -42,7 +42,7 @@ resource "confluent_api_key" "cluster-manager" {
     api_version = confluent_kafka_cluster.basic.api_version
     kind        = confluent_kafka_cluster.basic.kind
     environment {
-      id = var.environment
+      id = var.environment_id
     }
   }
 }
