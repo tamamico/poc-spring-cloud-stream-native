@@ -41,9 +41,10 @@ module "users" {
 
   environment = confluent_environment.development.id
   cluster = {
-    id          = module.cluster.cluster.id
-    api_version = module.cluster.cluster.api_version
-    kind        = module.cluster.cluster.kind
+    id            = module.cluster.cluster.id
+    api_version   = module.cluster.cluster.api_version
+    kind          = module.cluster.cluster.kind
+    rest_endpoint = module.cluster.cluster.rest_endpoint
   }
   api_key = {
     id     = module.cluster.api_key.id

@@ -4,9 +4,10 @@ variable "environment" {
 
 variable "cluster" {
   type = object({
-    id          = string
-    api_version = string
-    kind        = string
+    id            = string
+    api_version   = string
+    kind          = string
+    rest_endpoint = string
   })
 }
 
