@@ -1,7 +1,7 @@
-output "men-input-topic-name" {
-  value = confluent_kafka_topic.input-men.topic_name
+output "input-men-topic" {
+  value = confluent_kafka_topic.input-men
 }
 
-output "output-topic-name" {
-  value = confluent_kafka_topic.output.topic_name
+output "output-topic" {
+  value = confluent_kafka_topic.output
 }

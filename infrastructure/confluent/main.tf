@@ -20,10 +20,10 @@ module "cluster" {
 module "topics" {
   source = "./topics"
 
-  cluster_id            = module.cluster.id
-  cluster_rest_endpoint = module.cluster.rest_endpoint
-  api_key_id            = module.cluster.api_key_id
-  api_key_secret        = module.cluster.api_key_secret
+  cluster_id            = module.cluster.cluster.id
+  cluster_rest_endpoint = module.cluster.cluster.rest_endpoint
+  api_key_id            = module.cluster.api_key.id
+  api_key_secret        = module.cluster.api_key.secret
 }
 
 module "schema-registry" {
