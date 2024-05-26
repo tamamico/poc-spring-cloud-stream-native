@@ -7,17 +7,18 @@ terraform {
   }
 }
 
-data "confluent_user" "poc-user" {
-  email = "ecristobalr@gmail.com"
+resource "confluent_service_account" "poc-test" {
+  display_name = "poc-test"
+  description  = "Service account for PoC testing"
 }
 
 resource "confluent_api_key" "poc-user" {
   display_name = "poc-user"
   description  = "Kafka API Key that is owned by 'poc-user' account"
   owner {
-    id          = data.confluent_user.poc-user.id
-    api_version = data.confluent_user.poc-user.api_version
-    kind        = data.confluent_user.poc-user.kind
+    id          = confluent_service_account.poc-test.id
+    api_version = confluent_service_account.poc-test.api_version
+    kind        = confluent_service_account.poc-test.kind
   }
 
   managed_resource {
@@ -38,7 +39,7 @@ resource "confluent_kafka_acl" "poc-user-input-topic" {
   resource_type = "TOPIC"
   resource_name = var.input-topic
   pattern_type  = "LITERAL"
-  principal     = "User:${data.confluent_user.poc-user.id}"
+  principal     = "User:${confluent_service_account.poc-test.id}"
   host          = "*"
   operation     = "WRITE"
   permission    = "ALLOW"
@@ -56,7 +57,7 @@ resource "confluent_kafka_acl" "poc-user-output-topic" {
   resource_type = "TOPIC"
   resource_name = var.output-topic
   pattern_type  = "LITERAL"
-  principal     = "User:${data.confluent_user.poc-user.id}"
+  principal     = "User:${confluent_service_account.poc-test.id}"
   host          = "*"
   operation     = "READ"
   permission    = "ALLOW"
@@ -74,7 +75,7 @@ resource "confluent_kafka_acl" "poc-user-consumer-group" {
   resource_type = "GROUP"
   resource_name = "poc"
   pattern_type  = "PREFIXED"
-  principal     = "User:${data.confluent_user.poc-user.id}"
+  principal     = "User:${confluent_service_account.poc-test.id}"
   host          = "*"
   operation     = "READ"
   permission    = "ALLOW"
@@ -86,7 +87,7 @@ resource "confluent_kafka_acl" "poc-user-consumer-group" {
 }
 
 resource "confluent_role_binding" "schema-registry" {
-  principal   = "User:${data.confluent_user.poc-user.id}"
+  principal   = "User:${confluent_service_account.poc-test.id}"
   role_name   = "DeveloperRead"
   crn_pattern = "${var.schema-registry}/subject=*"
 }
