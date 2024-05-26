@@ -6,12 +6,12 @@ logging:
 
 spring:
   application:
-    name: greeter
+    name: poc
   cloud:
     stream:
       bindings:
         greet-in-0:
-          group: greeter
+          group: ${spring.application.name}
           consumer:
             use-native-decoding: true
         greet-out-0:

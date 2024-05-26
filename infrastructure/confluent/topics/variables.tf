@@ -1,16 +1,14 @@
-variable "cluster_id" {
-  type = string
+variable "cluster" {
+  type = object({
+    id = string
+    rest_endpoint = string
+  })
 }
 
-variable "cluster_rest_endpoint" {
-  type = string
-}
-
-variable "api_key_id" {
-  type = string
-}
-
-variable "api_key_secret" {
-  type      = string
+variable "api_key" {
+  type = object({
+    id = string
+    secret = string
+  })
   sensitive = true
 }
