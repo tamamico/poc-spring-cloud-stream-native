@@ -25,8 +25,8 @@ module "topics" {
     rest_endpoint = module.cluster.cluster.rest_endpoint
   }
   api_key = {
-    id         = module.cluster.api_key.id
-    key_secret = module.cluster.api_key.secret
+    id     = module.cluster.api_key.id
+    secret = module.cluster.api_key.secret
   }
 }
 
@@ -46,8 +46,8 @@ module "users" {
     kind        = module.cluster.cluster.kind
   }
   api_key = {
-    id         = module.cluster.api_key.id
-    key_secret = module.cluster.api_key.secret
+    id     = module.cluster.api_key.id
+    secret = module.cluster.api_key.secret
   }
   input-topic     = module.topics.input-men-topic.topic_name
   output-topic    = module.topics.output-topic.topic_name
