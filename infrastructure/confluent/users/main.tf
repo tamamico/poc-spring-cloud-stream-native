@@ -55,7 +55,7 @@ resource "confluent_kafka_acl" "poc-user-cluster" {
     id = var.cluster.id
   }
   resource_type = "CLUSTER"
-  resource_name = var.cluster.name
+  resource_name = "kafka-cluster"
   pattern_type  = "LITERAL"
   principal     = "User:${confluent_service_account.poc-user.id}"
   host          = "*"
