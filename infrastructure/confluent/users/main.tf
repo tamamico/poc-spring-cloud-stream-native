@@ -61,6 +61,11 @@ resource "confluent_kafka_acl" "poc-user-cluster" {
   host          = "*"
   operation     = "DESCRIBE"
   permission    = "ALLOW"
+  rest_endpoint = var.cluster.rest_endpoint
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
 }
 
 resource "confluent_kafka_acl" "poc-user-output-topic" {
