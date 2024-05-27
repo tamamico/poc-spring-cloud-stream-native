@@ -46,17 +46,3 @@ resource "confluent_api_key" "cluster-manager" {
     }
   }
 }
-
-resource "confluent_kafka_cluster_config" "orders" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
-  }
-  rest_endpoint = confluent_kafka_cluster.basic.rest_endpoint
-  config = {
-    "sasl.enabled.mechanisms" = "SCRAM-SHA-256"
-  }
-  credentials {
-    key    = confluent_api_key.cluster-manager.id
-    secret = confluent_api_key.cluster-manager.secret
-  }
-}
