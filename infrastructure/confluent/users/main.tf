@@ -50,6 +50,19 @@ resource "confluent_kafka_acl" "poc-user-input-topic" {
   }
 }
 
+resource "confluent_kafka_acl" "poc-user-cluster" {
+  kafka_cluster {
+    id = var.cluster.id
+  }
+  resource_type = "CLUSTER"
+  resource_name = var.cluster.name
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.poc-user.id}"
+  host          = "*"
+  operation     = "DESCRIBE"
+  permission    = "ALLOW"
+}
+
 resource "confluent_kafka_acl" "poc-user-output-topic" {
   kafka_cluster {
     id = var.cluster.id
