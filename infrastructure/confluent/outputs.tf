@@ -1,4 +1,13 @@
-output "kafka_broker_address" {
+output "pos_user_id" {
+  value = module.users.poc_user_api_key.id
+}
+
+output "pos_user_secret" {
+  value     = module.users.poc_user_api_key.secret
+  sensitive = true
+}
+
+output "kafka_broker_url" {
   value = module.cluster.cluster.bootstrap_endpoint
 }
 

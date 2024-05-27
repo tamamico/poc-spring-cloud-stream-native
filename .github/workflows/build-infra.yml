@@ -60,10 +60,13 @@ jobs:
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
-      - name: Get output
+      - name: Get workspace output
         uses: hashicorp/tfc-workflows-github/actions/workspace-output@v1.3.0
-        id: output
+        id: workspace-output
         with:
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace: ${{ vars.TF_WORKSPACE }}
+      - name: Process output (fake)
+        id: infra-config
+        run: echo ${{ steps.workspace-output.outputs.outputs }} | jq '.[] | .name'
