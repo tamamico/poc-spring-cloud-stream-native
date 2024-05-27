@@ -32,7 +32,6 @@ class GreeterIT {
     private static final String KAFKA_BROKER_USER     = "admin";
     private static final String KAFKA_BROKER_PASSWORD = "test";
 
-    private static final String                       SECURITY_PROTOCOL = "SASL_PLAINTEXT";
     private static final String                       SASL_MECHANISM    = "SCRAM-SHA-256";
     private static final Class<? extends LoginModule> LOGIN_MODULE      = ScramLoginModule.class;
 
@@ -72,7 +71,6 @@ class GreeterIT {
         registry.add("spring.cloud.stream.kafka.binder.brokers", broker::getBootstrapServers);
         registry.add("spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms", METADATA_MAX_AGE::toMillis);
         registry.add("spring.cloud.stream.kafka.binder.configuration.schema.registry.url", broker::getSchemaRegistryAddress);
-        registry.add("spring.cloud.stream.kafka.binder.configuration.security.protocol", () -> SECURITY_PROTOCOL);
         registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.mechanism", () -> SASL_MECHANISM);
         registry.add("jaas.login.module", LOGIN_MODULE::getName);
         registry.add("kafka.broker.user", () -> KAFKA_BROKER_USER);

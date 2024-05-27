@@ -28,6 +28,7 @@ spring:
             value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
           configuration:
             auto.register.schemas: false
+            security.protocol: SASL_PLAINTEXT
             sasl.jaas.config: ${jaas.login.module} required username='${kafka.broker.user}' password='${kafka.broker.password}';
           auto-create-topics: false
         bindings:
