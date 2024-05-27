@@ -69,4 +69,4 @@ jobs:
           workspace: ${{ vars.TF_WORKSPACE }}
       - name: Process output (fake)
         id: infra-config
-        run: echo ${{ steps.workspace-output.outputs.outputs }} | jq '.[] | .name'
+        run: echo ${{ steps.workspace-output.outputs.outputs }} | jq '.[].name'

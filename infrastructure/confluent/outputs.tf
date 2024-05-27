@@ -1,8 +1,8 @@
-output "pos_user_id" {
+output "poc_user_id" {
   value = module.users.poc_user_api_key.id
 }
 
-output "pos_user_secret" {
+output "poc_user_secret" {
   value     = module.users.poc_user_api_key.secret
   sensitive = true
 }
