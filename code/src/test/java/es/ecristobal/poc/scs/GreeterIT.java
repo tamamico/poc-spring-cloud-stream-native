@@ -29,20 +29,19 @@ class GreeterIT {
 
     private static final String DOCKER_IMAGE = "docker.redpanda.com/redpandadata/redpanda:v24.1.2";
 
-    private static final String KAFKA_BROKER_USER     = "admin";
-    private static final String KAFKA_BROKER_PASSWORD = "test";
+    private static final Class<? extends LoginModule> KAFKA_LOGIN_MODULE = ScramLoginModule.class;
+    private static final String                       KAFKA_USER         = "admin";
+    private static final String                       KAFKA_PASSWORD     = "test";
 
-    private static final String                       SASL_MECHANISM    = "SCRAM-SHA-256";
-    private static final Class<? extends LoginModule> LOGIN_MODULE      = ScramLoginModule.class;
+    private static final String SASL_MECHANISM = "SCRAM-SHA-256";
 
-    private static final String USER_SETUP = "{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}";
-
-    private static final String INPUT_TOPIC_PATTERN = "^input\\.(?:men|women)\\.avro$";
-    private static final String INPUT_TOPIC_MEN     = "input.men.avro";
-    private static final String INPUT_TOPIC_WOMEN   = "input.women.avro";
-    private static final String OUTPUT_TOPIC        = "output.avro";
+    private static final String INPUT_TOPIC_MEN   = "input.men.avro";
+    private static final String INPUT_TOPIC_WOMEN = "input.women.avro";
+    private static final String OUTPUT_TOPIC      = "output.avro";
 
     private static final Duration METADATA_MAX_AGE = ofSeconds(1);
+
+    private static final String USER_SETUP = "{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}";
 
     private static KafkaGreetingVisitorBuilder greetingVisitorBuilder;
     private static GreetingValidator           greetingValidator;
@@ -50,7 +49,8 @@ class GreeterIT {
     @Container
     private static RedpandaContainer broker = new RedpandaContainer(DOCKER_IMAGE).enableAuthorization()
                                                                                  .enableSasl()
-                                                                                 .withSuperuser(KAFKA_BROKER_USER);
+                                                                                 .enableSchemaRegistryHttpBasicAuth()
+                                                                                 .withSuperuser(KAFKA_USER);
 
     @Test
     void testGreetMen() {
@@ -66,30 +66,30 @@ class GreeterIT {
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.cloud.stream.bindings.greet-in-0.destination", () -> INPUT_TOPIC_PATTERN);
-        registry.add("spring.cloud.stream.bindings.greet-out-0.destination", () -> OUTPUT_TOPIC);
+        // Required properties
         registry.add("spring.cloud.stream.kafka.binder.brokers", broker::getBootstrapServers);
-        registry.add("spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms", METADATA_MAX_AGE::toMillis);
         registry.add("spring.cloud.stream.kafka.binder.configuration.schema.registry.url", broker::getSchemaRegistryAddress);
+        registry.add("kafka.user", () -> KAFKA_USER);
+        registry.add("kafka.password", () -> KAFKA_PASSWORD);
+        // Overridden properties
+        registry.add("spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms", METADATA_MAX_AGE::toMillis);
         registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.mechanism", () -> SASL_MECHANISM);
-        registry.add("jaas.login.module", LOGIN_MODULE::getName);
-        registry.add("kafka.broker.user", () -> KAFKA_BROKER_USER);
-        registry.add("kafka.broker.password", () -> KAFKA_BROKER_PASSWORD);
+        registry.add("kafka.login.module", KAFKA_LOGIN_MODULE::getName);
     }
 
     @BeforeAll
     static void setUp() {
         final String adminUrl = format("%s/v1/security/users", broker.getAdminAddress());
         given().contentType("application/json")
-               .body(format(USER_SETUP, KAFKA_BROKER_USER, KAFKA_BROKER_PASSWORD, SASL_MECHANISM))
+               .body(format(USER_SETUP, KAFKA_USER, KAFKA_PASSWORD, SASL_MECHANISM))
                .post(adminUrl)
                .then()
                .statusCode(200);
         final KafkaGreetingFactory greetingFactory = KafkaGreetingFactory.newInstance()
                                                                          .withUrls(broker.getBootstrapServers(),
                                                                                    broker.getSchemaRegistryAddress())
-                                                                         .withAuthentication(LOGIN_MODULE, KAFKA_BROKER_USER,
-                                                                                             KAFKA_BROKER_PASSWORD);
+                                                                         .withAuthentication(KAFKA_LOGIN_MODULE, KAFKA_USER,
+                                                                                             KAFKA_PASSWORD);
         greetingVisitorBuilder = greetingFactory.greetingVisitorBuilder();
         greetingValidator      = greetingFactory.greetingValidatorBuilder().withTopic(OUTPUT_TOPIC).build();
     }

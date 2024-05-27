@@ -89,5 +89,5 @@ resource "confluent_kafka_acl" "poc-user-consumer-group" {
 resource "confluent_role_binding" "schema-registry" {
   principal   = "User:${confluent_service_account.poc-user.id}"
   role_name   = "DeveloperRead"
-  crn_pattern = "${var.schema-registry}/subject=*"
+  crn_pattern = "${var.schema-registry}/subject=es.ecristobal.poc.scs.avro.*"
 }

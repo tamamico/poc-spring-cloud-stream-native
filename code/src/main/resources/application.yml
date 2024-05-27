@@ -12,25 +12,35 @@ spring:
       bindings:
         greet-in-0:
           group: ${spring.application.name}
+          destination: ^input\.(?:men|women)\.avro$
           consumer:
             use-native-decoding: true
         greet-out-0:
+          destination: output.avro
           producer:
             use-native-encoding: true
       kafka:
         binder:
+          auto-create-topics: false
           consumer-properties:
+            basic.auth.credentials.source: USER_INFO
+            basic.auth.user.info: ${kafka.user}:${kafka.password}
             key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
             specific.avro.reader: true
           producer-properties:
+            basic.auth.credentials.source: USER_INFO
+            basic.auth.user.info: ${kafka.user}:${kafka.password}
             key.serializer: org.apache.kafka.common.serialization.StringSerializer
             value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
           configuration:
             auto.register.schemas: false
+            metadata.max.age.ms: 10000
             security.protocol: SASL_PLAINTEXT
-            sasl.jaas.config: ${jaas.login.module} required username='${kafka.broker.user}' password='${kafka.broker.password}';
-          auto-create-topics: false
+            sasl.mechanism: PLAIN
+            sasl.jaas.config: >
+              ${kafka.login.module:org.apache.kafka.common.security.plain.PlainLoginModule}
+              required username='${kafka.user}' password='${kafka.password}';
         bindings:
           greet-in-0:
             consumer:

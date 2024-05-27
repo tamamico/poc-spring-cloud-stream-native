@@ -10,6 +10,9 @@ import javax.security.auth.spi.LoginModule;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE;
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG;
 import static java.lang.String.format;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
@@ -23,6 +26,7 @@ public class KafkaGreetingFactory
         implements GreetingFactory {
 
     private static final String JAAS_CONFIG_TEMPLATE = "%s required username=\"%s\" password=\"%s\";";
+    private static final String BASIC_AUTH_TEMPLATE  = "%s:%s";
 
     private final Map<String, Object> consumerProperties;
     private final Map<String, Object> producerProperties;
@@ -47,9 +51,9 @@ public class KafkaGreetingFactory
             final String schemaRegistry
     ) {
         consumerProps(broker, "greeting-validator", "true").forEach(this.consumerProperties::putIfAbsent);
-        this.consumerProperties.put("schema.registry.url", schemaRegistry);
+        this.consumerProperties.put(SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
         producerProps(broker).forEach(this.producerProperties::putIfAbsent);
-        this.producerProperties.put("schema.registry.url", schemaRegistry);
+        this.producerProperties.put(SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
         return this;
     }
 
@@ -62,6 +66,8 @@ public class KafkaGreetingFactory
         authentication.put("security.protocol", "SASL_PLAINTEXT");
         authentication.put("sasl.mechanism", "SCRAM-SHA-256");
         authentication.put("sasl.jaas.config", format(JAAS_CONFIG_TEMPLATE, loginModuleClass.getName(), username, password));
+        authentication.put(BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO");
+        authentication.put(USER_INFO_CONFIG, format(BASIC_AUTH_TEMPLATE, username, password));
         this.consumerProperties.putAll(authentication);
         this.producerProperties.putAll(authentication);
         return this;
