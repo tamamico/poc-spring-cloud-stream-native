@@ -36,7 +36,7 @@ spring:
           configuration:
             auto.register.schemas: false
             metadata.max.age.ms: 10000
-            security.protocol: SASL_PLAINTEXT
+            security.protocol: SASL_SSL
             sasl.mechanism: PLAIN
             sasl.jaas.config: >
               ${kafka.login.module:org.apache.kafka.common.security.plain.PlainLoginModule}

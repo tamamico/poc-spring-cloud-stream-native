@@ -11,7 +11,7 @@ resource "confluent_kafka_topic" "input-men" {
   kafka_cluster {
     id = var.cluster.id
   }
-  topic_name       = "greet.men"
+  topic_name       = "input.men.avro"
   partitions_count = 1
   rest_endpoint    = var.cluster.rest_endpoint
   config = {
@@ -28,7 +28,7 @@ resource "confluent_kafka_topic" "output" {
   kafka_cluster {
     id = var.cluster.id
   }
-  topic_name       = "greeting"
+  topic_name       = "output.avro"
   partitions_count = 1
   rest_endpoint    = var.cluster.rest_endpoint
   config = {

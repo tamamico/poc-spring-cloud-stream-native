@@ -41,25 +41,7 @@ resource "confluent_kafka_acl" "poc-user-input-topic" {
   pattern_type  = "LITERAL"
   principal     = "User:${confluent_service_account.poc-user.id}"
   host          = "*"
-  operation     = "WRITE"
-  permission    = "ALLOW"
-  rest_endpoint = var.cluster.rest_endpoint
-  credentials {
-    key    = var.api_key.id
-    secret = var.api_key.secret
-  }
-}
-
-resource "confluent_kafka_acl" "poc-user-cluster" {
-  kafka_cluster {
-    id = var.cluster.id
-  }
-  resource_type = "CLUSTER"
-  resource_name = "kafka-cluster"
-  pattern_type  = "LITERAL"
-  principal     = "User:${confluent_service_account.poc-user.id}"
-  host          = "*"
-  operation     = "DESCRIBE"
+  operation     = "READ"
   permission    = "ALLOW"
   rest_endpoint = var.cluster.rest_endpoint
   credentials {
@@ -77,7 +59,7 @@ resource "confluent_kafka_acl" "poc-user-output-topic" {
   pattern_type  = "LITERAL"
   principal     = "User:${confluent_service_account.poc-user.id}"
   host          = "*"
-  operation     = "READ"
+  operation     = "WRITE"
   permission    = "ALLOW"
   rest_endpoint = var.cluster.rest_endpoint
   credentials {
