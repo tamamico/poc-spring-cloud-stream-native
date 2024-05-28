@@ -33,7 +33,8 @@ class GreeterIT {
     private static final String                       KAFKA_USER         = "admin";
     private static final String                       KAFKA_PASSWORD     = "test";
 
-    private static final String SASL_MECHANISM = "SCRAM-SHA-256";
+    private static final String SASL_MECHANISM    = "SCRAM-SHA-256";
+    private static final String SECURITY_PROTOCOL = "SASL_PLAINTEXT";
 
     private static final String INPUT_TOPIC_MEN   = "input.men.avro";
     private static final String INPUT_TOPIC_WOMEN = "input.women.avro";
@@ -74,6 +75,7 @@ class GreeterIT {
         // Overridden properties
         registry.add("spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms", METADATA_MAX_AGE::toMillis);
         registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.mechanism", () -> SASL_MECHANISM);
+        registry.add("spring.cloud.stream.kafka.binder.configuration.security.protocol", () -> SECURITY_PROTOCOL);
         registry.add("kafka.login.module", KAFKA_LOGIN_MODULE::getName);
     }
 
