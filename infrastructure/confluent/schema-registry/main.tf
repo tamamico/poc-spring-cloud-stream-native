@@ -24,3 +24,33 @@ resource "confluent_schema_registry_cluster" "kafka" {
     id = data.confluent_schema_registry_region.essentials.id
   }
 }
+
+resource "confluent_schema" "input" {
+  schema_registry_cluster {
+    id = confluent_schema_registry_cluster.kafka.id
+  }
+  rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
+  subject_name = "es.ecristobal.poc.scs.avro.Input-value"
+  format = "AVRO"
+  schema = file("../../../code/src/main/avro/input.avsc")
+}
+
+resource "confluent_subject_config" "input" {
+  subject_name        = confluent_schema.input.subject_name
+  compatibility_level = "FORWARD"
+}
+
+resource "confluent_schema" "output" {
+  schema_registry_cluster {
+    id = confluent_schema_registry_cluster.kafka.id
+  }
+  rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
+  subject_name = "es.ecristobal.poc.scs.avro.Output-value"
+  format = "AVRO"
+  schema = file("../../../code/src/main/avro/output.avsc")
+}
+
+resource "confluent_subject_config" "output" {
+  subject_name        = confluent_schema.output.subject_name
+  compatibility_level = "FORWARD"
+}
