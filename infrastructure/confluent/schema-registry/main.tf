@@ -32,7 +32,7 @@ resource "confluent_schema" "input" {
   rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
   subject_name = "es.ecristobal.poc.scs.avro.Input-value"
   format = "AVRO"
-  schema = file("../../../code/src/main/avro/input.avsc")
+  schema = file("./input.avsc")
 }
 
 resource "confluent_subject_config" "input" {
@@ -47,7 +47,7 @@ resource "confluent_schema" "output" {
   rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
   subject_name = "es.ecristobal.poc.scs.avro.Output-value"
   format = "AVRO"
-  schema = file("../../../code/src/main/avro/output.avsc")
+  schema = file("./output.avsc")
 }
 
 resource "confluent_subject_config" "output" {
