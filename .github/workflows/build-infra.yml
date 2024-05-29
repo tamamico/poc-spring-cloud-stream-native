@@ -36,7 +36,7 @@ jobs:
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY_INFRA }}
             -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
       - name: Copy Avro schemas to schema-registry folder
-        run: cp src/main/avro/*.avsc infrastructure/confluent/schema-registry/
+        run: cp ./src/main/avro/*.avsc ./infrastructure/confluent/schema-registry/
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.0
         id: plan-upload
