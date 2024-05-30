@@ -54,8 +54,8 @@ module "topics" {
     rest_endpoint = module.cluster.cluster.rest_endpoint
   }
   api_key = {
-    id     = confluent_api_key.env_admin.id
-    secret = confluent_api_key.env_admin.secret
+    id     = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
   }
 }
 
@@ -64,8 +64,8 @@ module "schema-registry" {
 
   environment = confluent_environment.development.id
   api_key = {
-    id     = confluent_api_key.env_admin.id
-    secret = confluent_api_key.env_admin.secret
+    id     = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
   }
 }
 
@@ -81,8 +81,8 @@ module "users" {
     rest_endpoint = module.cluster.cluster.rest_endpoint
   }
   api_key = {
-    id     = confluent_api_key.env_admin.id
-    secret = confluent_api_key.env_admin.secret
+    id     = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
   }
   input-topic     = module.topics.input-men-topic.topic_name
   output-topic    = module.topics.output-topic.topic_name
