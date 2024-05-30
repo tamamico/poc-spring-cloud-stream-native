@@ -29,9 +29,9 @@ resource "confluent_api_key" "env-admin" {
   display_name = "env-admin-schema-registry-api-key"
   description  = "Environment manager schema registry API Key"
   owner {
-    id          = var.env-admin.id
-    api_version = var.env-admin.api_version
-    kind        = var.env-admin.kind
+    id          = var.env_admin.id
+    api_version = var.env_admin.api_version
+    kind        = var.env_admin.kind
   }
   managed_resource {
     id          = confluent_schema_registry_cluster.kafka.id
