@@ -7,13 +7,13 @@ terraform {
   }
 }
 
-resource "confluent_service_account" "cluster-manager" {
-  display_name = "cluster-manager"
-  description  = "Cluster manager service account created by Terraform"
+resource "confluent_service_account" "env-admin" {
+  display_name = "env-admin"
+  description  = "Environment admin service account created by Terraform"
 }
 
-resource "confluent_role_binding" "app-manager-kafka-cluster-admin" {
-  principal   = "User:${confluent_service_account.cluster-manager.id}"
+resource "confluent_role_binding" "env-admin" {
+  principal   = "User:${confluent_service_account.env-admin.id}"
   role_name   = "EnvironmentAdmin"
   crn_pattern = confluent_kafka_cluster.basic.rbac_crn
 }
@@ -29,13 +29,13 @@ resource "confluent_kafka_cluster" "basic" {
   }
 }
 
-resource "confluent_api_key" "cluster-manager" {
-  display_name = "cluster-api-key"
-  description  = "Cluster API Key"
+resource "confluent_api_key" "env-admin" {
+  display_name = "env-admin-api-key"
+  description  = "Environment manager API Key"
   owner {
-    id          = confluent_service_account.cluster-manager.id
-    api_version = confluent_service_account.cluster-manager.api_version
-    kind        = confluent_service_account.cluster-manager.kind
+    id          = confluent_service_account.env-admin.id
+    api_version = confluent_service_account.env-admin.api_version
+    kind        = confluent_service_account.env-admin.kind
   }
   managed_resource {
     id          = confluent_kafka_cluster.basic.id
