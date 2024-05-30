@@ -3,5 +3,5 @@ output "cluster" {
 }
 
 output "api_key" {
-  value = confluent_api_key.cluster-manager
+  value = confluent_api_key.env-admin
 }
