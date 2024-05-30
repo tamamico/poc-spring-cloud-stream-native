@@ -5,7 +5,7 @@ variable "environment" {
 variable "env_admin" {
   type = object({
     id          = string
-    api-version = string
+    api_version = string
     kind        = string
   })
   sensitive = true
