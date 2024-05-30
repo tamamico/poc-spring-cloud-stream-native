@@ -45,7 +45,7 @@ resource "confluent_api_key" "env-admin" {
 
 resource "confluent_schema" "input" {
   schema_registry_cluster {
-    id = confluent_schema_registry_region.essentials.id
+    id = confluent_schema_registry_cluster.kafka.id
   }
   rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
   subject_name = "es.ecristobal.poc.scs.avro.Input-value"
@@ -59,7 +59,7 @@ resource "confluent_schema" "input" {
 
 resource "confluent_subject_config" "input" {
   schema_registry_cluster {
-    id = confluent_schema_registry_region.essentials.id
+    id = confluent_schema_registry_cluster.kafka.id
   }
   subject_name        = confluent_schema.input.subject_name
   compatibility_level = "FORWARD"
@@ -86,7 +86,7 @@ resource "confluent_schema" "output" {
 
 resource "confluent_subject_config" "output" {
   schema_registry_cluster {
-    id = confluent_schema_registry_region.essentials.id
+    id = confluent_schema_registry_cluster.kafka.id
   }
   subject_name        = confluent_schema.output.subject_name
   compatibility_level = "FORWARD"
