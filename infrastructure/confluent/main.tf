@@ -34,6 +34,10 @@ module "schema-registry" {
   source = "./schema-registry"
 
   environment = confluent_environment.development.id
+  api_key = {
+    id     = module.cluster.api_key.id
+    secret = module.cluster.api_key.secret
+  }
 }
 
 module "users" {
