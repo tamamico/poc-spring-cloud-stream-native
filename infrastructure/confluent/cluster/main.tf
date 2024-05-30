@@ -14,7 +14,7 @@ resource "confluent_service_account" "cluster-manager" {
 
 resource "confluent_role_binding" "app-manager-kafka-cluster-admin" {
   principal   = "User:${confluent_service_account.cluster-manager.id}"
-  role_name   = "CloudClusterAdmin"
+  role_name   = "EnvironmentAdmin"
   crn_pattern = confluent_kafka_cluster.basic.rbac_crn
 }
 
