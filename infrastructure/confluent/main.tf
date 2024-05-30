@@ -63,9 +63,10 @@ module "schema-registry" {
   source = "./schema-registry"
 
   environment = confluent_environment.development.id
-  api_key = {
-    id     = confluent_api_key.env-admin.id
-    secret = confluent_api_key.env-admin.secret
+  env_admin = {
+    id          = confluent_service_account.env-admin.id
+    api_version = confluent_service_account.env-admin.api_version
+    kind        = confluent_service_account.env-admin.kind
   }
 }
 
