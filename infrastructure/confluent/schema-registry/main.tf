@@ -60,6 +60,7 @@ resource "confluent_schema" "input" {
 resource "confluent_subject_config" "input" {
   subject_name        = confluent_schema.input.subject_name
   compatibility_level = "FORWARD"
+  rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret
@@ -83,6 +84,7 @@ resource "confluent_schema" "output" {
 resource "confluent_subject_config" "output" {
   subject_name        = confluent_schema.output.subject_name
   compatibility_level = "FORWARD"
+  rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret
