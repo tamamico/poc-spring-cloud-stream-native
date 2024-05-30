@@ -33,11 +33,19 @@ resource "confluent_schema" "input" {
   subject_name = "es.ecristobal.poc.scs.avro.Input-value"
   format = "AVRO"
   schema = file("./input.avsc")
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
 }
 
 resource "confluent_subject_config" "input" {
   subject_name        = confluent_schema.input.subject_name
   compatibility_level = "FORWARD"
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
 }
 
 resource "confluent_schema" "output" {
@@ -48,9 +56,17 @@ resource "confluent_schema" "output" {
   subject_name = "es.ecristobal.poc.scs.avro.Output-value"
   format = "AVRO"
   schema = file("./output.avsc")
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
 }
 
 resource "confluent_subject_config" "output" {
   subject_name        = confluent_schema.output.subject_name
   compatibility_level = "FORWARD"
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
 }
