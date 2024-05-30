@@ -52,8 +52,8 @@ resource "confluent_schema" "input" {
   format = "AVRO"
   schema = file("./input.avsc")
   credentials {
-    key    = var.api_key.id
-    secret = var.api_key.secret
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
   }
 }
 
@@ -61,8 +61,8 @@ resource "confluent_subject_config" "input" {
   subject_name        = confluent_schema.input.subject_name
   compatibility_level = "FORWARD"
   credentials {
-    key    = var.api_key.id
-    secret = var.api_key.secret
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
   }
 }
 
@@ -75,8 +75,8 @@ resource "confluent_schema" "output" {
   format = "AVRO"
   schema = file("./output.avsc")
   credentials {
-    key    = var.api_key.id
-    secret = var.api_key.secret
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
   }
 }
 
@@ -84,7 +84,7 @@ resource "confluent_subject_config" "output" {
   subject_name        = confluent_schema.output.subject_name
   compatibility_level = "FORWARD"
   credentials {
-    key    = var.api_key.id
-    secret = var.api_key.secret
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
   }
 }
