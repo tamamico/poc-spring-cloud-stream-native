@@ -25,6 +25,24 @@ resource "confluent_schema_registry_cluster" "kafka" {
   }
 }
 
+resource "confluent_api_key" "env-admin" {
+  display_name = "env-admin-schema-registry-api-key"
+  description  = "Environment manager schema registry API Key"
+  owner {
+    id          = var.env-admin.id
+    api_version = var.env-admin.api_version
+    kind        = var.env-admin.kind
+  }
+  managed_resource {
+    id          = module.cluster.cluster.id
+    api_version = module.cluster.cluster.api_version
+    kind        = module.cluster.cluster.kind
+    environment {
+      id = var.environment
+    }
+  }
+}
+
 resource "confluent_schema" "input" {
   schema_registry_cluster {
     id = confluent_schema_registry_cluster.kafka.id
