@@ -41,7 +41,7 @@ resource "confluent_api_key" "env-admin" {
     api_version = module.cluster.cluster.api_version
     kind        = module.cluster.cluster.kind
     environment {
-      id = var.environment
+      id = confluent_environment.development.id
     }
   }
 }
