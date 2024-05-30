@@ -4,8 +4,9 @@ variable "environment" {
 
 variable "api_key" {
   type = object({
-    id = string
-    secret = string
+    id          = string
+    api-version = string
+    kind        = string
   })
   sensitive = true
 }
