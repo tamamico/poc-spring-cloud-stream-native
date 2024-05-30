@@ -34,9 +34,9 @@ resource "confluent_api_key" "env-admin" {
     kind        = var.env-admin.kind
   }
   managed_resource {
-    id          = module.cluster.cluster.id
-    api_version = module.cluster.cluster.api_version
-    kind        = module.cluster.cluster.kind
+    id          = confluent_schema_registry_cluster.kafka.id
+    api_version = confluent_schema_registry_cluster.kafka.api_version
+    kind        = confluent_schema_registry_cluster.kafka.kind
     environment {
       id = var.environment
     }
