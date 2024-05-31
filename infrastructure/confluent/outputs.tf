@@ -16,9 +16,9 @@ output "schema_registry_url" {
 }
 
 output "men-input-topic-name" {
-  value = module.topics.input-men-topic.topic_name
+  value = module.cluster.input-men-topic.topic_name
 }
 
 output "output-topic-name" {
-  value = module.topics.output-topic.topic_name
+  value = module.cluster.output-topic.topic_name
 }
