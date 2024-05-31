@@ -28,37 +28,6 @@ module "cluster" {
   environment = confluent_environment.development.id
 }
 
-resource "confluent_api_key" "env-admin" {
-  display_name = "env-admin-api-key"
-  description  = "Environment manager API Key"
-  owner {
-    id          = confluent_service_account.env-admin.id
-    api_version = confluent_service_account.env-admin.api_version
-    kind        = confluent_service_account.env-admin.kind
-  }
-  managed_resource {
-    id          = module.cluster.cluster.id
-    api_version = module.cluster.cluster.api_version
-    kind        = module.cluster.cluster.kind
-    environment {
-      id = confluent_environment.development.id
-    }
-  }
-}
-
-module "topics" {
-  source = "./topics"
-
-  cluster = {
-    id            = module.cluster.cluster.id
-    rest_endpoint = module.cluster.cluster.rest_endpoint
-  }
-  api_key = {
-    id     = confluent_api_key.env-admin.id
-    secret = confluent_api_key.env-admin.secret
-  }
-}
-
 module "schema-registry" {
   source = "./schema-registry"
 
@@ -82,10 +51,10 @@ module "users" {
     rest_endpoint = module.cluster.cluster.rest_endpoint
   }
   api_key = {
-    id     = confluent_api_key.env-admin.id
-    secret = confluent_api_key.env-admin.secret
+    id     = module.cluster.admin-cluster-api-key.id
+    secret = module.cluster.admin-cluster-api-key.secret
   }
-  input-topic     = module.topics.input-men-topic.topic_name
-  output-topic    = module.topics.output-topic.topic_name
+  input-topic     = module.cluster.input-men-topic.topic_name
+  output-topic    = module.cluster.output-topic.topic_name
   schema-registry = module.schema-registry.schema_registry.resource_name
 }

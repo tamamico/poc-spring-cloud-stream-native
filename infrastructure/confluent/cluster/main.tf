@@ -17,3 +17,55 @@ resource "confluent_kafka_cluster" "basic" {
     id = var.environment
   }
 }
+
+resource "confluent_api_key" "env-admin" {
+  display_name = "env-admin-cluster-api-key"
+  description  = "Environment manager cluster API Key"
+  owner {
+    id          = var.admin.id
+    api_version = var.admin.api_version
+    kind        = var.admin.kind
+  }
+  managed_resource {
+    id          = confluent_kafka_cluster.basic.id
+    api_version = confluent_kafka_cluster.basic.api_version
+    kind        = confluent_kafka_cluster.basic.kind
+    environment {
+      id = var.environment
+    }
+  }
+}
+
+resource "confluent_kafka_topic" "input-men" {
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
+  topic_name       = "input.men.avro"
+  partitions_count = 1
+  rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
+  config = {
+    "cleanup.policy" = "compact"
+    "retention.ms"   = "86400000"
+  }
+  credentials {
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
+  }
+}
+
+resource "confluent_kafka_topic" "output" {
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
+  topic_name       = "output.avro"
+  partitions_count = 1
+  rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
+  config = {
+    "cleanup.policy" = "compact"
+    "retention.ms"   = "86400000"
+  }
+  credentials {
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
+  }
+}
