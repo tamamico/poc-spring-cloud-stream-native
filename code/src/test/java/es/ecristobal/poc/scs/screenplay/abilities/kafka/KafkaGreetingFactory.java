@@ -3,6 +3,7 @@ package es.ecristobal.poc.scs.screenplay.abilities.kafka;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import io.confluent.kafka.serializers.subject.RecordNameStrategy;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG;
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY;
 import static java.lang.String.format;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
@@ -35,11 +37,13 @@ public class KafkaGreetingFactory
         this.producerProperties = new HashMap<>();
         this.producerProperties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         this.producerProperties.put(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
+        this.producerProperties.put(VALUE_SUBJECT_NAME_STRATEGY, RecordNameStrategy.class);
         this.consumerProperties = new HashMap<>();
         this.consumerProperties.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         this.consumerProperties.put("specific.avro.reader", true);
         this.consumerProperties.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         this.consumerProperties.put(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        this.consumerProperties.put(VALUE_SUBJECT_NAME_STRATEGY, RecordNameStrategy.class);
     }
 
     public static KafkaGreetingFactory newInstance() {

@@ -34,13 +34,13 @@ spring:
             key.serializer: org.apache.kafka.common.serialization.StringSerializer
             value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
           configuration:
-            auto.register.schemas: false
             metadata.max.age.ms: 10000
             security.protocol: SASL_SSL
             sasl.mechanism: PLAIN
             sasl.jaas.config: >
               ${kafka.login.module:org.apache.kafka.common.security.plain.PlainLoginModule}
               required username='${kafka.user}' password='${kafka.password}';
+            value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
         bindings:
           greet-in-0:
             consumer:
