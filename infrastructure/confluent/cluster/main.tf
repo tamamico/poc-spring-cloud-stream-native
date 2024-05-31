@@ -22,9 +22,9 @@ resource "confluent_api_key" "env-admin" {
   display_name = "env-admin-cluster-api-key"
   description  = "Environment manager cluster API Key"
   owner {
-    id          = var.admin.id
-    api_version = var.admin.api_version
-    kind        = var.admin.kind
+    id          = var.env_admin.id
+    api_version = var.env_admin.api_version
+    kind        = var.env_admin.kind
   }
   managed_resource {
     id          = confluent_kafka_cluster.basic.id
