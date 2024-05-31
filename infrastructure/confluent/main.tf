@@ -26,6 +26,11 @@ module "cluster" {
   source = "./cluster"
 
   environment = confluent_environment.development.id
+  env_admin = {
+    id          = confluent_service_account.env-admin.id
+    api_version = confluent_service_account.env-admin.api_version
+    kind        = confluent_service_account.env-admin.kind
+  }
 }
 
 module "schema-registry" {

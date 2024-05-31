@@ -2,7 +2,7 @@ variable "environment" {
   type = string
 }
 
-variable "admin" {
+variable "env_admin" {
   type = object({
     id = string
     api_version = string
