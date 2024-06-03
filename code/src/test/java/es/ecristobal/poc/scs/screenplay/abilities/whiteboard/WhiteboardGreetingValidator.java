@@ -1,12 +1,14 @@
 package es.ecristobal.poc.scs.screenplay.abilities.whiteboard;
 
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
+import lombok.Builder;
 
-class WhiteboardGreetingValidator
+public class WhiteboardGreetingValidator
         implements GreetingValidator {
 
     private final Whiteboard whiteboard;
 
+    @Builder
     WhiteboardGreetingValidator(
             final Whiteboard whiteboard
     ) {

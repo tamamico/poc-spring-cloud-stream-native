@@ -1,6 +1,5 @@
 package es.ecristobal.poc.scs;
 
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.whiteboard.WhiteboardGreetingFactory;
@@ -22,8 +21,9 @@ class GreeterTests {
 
     @BeforeAll
     static void setUp() {
-        final Greeter         greeter         = new Greeter();
-        final GreetingFactory greetingFactory = WhiteboardGreetingFactory.newInstance().withFunction(greeter::greet);
+        final WhiteboardGreetingFactory greetingFactory = WhiteboardGreetingFactory.builder()
+                                                                                   .function(input -> new Greeter().greet(input))
+                                                                                   .build();
         greetingVisitor   = greetingFactory.greetingVisitorBuilder().build();
         greetingValidator = greetingFactory.greetingValidatorBuilder().build();
     }

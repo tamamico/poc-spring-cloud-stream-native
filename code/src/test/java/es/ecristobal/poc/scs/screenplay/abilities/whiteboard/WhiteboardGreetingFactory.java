@@ -2,35 +2,24 @@ package es.ecristobal.poc.scs.screenplay.abilities.whiteboard;
 
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.avro.Output;
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
+import lombok.Builder;
 
 import java.util.function.Function;
 
-public class WhiteboardGreetingFactory
-        implements GreetingFactory {
+public class WhiteboardGreetingFactory {
 
-    private Whiteboard whiteboard;
+    private final Whiteboard whiteboard;
 
-    private WhiteboardGreetingFactory() {
-        // Empty constructor
-    }
-
-    public static WhiteboardGreetingFactory newInstance() {
-        return new WhiteboardGreetingFactory();
-    }
-
-    public WhiteboardGreetingFactory withFunction(final Function<Input, Output> function) {
+    @Builder
+    private WhiteboardGreetingFactory(final Function<Input, Output> function) {
         this.whiteboard = new Whiteboard(function);
-        return this;
     }
 
-    @Override
-    public WhiteboardGreetingVisitorBuilder greetingVisitorBuilder() {
-        return WhiteboardGreetingVisitorBuilder.withWhiteboard(this.whiteboard);
+    public WhiteboardGreetingVisitor.WhiteboardGreetingVisitorBuilder greetingVisitorBuilder() {
+        return WhiteboardGreetingVisitor.builder().whiteboard(this.whiteboard);
     }
 
-    @Override
-    public WhiteboardGreetingValidatorBuilder greetingValidatorBuilder() {
-        return WhiteboardGreetingValidatorBuilder.withWhiteboard(this.whiteboard);
+    public WhiteboardGreetingValidator.WhiteboardGreetingValidatorBuilder greetingValidatorBuilder() {
+        return WhiteboardGreetingValidator.builder().whiteboard(this.whiteboard);
     }
 }

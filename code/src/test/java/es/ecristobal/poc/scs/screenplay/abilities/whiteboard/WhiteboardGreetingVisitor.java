@@ -2,12 +2,14 @@ package es.ecristobal.poc.scs.screenplay.abilities.whiteboard;
 
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.actors.Customer;
+import lombok.Builder;
 
-class WhiteboardGreetingVisitor
+public class WhiteboardGreetingVisitor
         extends GreetingVisitor {
 
     private final Whiteboard whiteboard;
 
+    @Builder
     WhiteboardGreetingVisitor(
             final Whiteboard whiteboard
     ) {

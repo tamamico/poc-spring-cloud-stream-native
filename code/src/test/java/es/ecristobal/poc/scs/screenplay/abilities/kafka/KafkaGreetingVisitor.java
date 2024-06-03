@@ -3,18 +3,20 @@ package es.ecristobal.poc.scs.screenplay.abilities.kafka;
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.actors.Customer;
+import lombok.Builder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.Map;
 
-class KafkaGreetingVisitor
+public class KafkaGreetingVisitor
         extends GreetingVisitor {
 
     private final KafkaTemplate<String, Input> template;
 
-    KafkaGreetingVisitor(
+    @Builder
+    private KafkaGreetingVisitor(
             final Map<String, Object> properties,
             final String topic
     ) {

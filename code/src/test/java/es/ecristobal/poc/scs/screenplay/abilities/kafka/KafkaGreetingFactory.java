@@ -1,9 +1,9 @@
 package es.ecristobal.poc.scs.screenplay.abilities.kafka;
 
-import es.ecristobal.poc.scs.screenplay.abilities.GreetingFactory;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.subject.RecordNameStrategy;
+import lombok.Builder;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -24,14 +24,28 @@ import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_
 import static org.springframework.kafka.test.utils.KafkaTestUtils.consumerProps;
 import static org.springframework.kafka.test.utils.KafkaTestUtils.producerProps;
 
-public class KafkaGreetingFactory
-        implements GreetingFactory {
+public class KafkaGreetingFactory {
 
     private static final String JAAS_CONFIG_TEMPLATE = "%s required username=\"%s\" password=\"%s\";";
     private static final String BASIC_AUTH_TEMPLATE  = "%s:%s";
 
     private final Map<String, Object> consumerProperties;
     private final Map<String, Object> producerProperties;
+
+    @Builder
+    private KafkaGreetingFactory(
+            final KafkaUrls urls,
+            final KafkaAuthentication authentication
+    ) {
+        this();
+        consumerProps(urls.broker(), "greeting-validator", "true").forEach(this.consumerProperties::putIfAbsent);
+        this.consumerProperties.put(SCHEMA_REGISTRY_URL_CONFIG, urls.schemaRegistry());
+        producerProps(urls.broker()).forEach(this.producerProperties::putIfAbsent);
+        this.producerProperties.put(SCHEMA_REGISTRY_URL_CONFIG, urls.schemaRegistry());
+        final Map<String, Object> authenticationMap = this.getAuthenticationMap(authentication);
+        this.consumerProperties.putAll(authenticationMap);
+        this.producerProperties.putAll(authenticationMap);
+    }
 
     private KafkaGreetingFactory() {
         this.producerProperties = new HashMap<>();
@@ -46,44 +60,38 @@ public class KafkaGreetingFactory
         this.consumerProperties.put(VALUE_SUBJECT_NAME_STRATEGY, RecordNameStrategy.class);
     }
 
-    public static KafkaGreetingFactory newInstance() {
-        return new KafkaGreetingFactory();
+    private Map<String, Object> getAuthenticationMap(final KafkaAuthentication authentication) {
+        final Map<String, Object> authenticationMap = new HashMap<>(3);
+        authenticationMap.put("security.protocol", "SASL_PLAINTEXT");
+        authenticationMap.put("sasl.mechanism", "SCRAM-SHA-256");
+        authenticationMap.put("sasl.jaas.config",
+                              format(JAAS_CONFIG_TEMPLATE, authentication.loginModuleClass().getName(), authentication.username(),
+                                     authentication.password()));
+        authenticationMap.put(BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO");
+        authenticationMap.put(USER_INFO_CONFIG, format(BASIC_AUTH_TEMPLATE, authentication.username(), authentication.password()));
+        return authenticationMap;
     }
 
-    public KafkaGreetingFactory withUrls(
-            final String broker,
-            final String schemaRegistry
+    public KafkaGreetingVisitor.KafkaGreetingVisitorBuilder greetingVisitorBuilder() {
+        return KafkaGreetingVisitor.builder().properties(this.producerProperties);
+    }
+
+    public KafkaGreetingValidator.KafkaGreetingValidatorBuilder greetingValidatorBuilder() {
+        return KafkaGreetingValidator.builder().properties(this.consumerProperties);
+    }
+
+    @Builder
+    public record KafkaUrls(
+            String broker,
+            String schemaRegistry
     ) {
-        consumerProps(broker, "greeting-validator", "true").forEach(this.consumerProperties::putIfAbsent);
-        this.consumerProperties.put(SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
-        producerProps(broker).forEach(this.producerProperties::putIfAbsent);
-        this.producerProperties.put(SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
-        return this;
     }
 
-    public KafkaGreetingFactory withAuthentication(
-            final Class<? extends LoginModule> loginModuleClass,
-            final String username,
-            final String password
+    @Builder
+    public record KafkaAuthentication(
+            Class<? extends LoginModule> loginModuleClass,
+            String username,
+            String password
     ) {
-        final Map<String, Object> authentication = new HashMap<>(3);
-        authentication.put("security.protocol", "SASL_PLAINTEXT");
-        authentication.put("sasl.mechanism", "SCRAM-SHA-256");
-        authentication.put("sasl.jaas.config", format(JAAS_CONFIG_TEMPLATE, loginModuleClass.getName(), username, password));
-        authentication.put(BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO");
-        authentication.put(USER_INFO_CONFIG, format(BASIC_AUTH_TEMPLATE, username, password));
-        this.consumerProperties.putAll(authentication);
-        this.producerProperties.putAll(authentication);
-        return this;
-    }
-
-    @Override
-    public KafkaGreetingVisitorBuilder greetingVisitorBuilder() {
-        return KafkaGreetingVisitorBuilder.newInstance().withProperties(this.producerProperties);
-    }
-
-    @Override
-    public KafkaGreetingValidatorBuilder greetingValidatorBuilder() {
-        return KafkaGreetingValidatorBuilder.newInstance().withProperties(this.consumerProperties);
     }
 }

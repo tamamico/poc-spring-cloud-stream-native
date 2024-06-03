@@ -2,6 +2,7 @@ package es.ecristobal.poc.scs.screenplay.abilities.kafka;
 
 import es.ecristobal.poc.scs.avro.Output;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
+import lombok.Builder;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.TopicPartition;
@@ -15,7 +16,7 @@ import java.util.Map;
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class KafkaGreetingValidator
+public class KafkaGreetingValidator
         implements GreetingValidator {
 
     private static final Duration POLLING_TIMEOUT = ofSeconds(10);
@@ -23,6 +24,7 @@ class KafkaGreetingValidator
     private final Consumer<String, Output> consumer;
     private final List<TopicPartition>     topicPartitions;
 
+    @Builder
     KafkaGreetingValidator(
             final Map<String, Object> properties,
             final String topic

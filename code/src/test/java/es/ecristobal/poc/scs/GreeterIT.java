@@ -3,7 +3,7 @@ package es.ecristobal.poc.scs;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory;
-import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingVisitorBuilder;
+import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingVisitor;
 import org.apache.kafka.common.security.scram.ScramLoginModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,8 @@ import javax.security.auth.spi.LoginModule;
 import java.time.Duration;
 
 import static es.ecristobal.poc.scs.TestScenarios.greetOk;
+import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaAuthentication;
+import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaUrls;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static java.time.Duration.ofSeconds;
@@ -44,8 +46,8 @@ class GreeterIT {
 
     private static final String USER_SETUP = "{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}";
 
-    private static KafkaGreetingVisitorBuilder greetingVisitorBuilder;
-    private static GreetingValidator           greetingValidator;
+    private static KafkaGreetingVisitor.KafkaGreetingVisitorBuilder greetingVisitorBuilder;
+    private static GreetingValidator                                greetingValidator;
 
     @Container
     private static RedpandaContainer broker = new RedpandaContainer(DOCKER_IMAGE).enableAuthorization()
@@ -55,13 +57,13 @@ class GreeterIT {
 
     @Test
     void testGreetMen() {
-        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.withTopic(INPUT_TOPIC_MEN).build();
+        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_MEN).build();
         greetOk("Steve", greetingVisitor, greetingValidator);
     }
 
     @Test
     void testGreetWomen() {
-        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.withTopic(INPUT_TOPIC_WOMEN).build();
+        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_WOMEN).build();
         greetOk("Laurene", greetingVisitor, greetingValidator);
     }
 
@@ -87,13 +89,18 @@ class GreeterIT {
                .post(adminUrl)
                .then()
                .statusCode(200);
-        final KafkaGreetingFactory greetingFactory = KafkaGreetingFactory.newInstance()
-                                                                         .withUrls(broker.getBootstrapServers(),
-                                                                                   broker.getSchemaRegistryAddress())
-                                                                         .withAuthentication(KAFKA_LOGIN_MODULE, KAFKA_USER,
-                                                                                             KAFKA_PASSWORD);
+        final KafkaUrls urls = KafkaUrls.builder()
+                                        .broker(broker.getBootstrapServers())
+                                        .schemaRegistry(broker.getSchemaRegistryAddress())
+                                        .build();
+        final KafkaAuthentication authentication = KafkaAuthentication.builder()
+                                                                      .loginModuleClass(KAFKA_LOGIN_MODULE)
+                                                                      .username(KAFKA_USER)
+                                                                      .password(KAFKA_PASSWORD)
+                                                                      .build();
+        final KafkaGreetingFactory greetingFactory = KafkaGreetingFactory.builder().urls(urls).authentication(authentication).build();
         greetingVisitorBuilder = greetingFactory.greetingVisitorBuilder();
-        greetingValidator      = greetingFactory.greetingValidatorBuilder().withTopic(OUTPUT_TOPIC).build();
+        greetingValidator      = greetingFactory.greetingValidatorBuilder().topic(OUTPUT_TOPIC).build();
     }
 
 }

@@ -30,9 +30,9 @@ class StreamConfiguration {
             final ObservationRegistry registry
     ) {
         return outer -> outer.flatMap(inner -> inner.map(ConsumerRecord::value)
-                                                  .doOnNext(input -> LOGGER.info("Greeting {}", input.getName()))
-                                                  .map(greeter::greet)
-                                                  .tap(observation(registry)));
+                                                    .doOnNext(input -> LOGGER.info("Greeting {}", input.getName()))
+                                                    .map(greeter::greet)
+                                                    .tap(observation(registry)));
     }
 
 }

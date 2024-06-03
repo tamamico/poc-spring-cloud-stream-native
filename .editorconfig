@@ -947,6 +947,42 @@ ij_markdown_min_lines_between_paragraphs = 1
 ij_markdown_wrap_text_if_long = true
 ij_markdown_wrap_text_inside_blockquotes = true
 
+[{*.mermaid,*.mmd}]
+ij_visual_guides = 
+ij_mermaid_after_arrow_text_within_sep = false
+ij_mermaid_after_colon = true
+ij_mermaid_after_comma = true
+ij_mermaid_around_arrow = true
+ij_mermaid_around_equality = false
+ij_mermaid_around_inline_arrow_text = true
+ij_mermaid_around_style_separator = false
+ij_mermaid_beetween_line_type_and_relation_type = false
+ij_mermaid_before_arrow_text_within_sep = false
+ij_mermaid_before_colon = false
+ij_mermaid_before_comma = false
+ij_mermaid_before_generic = false
+ij_mermaid_before_open_curly = true
+ij_mermaid_before_open_round = false
+ij_mermaid_before_semicolon = false
+ij_mermaid_between_node_id_and_node_shape = false
+ij_mermaid_between_state_and_annotation = true
+ij_mermaid_force_one_space_between_words = true
+ij_mermaid_keep_indents_on_empty_lines = false
+ij_mermaid_keep_lines_around_structured_statements = 1
+ij_mermaid_keep_lines_between_other_statements = 0
+ij_mermaid_keep_lines_between_structured_statements = 1
+ij_mermaid_keep_lines_within_structures = 0
+ij_mermaid_min_lines_around_structured_statements = 0
+ij_mermaid_min_lines_between_other_statements = 0
+ij_mermaid_min_lines_between_structured_statements = 0
+ij_mermaid_min_lines_within_structures = 0
+ij_mermaid_within_annotation_braces = false
+ij_mermaid_within_arrow_text_sep = false
+ij_mermaid_within_curly = true
+ij_mermaid_within_node_shapes = false
+ij_mermaid_within_round = false
+ij_mermaid_within_square = false
+
 [{*.pb,*.textproto,*.txtpb}]
 indent_size = 2
 tab_width = 2
