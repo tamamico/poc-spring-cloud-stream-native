@@ -50,13 +50,13 @@ jobs:
         with:
           image: ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
           args: --sarif-file-output=docker.sarif
+      - name: Replace security-severity 'undefined' for license-related findings
+        run: >
+          sed -i 's/"security-severity": "undefined"/"security-severity": "0"/g' docker.sarif
       - name: Upload Docker image analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: docker.sarif
           category: docker
-      - name: Replace security-severity 'undefined' for license-related findings
-        run: >
-          sed -i 's/"security-severity": "undefined"/"security-severity": "0"/g' docker.sarif
       - name: Deploy Docker native image
         run: docker push ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
