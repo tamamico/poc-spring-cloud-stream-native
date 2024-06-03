@@ -56,6 +56,7 @@ jobs:
           sarif_file: docker.sarif
           category: docker
       - name: Replace security-severity 'undefined' for license-related findings
-        run: sed -i 's/"security-severity": "undefined"/"security-severity": "0"/g' snyk.sarif
+        run: >
+          sed -i 's/"security-severity": "undefined"/"security-severity": "0"/g' docker.sarif
       - name: Deploy Docker native image
         run: docker push ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
