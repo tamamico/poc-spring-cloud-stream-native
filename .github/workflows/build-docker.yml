@@ -53,7 +53,7 @@ jobs:
       - name: Replace security-severity 'undefined' for license-related findings
         run: >
           pwd
-          sed -i 's/"security-severity": "undefined"/"security-severity": "0"/g' docker.sarif
+          sed -i -e 's/"security-severity": "undefined"/"security-severity": "0"/g' 's/"security-severity": null/"security-severity": "0"/g' docker.sarif
       - name: Upload Docker image analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
