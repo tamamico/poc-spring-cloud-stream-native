@@ -62,7 +62,7 @@ resource "confluent_subject_config" "input" {
     id = confluent_schema_registry_cluster.kafka.id
   }
   subject_name        = confluent_schema.input.subject_name
-  compatibility_level = "FORWARD"
+  compatibility_level = "FORWARD_TRANSITIVE"
   rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
   credentials {
     key    = confluent_api_key.env-admin.id
@@ -89,7 +89,7 @@ resource "confluent_subject_config" "output" {
     id = confluent_schema_registry_cluster.kafka.id
   }
   subject_name        = confluent_schema.output.subject_name
-  compatibility_level = "FORWARD"
+  compatibility_level = "FORWARD_TRANSITIVE"
   rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
   credentials {
     key    = confluent_api_key.env-admin.id
