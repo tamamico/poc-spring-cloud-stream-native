@@ -19,6 +19,10 @@ output "men-input-topic-name" {
   value = module.cluster.input-men-topic.topic_name
 }
 
+output "women-input-topic-name" {
+  value = module.cluster.input-women-topic.topic_name
+}
+
 output "output-topic-name" {
   value = module.cluster.output-topic.topic_name
 }

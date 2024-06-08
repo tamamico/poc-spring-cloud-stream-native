@@ -20,7 +20,11 @@ variable "api_key" {
   sensitive = true
 }
 
-variable "input-topic" {
+variable "input-men-topic" {
+  type = string
+}
+
+variable "input-women-topic" {
   type = string
 }
 

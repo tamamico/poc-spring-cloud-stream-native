@@ -59,7 +59,8 @@ module "users" {
     id     = module.cluster.admin-cluster-api-key.id
     secret = module.cluster.admin-cluster-api-key.secret
   }
-  input-topic     = module.cluster.input-men-topic.topic_name
-  output-topic    = module.cluster.output-topic.topic_name
-  schema-registry = module.schema-registry.schema_registry.resource_name
+  input-men-topic   = module.cluster.input-men-topic.topic_name
+  input-women-topic = module.cluster.input-women-topic.topic_name
+  output-topic      = module.cluster.output-topic.topic_name
+  schema-registry   = module.schema-registry.schema_registry.resource_name
 }

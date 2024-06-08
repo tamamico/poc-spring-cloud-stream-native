@@ -10,6 +10,10 @@ output "input-men-topic" {
   value = confluent_kafka_topic.input-men
 }
 
+output "input-women-topic" {
+  value = confluent_kafka_topic.input-women
+}
+
 output "output-topic" {
   value = confluent_kafka_topic.output
 }

@@ -53,6 +53,23 @@ resource "confluent_kafka_topic" "input-men" {
   }
 }
 
+resource "confluent_kafka_topic" "input-women" {
+  kafka_cluster {
+    id = confluent_kafka_cluster.basic.id
+  }
+  topic_name       = "input.women.avro"
+  partitions_count = 1
+  rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
+  config = {
+    "cleanup.policy" = "compact"
+    "retention.ms"   = "86400000"
+  }
+  credentials {
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
+  }
+}
+
 resource "confluent_kafka_topic" "output" {
   kafka_cluster {
     id = confluent_kafka_cluster.basic.id

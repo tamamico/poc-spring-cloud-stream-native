@@ -32,12 +32,30 @@ resource "confluent_api_key" "poc-user" {
   }
 }
 
-resource "confluent_kafka_acl" "poc-user-input-topic" {
+resource "confluent_kafka_acl" "poc-user-input-men-topic" {
   kafka_cluster {
     id = var.cluster.id
   }
   resource_type = "TOPIC"
-  resource_name = var.input-topic
+  resource_name = var.input-men-topic
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.poc-user.id}"
+  host          = "*"
+  operation     = "READ"
+  permission    = "ALLOW"
+  rest_endpoint = var.cluster.rest_endpoint
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
+}
+
+resource "confluent_kafka_acl" "poc-user-input-women-topic" {
+  kafka_cluster {
+    id = var.cluster.id
+  }
+  resource_type = "TOPIC"
+  resource_name = var.input-women-topic
   pattern_type  = "LITERAL"
   principal     = "User:${confluent_service_account.poc-user.id}"
   host          = "*"
