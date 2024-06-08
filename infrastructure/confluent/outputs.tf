@@ -7,6 +7,15 @@ output "poc_user_secret" {
   sensitive = true
 }
 
+output "admin_cluster_id" {
+  value = module.cluster.admin-cluster-api-key.id
+}
+
+output "admin_cluster_secret" {
+  value     = module.cluster.admin-cluster-api-key.secret
+  sensitive = true
+}
+
 output "kafka_broker_url" {
   value = module.cluster.cluster.bootstrap_endpoint
 }
