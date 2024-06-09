@@ -45,7 +45,7 @@ resource "confluent_kafka_topic" "input-men" {
   rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
   config = {
     "cleanup.policy" = "compact"
-    "retention.ms"   = "86400000"
+    "retention.ms"   = "3600000"
   }
   credentials {
     key    = confluent_api_key.env-admin.id
@@ -62,7 +62,7 @@ resource "confluent_kafka_topic" "input-women" {
   rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
   config = {
     "cleanup.policy" = "compact"
-    "retention.ms"   = "86400000"
+    "retention.ms"   = "3600000"
   }
   credentials {
     key    = confluent_api_key.env-admin.id
@@ -79,7 +79,7 @@ resource "confluent_kafka_topic" "output" {
   rest_endpoint    = confluent_kafka_cluster.basic.rest_endpoint
   config = {
     "cleanup.policy" = "compact"
-    "retention.ms"   = "86400000"
+    "retention.ms"   = "3600000"
   }
   credentials {
     key    = confluent_api_key.env-admin.id
