@@ -12,6 +12,15 @@ variable "cluster" {
   })
 }
 
+variable "schema_registry" {
+  type = object({
+    id          = string
+    name        = string
+    api_version = string
+    kind        = string
+  })
+}
+
 variable "api_key" {
   type = object({
     id     = string
@@ -29,9 +38,5 @@ variable "input-women-topic" {
 }
 
 variable "output-topic" {
-  type = string
-}
-
-variable "schema-registry" {
   type = string
 }

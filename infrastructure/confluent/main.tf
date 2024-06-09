@@ -55,6 +55,12 @@ module "users" {
     kind          = module.cluster.cluster.kind
     rest_endpoint = module.cluster.cluster.rest_endpoint
   }
+  schema_registry = {
+    id          = module.schema-registry.schema_registry.id
+    name        = module.schema-registry.schema_registry.display_name
+    api_version = module.schema-registry.schema_registry.api_version
+    kind        = module.schema-registry.schema_registry.kind
+  }
   api_key = {
     id     = module.cluster.admin-cluster-api-key.id
     secret = module.cluster.admin-cluster-api-key.secret
