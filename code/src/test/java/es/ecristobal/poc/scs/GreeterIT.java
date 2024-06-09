@@ -74,7 +74,11 @@ class GreeterIT {
         registry.add("spring.cloud.stream.kafka.binder.configuration.schema.registry.url", broker::getSchemaRegistryAddress);
         registry.add("kafka.user", () -> KAFKA_USER);
         registry.add("kafka.password", () -> KAFKA_PASSWORD);
+        registry.add("schema-registry.user", () -> KAFKA_USER);
+        registry.add("schema-registry.password", () -> KAFKA_PASSWORD);
         // Overridden properties
+        registry.add("spring.cloud.stream.kafka.binder.producer-properties.auto.register.schemas", () -> "true");
+        registry.add("spring.cloud.stream.kafka.bindings.greet-in-0.consumer.start-offset", () -> "earliest");
         registry.add("spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms", METADATA_MAX_AGE::toMillis);
         registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.mechanism", () -> SASL_MECHANISM);
         registry.add("spring.cloud.stream.kafka.binder.configuration.security.protocol", () -> SECURITY_PROTOCOL);
@@ -94,11 +98,17 @@ class GreeterIT {
                                         .schemaRegistry(broker.getSchemaRegistryAddress())
                                         .build();
         final KafkaAuthentication authentication = KafkaAuthentication.builder()
-                                                                      .loginModuleClass(KAFKA_LOGIN_MODULE)
-                                                                      .username(KAFKA_USER)
-                                                                      .password(KAFKA_PASSWORD)
+                                                                      .type(KafkaAuthentication.AuthenticationType.SCRAM)
+                                                                      .kafkaUsername(KAFKA_USER)
+                                                                      .kafkaPassword(KAFKA_PASSWORD)
+                                                                      .schemaRegistryUsername(KAFKA_USER)
+                                                                      .schemaRegistryPassword(KAFKA_PASSWORD)
                                                                       .build();
-        final KafkaGreetingFactory greetingFactory = KafkaGreetingFactory.builder().urls(urls).authentication(authentication).build();
+        final KafkaGreetingFactory greetingFactory = KafkaGreetingFactory.builder()
+                                                                         .urls(urls)
+                                                                         .authentication(authentication)
+                                                                         .autoRegisterSchemas(true)
+                                                                         .build();
         greetingVisitorBuilder = greetingFactory.greetingVisitorBuilder();
         greetingValidator      = greetingFactory.greetingValidatorBuilder().topic(OUTPUT_TOPIC).build();
     }

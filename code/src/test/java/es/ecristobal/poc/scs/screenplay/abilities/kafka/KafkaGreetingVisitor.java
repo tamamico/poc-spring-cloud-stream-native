@@ -27,6 +27,6 @@ public class KafkaGreetingVisitor
 
     @Override
     public void visit(final Customer customer) {
-        this.template.sendDefault(this.buildFrom(customer));
+        this.template.sendDefault("test", this.buildFrom(customer));
     }
 }

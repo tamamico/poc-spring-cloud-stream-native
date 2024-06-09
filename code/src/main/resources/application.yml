@@ -23,16 +23,19 @@ spring:
         binder:
           auto-create-topics: false
           consumer-properties:
+            specific.avro.reader: true
             basic.auth.credentials.source: USER_INFO
-            basic.auth.user.info: ${kafka.user}:${kafka.password}
+            basic.auth.user.info: ${schema-registry.user}:${schema-registry.password}
             key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-            specific.avro.reader: true
+            value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
           producer-properties:
+            auto.register.schemas: false
             basic.auth.credentials.source: USER_INFO
-            basic.auth.user.info: ${kafka.user}:${kafka.password}
+            basic.auth.user.info: ${schema-registry.user}:${schema-registry.password}
             key.serializer: org.apache.kafka.common.serialization.StringSerializer
             value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+            value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
           configuration:
             metadata.max.age.ms: 10000
             security.protocol: SASL_SSL
@@ -40,10 +43,10 @@ spring:
             sasl.jaas.config: >
               ${kafka.login.module:org.apache.kafka.common.security.plain.PlainLoginModule}
               required username='${kafka.user}' password='${kafka.password}';
-            value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
         bindings:
           greet-in-0:
             consumer:
               destination-is-pattern: true
               reactive-auto-commit: true
               standard-headers: both
+              start-offset: latest

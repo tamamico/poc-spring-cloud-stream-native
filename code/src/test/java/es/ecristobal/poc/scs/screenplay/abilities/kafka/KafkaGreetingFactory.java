@@ -4,6 +4,9 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.subject.RecordNameStrategy;
 import lombok.Builder;
+import lombok.Getter;
+import org.apache.kafka.common.security.plain.PlainLoginModule;
+import org.apache.kafka.common.security.scram.ScramLoginModule;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -11,6 +14,7 @@ import javax.security.auth.spi.LoginModule;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG;
@@ -35,13 +39,15 @@ public class KafkaGreetingFactory {
     @Builder
     private KafkaGreetingFactory(
             final KafkaUrls urls,
-            final KafkaAuthentication authentication
+            final KafkaAuthentication authentication,
+            final boolean autoRegisterSchemas
     ) {
         this();
         consumerProps(urls.broker(), "greeting-validator", "true").forEach(this.consumerProperties::putIfAbsent);
         this.consumerProperties.put(SCHEMA_REGISTRY_URL_CONFIG, urls.schemaRegistry());
         producerProps(urls.broker()).forEach(this.producerProperties::putIfAbsent);
         this.producerProperties.put(SCHEMA_REGISTRY_URL_CONFIG, urls.schemaRegistry());
+        this.producerProperties.put(AUTO_REGISTER_SCHEMAS, autoRegisterSchemas);
         final Map<String, Object> authenticationMap = this.getAuthenticationMap(authentication);
         this.consumerProperties.putAll(authenticationMap);
         this.producerProperties.putAll(authenticationMap);
@@ -61,14 +67,15 @@ public class KafkaGreetingFactory {
     }
 
     private Map<String, Object> getAuthenticationMap(final KafkaAuthentication authentication) {
-        final Map<String, Object> authenticationMap = new HashMap<>(3);
-        authenticationMap.put("security.protocol", "SASL_PLAINTEXT");
-        authenticationMap.put("sasl.mechanism", "SCRAM-SHA-256");
+        final Map<String, Object> authenticationMap = new HashMap<>(5);
+        authenticationMap.put("security.protocol", authentication.type().securityProtocol());
+        authenticationMap.put("sasl.mechanism", authentication.type().saslMechanism());
         authenticationMap.put("sasl.jaas.config",
-                              format(JAAS_CONFIG_TEMPLATE, authentication.loginModuleClass().getName(), authentication.username(),
-                                     authentication.password()));
+                              format(JAAS_CONFIG_TEMPLATE, authentication.type().loginModuleClassName(), authentication.kafkaUsername(),
+                                     authentication.kafkaPassword()));
         authenticationMap.put(BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO");
-        authenticationMap.put(USER_INFO_CONFIG, format(BASIC_AUTH_TEMPLATE, authentication.username(), authentication.password()));
+        authenticationMap.put(USER_INFO_CONFIG, format(BASIC_AUTH_TEMPLATE, authentication.schemaRegistryUsername(),
+                                                       authentication.schemaRegistryPassword()));
         return authenticationMap;
     }
 
@@ -89,9 +96,31 @@ public class KafkaGreetingFactory {
 
     @Builder
     public record KafkaAuthentication(
-            Class<? extends LoginModule> loginModuleClass,
-            String username,
-            String password
+            AuthenticationType type,
+            String kafkaUsername,
+            String kafkaPassword,
+            String schemaRegistryUsername,
+            String schemaRegistryPassword
     ) {
+
+        @Getter
+        public enum AuthenticationType {
+            PLAIN("PLAIN", "SASL_SSL", PlainLoginModule.class),
+            SCRAM("SCRAM-SHA-256", "SASL_PLAINTEXT", ScramLoginModule.class);
+
+            private final String saslMechanism;
+            private final String securityProtocol;
+            private final String loginModuleClassName;
+
+            AuthenticationType(
+                    final String saslMechanism,
+                    final String securityProtocol,
+                    final Class<? extends LoginModule> loginModule
+            ) {
+                this.saslMechanism        = saslMechanism;
+                this.securityProtocol     = securityProtocol;
+                this.loginModuleClassName = loginModule.getName();
+            }
+        }
     }
 }

@@ -7,6 +7,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Flux;
 
 import java.util.function.Function;
@@ -25,13 +27,14 @@ class StreamConfiguration {
     }
 
     @Bean
-    Function<Flux<Flux<ConsumerRecord<String, Input>>>, Flux<Output>> greet(
+    Function<Flux<Flux<ConsumerRecord<String, Input>>>, Flux<Message<Output>>> greet(
             final Greeter greeter,
             final ObservationRegistry registry
     ) {
-        return outer -> outer.flatMap(inner -> inner.map(ConsumerRecord::value)
-                                                    .doOnNext(input -> LOGGER.info("Greeting {}", input.getName()))
-                                                    .map(greeter::greet)
+        return outer -> outer.flatMap(inner -> inner.doOnNext(input -> LOGGER.info("Greeting {}", input.value().getName()))
+                                                    .map(input -> MessageBuilder.withPayload(greeter.greet(input.value()))
+                                                                                .setHeader("kafka_messageKey", input.key())
+                                                                                .build())
                                                     .tap(observation(registry)));
     }
 
