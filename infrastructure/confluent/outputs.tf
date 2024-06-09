@@ -7,6 +7,15 @@ output "poc_user_secret" {
   sensitive = true
 }
 
+output "poc_test_id" {
+  value = module.users.poc_test_api_key.id
+}
+
+output "poc_test_secret" {
+  value     = module.users.poc_test_api_key.secret
+  sensitive = true
+}
+
 output "admin_cluster_id" {
   value = module.cluster.admin-cluster-api-key.id
 }

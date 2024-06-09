@@ -9,7 +9,7 @@ terraform {
 
 resource "confluent_service_account" "poc-user" {
   display_name = "poc-user"
-  description  = "Service account for PoC testing"
+  description  = "Service account for PoC application"
 }
 
 resource "confluent_api_key" "poc-user" {
@@ -19,6 +19,31 @@ resource "confluent_api_key" "poc-user" {
     id          = confluent_service_account.poc-user.id
     api_version = confluent_service_account.poc-user.api_version
     kind        = confluent_service_account.poc-user.kind
+  }
+
+  managed_resource {
+    id          = var.cluster.id
+    api_version = var.cluster.api_version
+    kind        = var.cluster.kind
+
+    environment {
+      id = var.environment
+    }
+  }
+}
+
+resource "confluent_service_account" "poc-test" {
+  display_name = "poc-test"
+  description  = "Service account to test PoC application"
+}
+
+resource "confluent_api_key" "poc-test" {
+  display_name = "poc-test"
+  description  = "Kafka API Key that is owned by 'poc-test' account"
+  owner {
+    id          = confluent_service_account.poc-test.id
+    api_version = confluent_service_account.poc-test.api_version
+    kind        = confluent_service_account.poc-test.kind
   }
 
   managed_resource {
@@ -50,6 +75,24 @@ resource "confluent_kafka_acl" "poc-user-input-men-topic" {
   }
 }
 
+resource "confluent_kafka_acl" "poc-test-input-men-topic" {
+  kafka_cluster {
+    id = var.cluster.id
+  }
+  resource_type = "TOPIC"
+  resource_name = var.input-men-topic
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.poc-test.id}"
+  host          = "*"
+  operation     = "WRITE"
+  permission    = "ALLOW"
+  rest_endpoint = var.cluster.rest_endpoint
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
+}
+
 resource "confluent_kafka_acl" "poc-user-input-women-topic" {
   kafka_cluster {
     id = var.cluster.id
@@ -60,6 +103,24 @@ resource "confluent_kafka_acl" "poc-user-input-women-topic" {
   principal     = "User:${confluent_service_account.poc-user.id}"
   host          = "*"
   operation     = "READ"
+  permission    = "ALLOW"
+  rest_endpoint = var.cluster.rest_endpoint
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
+}
+
+resource "confluent_kafka_acl" "poc-test-input-women-topic" {
+  kafka_cluster {
+    id = var.cluster.id
+  }
+  resource_type = "TOPIC"
+  resource_name = var.input-women-topic
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.poc-test.id}"
+  host          = "*"
+  operation     = "WRITE"
   permission    = "ALLOW"
   rest_endpoint = var.cluster.rest_endpoint
   credentials {
@@ -86,13 +147,31 @@ resource "confluent_kafka_acl" "poc-user-output-topic" {
   }
 }
 
+resource "confluent_kafka_acl" "poc-test-output-topic" {
+  kafka_cluster {
+    id = var.cluster.id
+  }
+  resource_type = "TOPIC"
+  resource_name = var.output-topic
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.poc-test.id}"
+  host          = "*"
+  operation     = "READ"
+  permission    = "ALLOW"
+  rest_endpoint = var.cluster.rest_endpoint
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
+}
+
 resource "confluent_kafka_acl" "poc-user-consumer-group" {
   kafka_cluster {
     id = var.cluster.id
   }
   resource_type = "GROUP"
   resource_name = "poc"
-  pattern_type  = "PREFIXED"
+  pattern_type  = "LITERAL"
   principal     = "User:${confluent_service_account.poc-user.id}"
   host          = "*"
   operation     = "READ"
@@ -104,8 +183,32 @@ resource "confluent_kafka_acl" "poc-user-consumer-group" {
   }
 }
 
-resource "confluent_role_binding" "schema-registry" {
+resource "confluent_kafka_acl" "poc-test-consumer-group" {
+  kafka_cluster {
+    id = var.cluster.id
+  }
+  resource_type = "GROUP"
+  resource_name = "greeting-validator"
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.poc-test.id}"
+  host          = "*"
+  operation     = "READ"
+  permission    = "ALLOW"
+  rest_endpoint = var.cluster.rest_endpoint
+  credentials {
+    key    = var.api_key.id
+    secret = var.api_key.secret
+  }
+}
+
+resource "confluent_role_binding" "poc-user-schema-registry" {
   principal   = "User:${confluent_service_account.poc-user.id}"
+  role_name   = "DeveloperRead"
+  crn_pattern = "${var.schema-registry}/subject=es.ecristobal.poc.scs.avro.*"
+}
+
+resource "confluent_role_binding" "poc-test-schema-registry" {
+  principal   = "User:${confluent_service_account.poc-test.id}"
   role_name   = "DeveloperRead"
   crn_pattern = "${var.schema-registry}/subject=es.ecristobal.poc.scs.avro.*"
 }
