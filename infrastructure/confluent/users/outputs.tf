@@ -3,7 +3,7 @@ output "cluster_poc_user_api_key" {
 }
 
 output "cluster_poc_test_api_key" {
-  value = confluent_api_key.cluster-poc-user
+  value = confluent_api_key.cluster-poc-test
 }
 
 output "schema_registry_poc_user_api_key" {
