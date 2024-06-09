@@ -14,10 +14,10 @@ variable "cluster" {
 
 variable "schema_registry" {
   type = object({
-    id          = string
-    name        = string
-    api_version = string
-    kind        = string
+    id            = string
+    resource_name = string
+    api_version   = string
+    kind          = string
   })
 }
 

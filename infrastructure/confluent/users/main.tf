@@ -244,11 +244,11 @@ resource "confluent_kafka_acl" "poc-test-consumer-group" {
 resource "confluent_role_binding" "poc-user-schema-registry" {
   principal   = "User:${confluent_service_account.poc-user.id}"
   role_name   = "DeveloperRead"
-  crn_pattern = "${var.schema_registry.name}/subject=es.ecristobal.poc.scs.avro.*"
+  crn_pattern = "${var.schema_registry.resource_name}/subject=es.ecristobal.poc.scs.avro.*"
 }
 
 resource "confluent_role_binding" "poc-test-schema-registry" {
   principal   = "User:${confluent_service_account.poc-test.id}"
   role_name   = "DeveloperRead"
-  crn_pattern = "${var.schema_registry.name}/subject=es.ecristobal.poc.scs.avro.*"
+  crn_pattern = "${var.schema_registry.resource_name}/subject=es.ecristobal.poc.scs.avro.*"
 }
