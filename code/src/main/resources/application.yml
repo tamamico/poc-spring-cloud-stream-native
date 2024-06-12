@@ -1,8 +1,10 @@
-logging:
-  level:
-    root: info
-    org.apache: warn
-    io.confluent: warn
+management.endpoints.web:
+  exposure.include: "*"
+
+logging.level:
+  root: info
+  org.apache: warn
+  io.confluent: warn
 
 spring:
   application:
@@ -13,12 +15,10 @@ spring:
         greet-in-0:
           group: ${spring.application.name}
           destination: ^input\.(?:men|women)\.avro$
-          consumer:
-            use-native-decoding: true
+          consumer.use-native-decoding: true
         greet-out-0:
           destination: output.avro
-          producer:
-            use-native-encoding: true
+          producer.use-native-encoding: true
       kafka:
         binder:
           auto-create-topics: false
