@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class KafkaGreetingValidator
         implements GreetingValidator {
 
-    private static final Duration POLLING_TIMEOUT = ofSeconds(20);
+    private static final Duration POLLING_TIMEOUT = ofSeconds(10);
 
     private final Consumer<String, Output> consumer;
     private final List<TopicPartition>     topicPartitions;
