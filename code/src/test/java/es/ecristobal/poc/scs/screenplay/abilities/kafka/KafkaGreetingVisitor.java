@@ -22,6 +22,7 @@ public class KafkaGreetingVisitor
     ) {
         final ProducerFactory<String, Input> producerFactory = new DefaultKafkaProducerFactory<>(properties);
         this.template = new KafkaTemplate<>(producerFactory, true);
+        this.template.setObservationEnabled(true);
         this.template.setDefaultTopic(topic);
     }
 

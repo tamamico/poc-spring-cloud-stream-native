@@ -1,10 +1,12 @@
 management.endpoints.web:
   exposure.include: "*"
 
-logging.level:
-  root: info
-  org.apache: warn
-  io.confluent: warn
+logging:
+  level:
+    root: info
+    org.apache: warn
+    io.confluent: warn
+  pattern.level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 spring:
   application:

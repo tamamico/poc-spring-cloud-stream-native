@@ -7,6 +7,7 @@ import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingVisitor;
 import org.apache.kafka.common.security.scram.ScramLoginModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -25,6 +26,7 @@ import static java.lang.String.format;
 import static java.time.Duration.ofSeconds;
 
 @Testcontainers
+@AutoConfigureObservability
 @SpringBootTest
 @SuppressWarnings("java:S2699")
 class GreeterIT {

@@ -31,11 +31,12 @@ class StreamConfiguration {
             final Greeter greeter,
             final ObservationRegistry registry
     ) {
-        return outer -> outer.flatMap(inner -> inner.doOnNext(input -> LOGGER.info("Greeting {}", input.value().getName()))
-                                                    .map(input -> MessageBuilder.withPayload(greeter.greet(input.value()))
-                                                                                .setHeader("kafka_messageKey", input.key())
-                                                                                .build())
-                                                    .tap(observation(registry)));
+        return outer -> outer.flatMap(
+                inner -> inner.doOnNext(input -> LOGGER.atInfo().setMessage("Greeting {}").addArgument(input.value().getName()).log())
+                              .map(input -> MessageBuilder.withPayload(greeter.greet(input.value()))
+                                                          .setHeader("kafka_messageKey", input.key())
+                                                          .build())
+                              .tap(observation(registry)));
     }
 
 }
