@@ -5,7 +5,8 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "terraform"
-    directory: "/infrastructure"
+    directories: 
+      - "/infrastructure/*"
     schedule:
       interval: "weekly"
   - package-ecosystem: "github-actions"
