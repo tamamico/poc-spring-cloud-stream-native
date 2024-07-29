@@ -38,7 +38,7 @@ jobs:
       - name: Copy Avro schemas to schema-registry folder
         run: cp ./code/src/main/avro/*.avsc ./infrastructure/confluent/
       - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.0
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.1
         id: plan-upload
         with:
           token: ${{ secrets.TF_API_TOKEN }}
@@ -46,7 +46,7 @@ jobs:
           workspace: ${{ vars.TF_WORKSPACE }}
           directory: ./${{ inputs.folder }}
       - name: Create Apply Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.0
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.1
         id: apply-run
         with:
           token: ${{ secrets.TF_API_TOKEN }}
@@ -54,7 +54,7 @@ jobs:
           workspace: ${{ vars.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
       - name: Apply
-        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.0
+        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.1
         if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
         id: apply
         with:
@@ -63,7 +63,7 @@ jobs:
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
       - name: Get workspace output
-        uses: hashicorp/tfc-workflows-github/actions/workspace-output@v1.3.0
+        uses: hashicorp/tfc-workflows-github/actions/workspace-output@v1.3.1
         id: workspace-output
         with:
           token: ${{ secrets.TF_API_TOKEN }}
