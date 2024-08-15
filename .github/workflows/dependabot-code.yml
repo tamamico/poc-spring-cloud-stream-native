@@ -3,7 +3,7 @@ name: Build Code
 on:
   push:
     branches:
-      - dependabot/**
+      - dependabot/maven/**
     paths:
       - code/**
       - .github/workflows/**
