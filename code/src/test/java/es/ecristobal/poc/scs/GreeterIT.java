@@ -46,17 +46,16 @@ class GreeterIT {
 
     private static final Duration METADATA_MAX_AGE = ofSeconds(1);
 
-    private static final String                                           USER_SETUP
-                                                                                 = "{\"username\": \"%s\", \"password\": \"%s\", " +
-                                                                                   "\"algorithm\": \"%s\"}";
+    private static final String USER_SETUP = "{\"username\": \"%s\", \"password\": \"%s\", " + "\"algorithm\": \"%s\"}";
+
     @Container
-    private static final RedpandaContainer                                broker = new RedpandaContainer(DOCKER_IMAGE).enableAuthorization()
-                                                                                                                      .enableSasl()
-                                                                                                                      .enableSchemaRegistryHttpBasicAuth()
-                                                                                                                      .withSuperuser(
-                                                                                                                              KAFKA_USER);
-    private static       KafkaGreetingVisitor.KafkaGreetingVisitorBuilder greetingVisitorBuilder;
-    private static       GreetingValidator                                greetingValidator;
+    private static final RedpandaContainer broker = new RedpandaContainer(DOCKER_IMAGE).enableAuthorization()
+                                                                                       .enableSasl()
+                                                                                       .enableSchemaRegistryHttpBasicAuth()
+                                                                                       .withSuperuser(KAFKA_USER);
+
+    private static KafkaGreetingVisitor.KafkaGreetingVisitorBuilder greetingVisitorBuilder;
+    private static GreetingValidator                                greetingValidator;
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
