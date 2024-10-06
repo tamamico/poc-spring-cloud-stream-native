@@ -1,6 +1,7 @@
 ---
 title: Spring Cloud Stream native PoC
 ---
+
 # &nbsp;Purpose
 
 There are 3 main goals behind this PoC:
@@ -34,4 +35,5 @@ The application will receive as an input a name, and it should output a greeting
 
 ##
 
-<SwmMeta version="3.0.0" repo-id="Z2l0aHViJTNBJTNBcG9jLXNwcmluZy1jbG91ZC1zdHJlYW0tbmF0aXZlJTNBJTNBdGFtYW1pY28=" repo-name="poc-spring-cloud-stream-native"><sup>Powered by [Swimm](https://app.swimm.io/)</sup></SwmMeta>
+<SwmMeta version="3.0.0" repo-id="Z2l0aHViJTNBJTNBcG9jLXNwcmluZy1jbG91ZC1zdHJlYW0tbmF0aXZlJTNBJTNBdGFtYW1pY28=" repo-name="poc-spring-cloud-stream-native"><sup>
+Powered by [Swimm](https://app.swimm.io/)</sup></SwmMeta>

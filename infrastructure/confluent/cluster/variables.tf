@@ -4,8 +4,8 @@ variable "environment" {
 
 variable "env_admin" {
   type = object({
-    id = string
+    id          = string
     api_version = string
-    kind = string
+    kind        = string
   })
 }

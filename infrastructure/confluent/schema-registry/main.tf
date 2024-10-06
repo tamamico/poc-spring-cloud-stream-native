@@ -7,21 +7,9 @@ terraform {
   }
 }
 
-data "confluent_schema_registry_region" "essentials" {
-  cloud   = "AWS"
-  region  = "us-east-1"
-  package = "ESSENTIALS"
-}
-
-resource "confluent_schema_registry_cluster" "kafka" {
-  package = data.confluent_schema_registry_region.essentials.package
-
+data "confluent_schema_registry_cluster" "kafka" {
   environment {
     id = var.environment
-  }
-
-  region {
-    id = data.confluent_schema_registry_region.essentials.id
   }
 }
 
@@ -34,9 +22,9 @@ resource "confluent_api_key" "env-admin" {
     kind        = var.env_admin.kind
   }
   managed_resource {
-    id          = confluent_schema_registry_cluster.kafka.id
-    api_version = confluent_schema_registry_cluster.kafka.api_version
-    kind        = confluent_schema_registry_cluster.kafka.kind
+    id          = data.confluent_schema_registry_cluster.kafka.id
+    api_version = data.confluent_schema_registry_cluster.kafka.api_version
+    kind        = data.confluent_schema_registry_cluster.kafka.kind
     environment {
       id = var.environment
     }
@@ -45,11 +33,11 @@ resource "confluent_api_key" "env-admin" {
 
 resource "confluent_schema" "input" {
   schema_registry_cluster {
-    id = confluent_schema_registry_cluster.kafka.id
+    id = data.confluent_schema_registry_cluster.kafka.id
   }
-  rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
-  subject_name = "es.ecristobal.poc.scs.avro.Input"
-  format = "AVRO"
+  rest_endpoint = data.confluent_schema_registry_cluster.kafka.rest_endpoint
+  subject_name  = "es.ecristobal.poc.scs.avro.Input"
+  format        = "AVRO"
   schema = file("./input.avsc")
   credentials {
     key    = confluent_api_key.env-admin.id
@@ -59,11 +47,11 @@ resource "confluent_schema" "input" {
 
 resource "confluent_subject_config" "input" {
   schema_registry_cluster {
-    id = confluent_schema_registry_cluster.kafka.id
+    id = data.confluent_schema_registry_cluster.kafka.id
   }
   subject_name        = confluent_schema.input.subject_name
   compatibility_level = "FORWARD_TRANSITIVE"
-  rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
+  rest_endpoint       = data.confluent_schema_registry_cluster.kafka.rest_endpoint
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret
@@ -72,11 +60,11 @@ resource "confluent_subject_config" "input" {
 
 resource "confluent_schema" "output" {
   schema_registry_cluster {
-    id = confluent_schema_registry_cluster.kafka.id
+    id = data.confluent_schema_registry_cluster.kafka.id
   }
-  rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
-  subject_name = "es.ecristobal.poc.scs.avro.Output"
-  format = "AVRO"
+  rest_endpoint = data.confluent_schema_registry_cluster.kafka.rest_endpoint
+  subject_name  = "es.ecristobal.poc.scs.avro.Output"
+  format        = "AVRO"
   schema = file("./output.avsc")
   credentials {
     key    = confluent_api_key.env-admin.id
@@ -86,11 +74,11 @@ resource "confluent_schema" "output" {
 
 resource "confluent_subject_config" "output" {
   schema_registry_cluster {
-    id = confluent_schema_registry_cluster.kafka.id
+    id = data.confluent_schema_registry_cluster.kafka.id
   }
   subject_name        = confluent_schema.output.subject_name
   compatibility_level = "FORWARD_TRANSITIVE"
-  rest_endpoint = confluent_schema_registry_cluster.kafka.rest_endpoint
+  rest_endpoint       = data.confluent_schema_registry_cluster.kafka.rest_endpoint
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret

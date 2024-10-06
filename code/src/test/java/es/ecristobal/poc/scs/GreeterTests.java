@@ -14,11 +14,6 @@ class GreeterTests {
     private static GreetingVisitor   greetingVisitor;
     private static GreetingValidator greetingValidator;
 
-    @Test
-    void testGreet() {
-        greetOk("Woz", greetingVisitor, greetingValidator);
-    }
-
     @BeforeAll
     static void setUp() {
         final WhiteboardGreetingFactory greetingFactory = WhiteboardGreetingFactory.builder()
@@ -26,5 +21,10 @@ class GreeterTests {
                                                                                    .build();
         greetingVisitor   = greetingFactory.greetingVisitorBuilder().build();
         greetingValidator = greetingFactory.greetingValidatorBuilder().build();
+    }
+
+    @Test
+    void testGreet() {
+        greetOk("Woz", greetingVisitor, greetingValidator);
     }
 }

@@ -46,28 +46,17 @@ class GreeterIT {
 
     private static final Duration METADATA_MAX_AGE = ofSeconds(1);
 
-    private static final String USER_SETUP = "{\"username\": \"%s\", \"password\": \"%s\", \"algorithm\": \"%s\"}";
-
-    private static KafkaGreetingVisitor.KafkaGreetingVisitorBuilder greetingVisitorBuilder;
-    private static GreetingValidator                                greetingValidator;
-
+    private static final String                                           USER_SETUP
+                                                                                 = "{\"username\": \"%s\", \"password\": \"%s\", " +
+                                                                                   "\"algorithm\": \"%s\"}";
     @Container
-    private static RedpandaContainer broker = new RedpandaContainer(DOCKER_IMAGE).enableAuthorization()
-                                                                                 .enableSasl()
-                                                                                 .enableSchemaRegistryHttpBasicAuth()
-                                                                                 .withSuperuser(KAFKA_USER);
-
-    @Test
-    void testGreetMen() {
-        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_MEN).build();
-        greetOk("Steve", greetingVisitor, greetingValidator);
-    }
-
-    @Test
-    void testGreetWomen() {
-        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_WOMEN).build();
-        greetOk("Laurene", greetingVisitor, greetingValidator);
-    }
+    private static final RedpandaContainer                                broker = new RedpandaContainer(DOCKER_IMAGE).enableAuthorization()
+                                                                                                                      .enableSasl()
+                                                                                                                      .enableSchemaRegistryHttpBasicAuth()
+                                                                                                                      .withSuperuser(
+                                                                                                                              KAFKA_USER);
+    private static       KafkaGreetingVisitor.KafkaGreetingVisitorBuilder greetingVisitorBuilder;
+    private static       GreetingValidator                                greetingValidator;
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
@@ -113,6 +102,18 @@ class GreeterIT {
                                                                          .build();
         greetingVisitorBuilder = greetingFactory.greetingVisitorBuilder();
         greetingValidator      = greetingFactory.greetingValidatorBuilder().topic(OUTPUT_TOPIC).build();
+    }
+
+    @Test
+    void testGreetMen() {
+        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_MEN).build();
+        greetOk("Steve", greetingVisitor, greetingValidator);
+    }
+
+    @Test
+    void testGreetWomen() {
+        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_WOMEN).build();
+        greetOk("Laurene", greetingVisitor, greetingValidator);
     }
 
 }
