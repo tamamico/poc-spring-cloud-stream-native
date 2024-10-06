@@ -8,13 +8,13 @@ terraform {
 }
 
 resource "confluent_service_account" "poc-user" {
-  display_name = "poc-user"
+  display_name = "poc-service-account"
   description  = "Service account for PoC application"
 }
 
 resource "confluent_api_key" "cluster-poc-user" {
-  display_name = "cluster-poc-user"
-  description  = "Cluster API Key that is owned by 'poc-user' account"
+  display_name = "cluster-poc-service-account"
+  description  = "Cluster API Key that is owned by 'poc-service-account' account"
   owner {
     id          = confluent_service_account.poc-user.id
     api_version = confluent_service_account.poc-user.api_version
@@ -33,8 +33,8 @@ resource "confluent_api_key" "cluster-poc-user" {
 }
 
 resource "confluent_api_key" "schema-registry-poc-user" {
-  display_name = "schema-registry-poc-user"
-  description  = "Schema Registry API Key that is owned by 'poc-user' account"
+  display_name = "schema-registry-poc-service-account"
+  description  = "Schema Registry API Key that is owned by 'poc-service-account' account"
   owner {
     id          = confluent_service_account.poc-user.id
     api_version = confluent_service_account.poc-user.api_version
