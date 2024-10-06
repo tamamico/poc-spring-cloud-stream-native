@@ -1,0 +1,71 @@
+name: Build infrastructure
+
+on:
+  workflow_call:
+    inputs:
+      folder:
+        required: true
+        type: string
+        description: Folder containing Terraform scripts
+
+jobs:
+  terraform:
+    name: Run Terraform scripts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Run SonarCloud analysis
+        uses: sonarsource/sonarcloud-github-action@v3.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./infrastructure
+          args: >
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY_INFRA }}
+            -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
+      - name: Copy Avro schemas to schema-registry folder
+        run: cp ./code/src/main/avro/*.avsc ./infrastructure/confluent/
+      - name: Upload Configuration
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.1
+        id: plan-upload
+        with:
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace: ${{ vars.TF_WORKSPACE }}
+          directory: ./${{ inputs.folder }}
+      - name: Create Apply Run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.1
+        id: apply-run
+        with:
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace: ${{ vars.TF_WORKSPACE }}
+          configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+      - name: Apply
+        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.1
+        if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
+        id: apply
+        with:
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          run: ${{ steps.apply-run.outputs.run_id }}
+          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+      - name: Get workspace output
+        uses: hashicorp/tfc-workflows-github/actions/workspace-output@v1.3.1
+        id: workspace-output
+        with:
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace: ${{ vars.TF_WORKSPACE }}
