@@ -9,6 +9,10 @@ terraform {
 
 resource "confluent_environment" "development" {
   display_name = "development"
+
+  stream_governance {
+    package = "ESSENTIALS"
+  }
 }
 
 resource "confluent_service_account" "env-admin" {
