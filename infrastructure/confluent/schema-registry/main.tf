@@ -7,9 +7,17 @@ terraform {
   }
 }
 
+data "confluent_environment" "staging" {
+  display_name = "staging"
+}
+
+data "confluent_service_account" "env-admin" {
+  display_name = "env-admin"
+}
+
 data "confluent_schema_registry_cluster" "kafka" {
   environment {
-    id = var.environment
+    id = data.confluent_environment.staging.id
   }
 }
 
@@ -17,16 +25,16 @@ resource "confluent_api_key" "env-admin" {
   display_name = "env-admin-schema-registry-api-key"
   description  = "Environment manager schema registry API Key"
   owner {
-    id          = var.env_admin.id
-    api_version = var.env_admin.api_version
-    kind        = var.env_admin.kind
+    id          = data.confluent_service_account.env-admin.id
+    api_version = data.confluent_service_account.env-admin.api_version
+    kind        = data.confluent_service_account.env-admin.kind
   }
   managed_resource {
     id          = data.confluent_schema_registry_cluster.kafka.id
     api_version = data.confluent_schema_registry_cluster.kafka.api_version
     kind        = data.confluent_schema_registry_cluster.kafka.kind
     environment {
-      id = var.environment
+      id = data.confluent_environment.staging.id
     }
   }
 }
@@ -38,7 +46,7 @@ resource "confluent_schema" "input" {
   rest_endpoint = data.confluent_schema_registry_cluster.kafka.rest_endpoint
   subject_name  = "es.ecristobal.poc.scs.avro.Input"
   format        = "AVRO"
-  schema = file("./code/src/main/avro/input.avsc")
+  schema = file("./input.avsc")
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret
@@ -65,7 +73,7 @@ resource "confluent_schema" "output" {
   rest_endpoint = data.confluent_schema_registry_cluster.kafka.rest_endpoint
   subject_name  = "es.ecristobal.poc.scs.avro.Output"
   format        = "AVRO"
-  schema = file("./code/src/main/avro/output.avsc")
+  schema = file("./output.avsc")
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret

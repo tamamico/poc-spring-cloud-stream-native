@@ -7,7 +7,7 @@ on:
     paths:
       - 'infrastructure/confluent/**'
       - '.github/workflows/main-infra-confluent.yml'
-      - '../actions/terraform/action.yml'
+      - '.github/actions/terraform/action.yml'
 
 jobs:
   sonar:
@@ -32,8 +32,8 @@ jobs:
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY_INFRA }}
             -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
-  update-confluent-environment:
-    name: Update Confluent environment
+  update-kafka:
+    name: Update Kafka infrastructure
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -51,6 +51,16 @@ jobs:
         with:
           provider: confluent
           resource: cluster
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace-prefix: ${{ vars.TF_WORKSPACE_PREFIX }}
+      - name: Copy Avro schemas to schema-registry folder
+        run: cp ./code/src/main/avro/*.avsc ./infrastructure/confluent/schema-registry
+      - name: Set-up Schema Registry
+        uses: ./.github/actions/terraform
+        with:
+          provider: confluent
+          resource: schema-registry
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace-prefix: ${{ vars.TF_WORKSPACE_PREFIX }}
