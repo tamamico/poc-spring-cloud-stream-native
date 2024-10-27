@@ -7,6 +7,14 @@ terraform {
   }
 }
 
+data "confluent_environment" "staging" {
+  display_name = "staging"
+}
+
+data "confluent_service_account" "env-admin" {
+  display_name = "env-admin"
+}
+
 resource "confluent_kafka_cluster" "basic" {
   display_name = "poc_kafka_cluster"
   availability = "SINGLE_ZONE"
@@ -14,7 +22,7 @@ resource "confluent_kafka_cluster" "basic" {
   region       = "us-east-1"
   basic {}
   environment {
-    id = var.environment
+    id = data.confluent_environment.staging.id
   }
 }
 
@@ -22,16 +30,16 @@ resource "confluent_api_key" "env-admin" {
   display_name = "env-admin-cluster-api-key"
   description  = "Environment manager cluster API Key"
   owner {
-    id          = var.env_admin.id
-    api_version = var.env_admin.api_version
-    kind        = var.env_admin.kind
+    id          = data.confluent_service_account.env-admin.id
+    api_version = data.confluent_service_account.env-admin.api_version
+    kind        = data.confluent_service_account.env-admin.kind
   }
   managed_resource {
     id          = confluent_kafka_cluster.basic.id
     api_version = confluent_kafka_cluster.basic.api_version
     kind        = confluent_kafka_cluster.basic.kind
     environment {
-      id = var.environment
+      id = data.confluent_environment.staging.id
     }
   }
 }
