@@ -44,8 +44,6 @@ class GreeterIT {
     private static final String INPUT_TOPIC_WOMEN = "input.women.avro";
     private static final String OUTPUT_TOPIC      = "output.avro";
 
-    private static final Duration METADATA_MAX_AGE = ofSeconds(1);
-
     private static final String USER_SETUP = "{\"username\": \"%s\", \"password\": \"%s\", " + "\"algorithm\": \"%s\"}";
 
     @Container
@@ -69,7 +67,6 @@ class GreeterIT {
         // Overridden properties
         registry.add("spring.cloud.stream.kafka.binder.producer-properties.auto.register.schemas", () -> "true");
         registry.add("spring.cloud.stream.kafka.bindings.greet-in-0.consumer.start-offset", () -> "earliest");
-        registry.add("spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms", METADATA_MAX_AGE::toMillis);
         registry.add("spring.cloud.stream.kafka.binder.configuration.sasl.mechanism", () -> SASL_MECHANISM);
         registry.add("spring.cloud.stream.kafka.binder.configuration.security.protocol", () -> SECURITY_PROTOCOL);
         registry.add("kafka.login.module", KAFKA_LOGIN_MODULE::getName);

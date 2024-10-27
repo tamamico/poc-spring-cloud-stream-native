@@ -39,7 +39,7 @@ spring:
             value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
             value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
           configuration:
-            metadata.max.age.ms: 10000
+            metadata.max.age.ms: 1000
             security.protocol: SASL_SSL
             sasl.mechanism: PLAIN
             sasl.jaas.config: >
