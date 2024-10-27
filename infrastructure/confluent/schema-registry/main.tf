@@ -92,3 +92,63 @@ resource "confluent_subject_config" "output" {
     secret = confluent_api_key.env-admin.secret
   }
 }
+
+data "confluent_service_account" "poc-user" {
+  display_name = "poc-user"
+}
+
+resource "confluent_role_binding" "poc-user-schema-registry" {
+  principal   = "User:${data.confluent_service_account.poc-user.id}"
+  role_name   = "DeveloperRead"
+  crn_pattern = "${data.confluent_schema_registry_cluster.kafka.resource_name}/subject=es.ecristobal.poc.scs.avro.*"
+}
+
+resource "confluent_api_key" "schema-registry-poc-user" {
+  display_name = "schema-registry-poc-service-account"
+  description  = "Schema Registry API Key that is owned by 'poc-service-account' account"
+  owner {
+    id          = data.confluent_service_account.poc-user.id
+    api_version = data.confluent_service_account.poc-user.api_version
+    kind        = data.confluent_service_account.poc-user.kind
+  }
+
+  managed_resource {
+    id          = data.confluent_schema_registry_cluster.kafka.id
+    api_version = data.confluent_schema_registry_cluster.kafka.api_version
+    kind        = data.confluent_schema_registry_cluster.kafka.kind
+
+    environment {
+      id = data.confluent_environment.staging.id
+    }
+  }
+}
+
+data "confluent_service_account" "poc-test" {
+  display_name = "poc-test"
+}
+
+resource "confluent_role_binding" "poc-test-schema-registry" {
+  principal   = "User:${data.confluent_service_account.poc-test.id}"
+  role_name   = "DeveloperRead"
+  crn_pattern = "${data.confluent_schema_registry_cluster.kafka.resource_name}/subject=es.ecristobal.poc.scs.avro.*"
+}
+
+resource "confluent_api_key" "schema-registry-poc-test" {
+  display_name = "schema-registry-poc-test"
+  description  = "Schema Registry API Key that is owned by 'poc-test' account"
+  owner {
+    id          = data.confluent_service_account.poc-test.id
+    api_version = data.confluent_service_account.poc-test.api_version
+    kind        = data.confluent_service_account.poc-test.kind
+  }
+
+  managed_resource {
+    id          = data.confluent_schema_registry_cluster.kafka.id
+    api_version = data.confluent_schema_registry_cluster.kafka.api_version
+    kind        = data.confluent_schema_registry_cluster.kafka.kind
+
+    environment {
+      id = data.confluent_environment.staging.id
+    }
+  }
+}

@@ -46,14 +46,6 @@ jobs:
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace-prefix: ${{ vars.TF_WORKSPACE_PREFIX }}
-      - name: Set-up Kafka cluster
-        uses: ./.github/actions/terraform
-        with:
-          provider: confluent
-          resource: cluster
-          token: ${{ secrets.TF_API_TOKEN }}
-          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
-          workspace-prefix: ${{ vars.TF_WORKSPACE_PREFIX }}
       - name: Copy Avro schemas to schema-registry folder
         run: cp ./code/src/main/avro/*.avsc ./infrastructure/confluent/schema-registry
       - name: Set-up Schema Registry
@@ -61,6 +53,14 @@ jobs:
         with:
           provider: confluent
           resource: schema-registry
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace-prefix: ${{ vars.TF_WORKSPACE_PREFIX }}
+      - name: Set-up topics
+        uses: ./.github/actions/terraform
+        with:
+          provider: confluent
+          resource: topics
           token: ${{ secrets.TF_API_TOKEN }}
           organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
           workspace-prefix: ${{ vars.TF_WORKSPACE_PREFIX }}
