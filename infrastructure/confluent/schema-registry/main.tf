@@ -15,7 +15,7 @@ data "confluent_service_account" "env-admin" {
   display_name = "env-admin"
 }
 
-data "confluent_schema_registry_cluster" "kafka" {
+data "confluent_schema_registry_cluster" "schema-registry" {
   environment {
     id = data.confluent_environment.staging.id
   }
@@ -30,9 +30,9 @@ resource "confluent_api_key" "env-admin" {
     kind        = data.confluent_service_account.env-admin.kind
   }
   managed_resource {
-    id          = data.confluent_schema_registry_cluster.kafka.id
-    api_version = data.confluent_schema_registry_cluster.kafka.api_version
-    kind        = data.confluent_schema_registry_cluster.kafka.kind
+    id          = data.confluent_schema_registry_cluster.schema-registry.id
+    api_version = data.confluent_schema_registry_cluster.schema-registry.api_version
+    kind        = data.confluent_schema_registry_cluster.schema-registry.kind
     environment {
       id = data.confluent_environment.staging.id
     }
@@ -41,9 +41,9 @@ resource "confluent_api_key" "env-admin" {
 
 resource "confluent_schema" "input" {
   schema_registry_cluster {
-    id = data.confluent_schema_registry_cluster.kafka.id
+    id = data.confluent_schema_registry_cluster.schema-registry.id
   }
-  rest_endpoint = data.confluent_schema_registry_cluster.kafka.rest_endpoint
+  rest_endpoint = data.confluent_schema_registry_cluster.schema-registry.rest_endpoint
   subject_name  = "es.ecristobal.poc.scs.avro.Input"
   format        = "AVRO"
   schema = file("./input.avsc")
@@ -55,11 +55,11 @@ resource "confluent_schema" "input" {
 
 resource "confluent_subject_config" "input" {
   schema_registry_cluster {
-    id = data.confluent_schema_registry_cluster.kafka.id
+    id = data.confluent_schema_registry_cluster.schema-registry.id
   }
   subject_name        = confluent_schema.input.subject_name
   compatibility_level = "FORWARD_TRANSITIVE"
-  rest_endpoint       = data.confluent_schema_registry_cluster.kafka.rest_endpoint
+  rest_endpoint       = data.confluent_schema_registry_cluster.schema-registry.rest_endpoint
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret
@@ -68,9 +68,9 @@ resource "confluent_subject_config" "input" {
 
 resource "confluent_schema" "output" {
   schema_registry_cluster {
-    id = data.confluent_schema_registry_cluster.kafka.id
+    id = data.confluent_schema_registry_cluster.schema-registry.id
   }
-  rest_endpoint = data.confluent_schema_registry_cluster.kafka.rest_endpoint
+  rest_endpoint = data.confluent_schema_registry_cluster.schema-registry.rest_endpoint
   subject_name  = "es.ecristobal.poc.scs.avro.Output"
   format        = "AVRO"
   schema = file("./output.avsc")
@@ -82,11 +82,11 @@ resource "confluent_schema" "output" {
 
 resource "confluent_subject_config" "output" {
   schema_registry_cluster {
-    id = data.confluent_schema_registry_cluster.kafka.id
+    id = data.confluent_schema_registry_cluster.schema-registry.id
   }
   subject_name        = confluent_schema.output.subject_name
   compatibility_level = "FORWARD_TRANSITIVE"
-  rest_endpoint       = data.confluent_schema_registry_cluster.kafka.rest_endpoint
+  rest_endpoint       = data.confluent_schema_registry_cluster.schema-registry.rest_endpoint
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret
@@ -100,7 +100,7 @@ data "confluent_service_account" "poc-user" {
 resource "confluent_role_binding" "poc-user-schema-registry" {
   principal   = "User:${data.confluent_service_account.poc-user.id}"
   role_name   = "DeveloperRead"
-  crn_pattern = "${data.confluent_schema_registry_cluster.kafka.resource_name}/subject=es.ecristobal.poc.scs.avro.*"
+  crn_pattern = "${data.confluent_schema_registry_cluster.schema-registry.resource_name}/subject=es.ecristobal.poc.scs.avro.*"
 }
 
 resource "confluent_api_key" "schema-registry-poc-user" {
@@ -113,9 +113,9 @@ resource "confluent_api_key" "schema-registry-poc-user" {
   }
 
   managed_resource {
-    id          = data.confluent_schema_registry_cluster.kafka.id
-    api_version = data.confluent_schema_registry_cluster.kafka.api_version
-    kind        = data.confluent_schema_registry_cluster.kafka.kind
+    id          = data.confluent_schema_registry_cluster.schema-registry.id
+    api_version = data.confluent_schema_registry_cluster.schema-registry.api_version
+    kind        = data.confluent_schema_registry_cluster.schema-registry.kind
 
     environment {
       id = data.confluent_environment.staging.id
@@ -130,7 +130,7 @@ data "confluent_service_account" "poc-test" {
 resource "confluent_role_binding" "poc-test-schema-registry" {
   principal   = "User:${data.confluent_service_account.poc-test.id}"
   role_name   = "DeveloperRead"
-  crn_pattern = "${data.confluent_schema_registry_cluster.kafka.resource_name}/subject=es.ecristobal.poc.scs.avro.*"
+  crn_pattern = "${data.confluent_schema_registry_cluster.schema-registry.resource_name}/subject=es.ecristobal.poc.scs.avro.*"
 }
 
 resource "confluent_api_key" "schema-registry-poc-test" {
@@ -143,9 +143,9 @@ resource "confluent_api_key" "schema-registry-poc-test" {
   }
 
   managed_resource {
-    id          = data.confluent_schema_registry_cluster.kafka.id
-    api_version = data.confluent_schema_registry_cluster.kafka.api_version
-    kind        = data.confluent_schema_registry_cluster.kafka.kind
+    id          = data.confluent_schema_registry_cluster.schema-registry.id
+    api_version = data.confluent_schema_registry_cluster.schema-registry.api_version
+    kind        = data.confluent_schema_registry_cluster.schema-registry.kind
 
     environment {
       id = data.confluent_environment.staging.id
