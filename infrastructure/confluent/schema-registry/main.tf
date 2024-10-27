@@ -94,7 +94,7 @@ resource "confluent_subject_config" "output" {
 }
 
 data "confluent_service_account" "poc-user" {
-  display_name = "poc-user"
+  display_name = "poc-service-account"
 }
 
 resource "confluent_role_binding" "poc-user-schema-registry" {

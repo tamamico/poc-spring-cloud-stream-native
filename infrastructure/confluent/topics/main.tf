@@ -15,14 +15,6 @@ data "confluent_service_account" "env-admin" {
   display_name = "env-admin"
 }
 
-data "confluent_service_account" "poc-test" {
-  display_name = "poc-test"
-}
-
-data "confluent_service_account" "poc-user" {
-  display_name = "poc-user"
-}
-
 data "confluent_kafka_cluster" "basic" {
   display_name = "poc_kafka_cluster"
   environment {
@@ -99,6 +91,10 @@ resource "confluent_kafka_topic" "output" {
   }
 }
 
+data "confluent_service_account" "poc-user" {
+  display_name = "poc-service-account"
+}
+
 resource "confluent_kafka_acl" "poc-user-input-men-topic" {
   kafka_cluster {
     id = data.confluent_kafka_cluster.basic.id
@@ -109,24 +105,6 @@ resource "confluent_kafka_acl" "poc-user-input-men-topic" {
   principal     = "User:${data.confluent_service_account.poc-user.id}"
   host          = "*"
   operation     = "READ"
-  permission    = "ALLOW"
-  rest_endpoint = data.confluent_kafka_cluster.basic.rest_endpoint
-  credentials {
-    key    = confluent_api_key.env-admin.id
-    secret = confluent_api_key.env-admin.secret
-  }
-}
-
-resource "confluent_kafka_acl" "poc-test-input-men-topic" {
-  kafka_cluster {
-    id = data.confluent_kafka_cluster.basic.id
-  }
-  resource_type = "TOPIC"
-  resource_name = confluent_kafka_topic.input-men.topic_name
-  pattern_type  = "LITERAL"
-  principal     = "User:${data.confluent_service_account.poc-test.id}"
-  host          = "*"
-  operation     = "WRITE"
   permission    = "ALLOW"
   rest_endpoint = data.confluent_kafka_cluster.basic.rest_endpoint
   credentials {
@@ -153,24 +131,6 @@ resource "confluent_kafka_acl" "poc-user-input-women-topic" {
   }
 }
 
-resource "confluent_kafka_acl" "poc-test-input-women-topic" {
-  kafka_cluster {
-    id = data.confluent_kafka_cluster.basic.id
-  }
-  resource_type = "TOPIC"
-  resource_name = confluent_kafka_topic.input-women.topic_name
-  pattern_type  = "LITERAL"
-  principal     = "User:${data.confluent_service_account.poc-test.id}"
-  host          = "*"
-  operation     = "WRITE"
-  permission    = "ALLOW"
-  rest_endpoint = data.confluent_kafka_cluster.basic.rest_endpoint
-  credentials {
-    key    = confluent_api_key.env-admin.id
-    secret = confluent_api_key.env-admin.secret
-  }
-}
-
 resource "confluent_kafka_acl" "poc-user-output-topic" {
   kafka_cluster {
     id = data.confluent_kafka_cluster.basic.id
@@ -189,14 +149,14 @@ resource "confluent_kafka_acl" "poc-user-output-topic" {
   }
 }
 
-resource "confluent_kafka_acl" "poc-test-output-topic" {
+resource "confluent_kafka_acl" "poc-user-consumer-group" {
   kafka_cluster {
     id = data.confluent_kafka_cluster.basic.id
   }
-  resource_type = "TOPIC"
-  resource_name = confluent_kafka_topic.output.topic_name
+  resource_type = "GROUP"
+  resource_name = "poc"
   pattern_type  = "LITERAL"
-  principal     = "User:${data.confluent_service_account.poc-test.id}"
+  principal     = "User:${data.confluent_service_account.poc-user.id}"
   host          = "*"
   operation     = "READ"
   permission    = "ALLOW"
@@ -207,14 +167,54 @@ resource "confluent_kafka_acl" "poc-test-output-topic" {
   }
 }
 
-resource "confluent_kafka_acl" "poc-user-consumer-group" {
+data "confluent_service_account" "poc-test" {
+  display_name = "poc-test"
+}
+
+resource "confluent_kafka_acl" "poc-test-input-men-topic" {
   kafka_cluster {
     id = data.confluent_kafka_cluster.basic.id
   }
-  resource_type = "GROUP"
-  resource_name = "poc"
+  resource_type = "TOPIC"
+  resource_name = confluent_kafka_topic.input-men.topic_name
   pattern_type  = "LITERAL"
-  principal     = "User:${data.confluent_service_account.poc-user.id}"
+  principal     = "User:${data.confluent_service_account.poc-test.id}"
+  host          = "*"
+  operation     = "WRITE"
+  permission    = "ALLOW"
+  rest_endpoint = data.confluent_kafka_cluster.basic.rest_endpoint
+  credentials {
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
+  }
+}
+
+resource "confluent_kafka_acl" "poc-test-input-women-topic" {
+  kafka_cluster {
+    id = data.confluent_kafka_cluster.basic.id
+  }
+  resource_type = "TOPIC"
+  resource_name = confluent_kafka_topic.input-women.topic_name
+  pattern_type  = "LITERAL"
+  principal     = "User:${data.confluent_service_account.poc-test.id}"
+  host          = "*"
+  operation     = "WRITE"
+  permission    = "ALLOW"
+  rest_endpoint = data.confluent_kafka_cluster.basic.rest_endpoint
+  credentials {
+    key    = confluent_api_key.env-admin.id
+    secret = confluent_api_key.env-admin.secret
+  }
+}
+
+resource "confluent_kafka_acl" "poc-test-output-topic" {
+  kafka_cluster {
+    id = data.confluent_kafka_cluster.basic.id
+  }
+  resource_type = "TOPIC"
+  resource_name = confluent_kafka_topic.output.topic_name
+  pattern_type  = "LITERAL"
+  principal     = "User:${data.confluent_service_account.poc-test.id}"
   host          = "*"
   operation     = "READ"
   permission    = "ALLOW"
