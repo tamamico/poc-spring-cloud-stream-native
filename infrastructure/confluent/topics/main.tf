@@ -155,7 +155,7 @@ resource "confluent_kafka_acl" "poc-user-consumer-group" {
   }
   resource_type = "GROUP"
   resource_name = "poc"
-  pattern_type  = "LITERAL"
+  pattern_type  = "PREFIXED"
   principal     = "User:${data.confluent_service_account.poc-user.id}"
   host          = "*"
   operation     = "READ"
@@ -231,7 +231,7 @@ resource "confluent_kafka_acl" "poc-test-consumer-group" {
   }
   resource_type = "GROUP"
   resource_name = "greeting-validator"
-  pattern_type  = "LITERAL"
+  pattern_type  = "PREFIXED"
   principal     = "User:${data.confluent_service_account.poc-test.id}"
   host          = "*"
   operation     = "READ"
