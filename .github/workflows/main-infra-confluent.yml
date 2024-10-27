@@ -5,14 +5,44 @@ on:
     branches:
       - main
     paths:
-      - 'infrastructure/confluent/**'
+      - 'infrastructure/confluent/environment/**'
       - '.github/workflows/main-infra-confluent.yml'
-      - '.github/workflows/build-infra.yml'
+      - '../actions/terraform/action.yml'
 
 jobs:
-  update-infra:
-    name: Update infrastructure
-    uses: ./.github/workflows/build-infra.yml
-    secrets: inherit
-    with:
-      folder: infrastructure/confluent
+  sonar:
+    name: Run SonarCloud analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Run SonarCloud analysis
+        uses: sonarsource/sonarcloud-github-action@v3.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./infrastructure/confluent
+          args: >
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY_INFRA }}
+            -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
+  update-confluent-environment:
+    name: Update Confluent environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Apply Terraform script
+        uses: ./.github/actions/terraform
+        with:
+          provider: confluent
+          resource: environment
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          workspace-prefix: ${{ vars.TF_WORKSPACE_PREFIX }}

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     confluent = {
       source  = "confluentinc/confluent"
-      version = "2.7.0"
+      version = "2.8.0"
     }
   }
 }
@@ -38,7 +38,7 @@ resource "confluent_schema" "input" {
   rest_endpoint = data.confluent_schema_registry_cluster.kafka.rest_endpoint
   subject_name  = "es.ecristobal.poc.scs.avro.Input"
   format        = "AVRO"
-  schema = file("./input.avsc")
+  schema = file("./code/src/main/avro/input.avsc")
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret
@@ -65,7 +65,7 @@ resource "confluent_schema" "output" {
   rest_endpoint = data.confluent_schema_registry_cluster.kafka.rest_endpoint
   subject_name  = "es.ecristobal.poc.scs.avro.Output"
   format        = "AVRO"
-  schema = file("./output.avsc")
+  schema = file("./code/src/main/avro/output.avsc")
   credentials {
     key    = confluent_api_key.env-admin.id
     secret = confluent_api_key.env-admin.secret
