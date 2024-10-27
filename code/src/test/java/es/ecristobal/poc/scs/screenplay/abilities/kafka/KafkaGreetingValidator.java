@@ -34,11 +34,11 @@ public class KafkaGreetingValidator
         final TopicPartition topicPartition = new TopicPartition(topic, 0);
         topicPartitions = List.of(topicPartition);
         consumer.assign(topicPartitions);
+        consumer.seekToEnd(this.topicPartitions);
     }
 
     @Override
     public void with(final java.util.function.Consumer<String> assertions) {
-        consumer.seekToEnd(this.topicPartitions);
         final ConsumerRecords<String, Output> records = consumer.poll(POLLING_TIMEOUT);
         assertEquals(1, records.count());
         final String message = records.iterator().next().value().getMessage().toString();
