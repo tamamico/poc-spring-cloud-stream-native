@@ -20,13 +20,13 @@ import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFact
 @SuppressWarnings({"java:S2699", "java:S3577"})
 class GreeterItConfluent {
 
-    private static final String KAFKA_BROKER_URL    = "SASL_SSL://pkc-p11xm.us-east-1.aws.confluent.cloud:9092";
-    private static final String SCHEMA_REGISTRY_URL = "https://psrc-6kq702.us-east-1.aws.confluent.cloud";
+    private static final String KAFKA_BROKER_URL    = "TBD";
+    private static final String SCHEMA_REGISTRY_URL = "TBD";
 
-    private static final String KAFKA_TEST_USER               = "OSCWAJOIHI4TP4TP";
-    private static final String KAFKA_TEST_PASSWORD           = "VMZWwjWrpQkl1tlGmg35xvQErGtekmdx6GOPZxT7DcfbeLvqgYyd64xu6rw/HLzb";
-    private static final String SCHEMA_REGISTRY_TEST_USER     = "KG46V6CIPLYYRHN5";
-    private static final String SCHEMA_REGISTRY_TEST_PASSWORD = "oed2c291GtsZ97b+p+GULH2EilTD6CfEpUioSNTuq7XZh+NuLSBzU5sk8nkK4rX7";
+    private static final String KAFKA_TEST_USER               = "TBD";
+    private static final String KAFKA_TEST_PASSWORD           = "TBD";
+    private static final String SCHEMA_REGISTRY_TEST_USER     = "TBD";
+    private static final String SCHEMA_REGISTRY_TEST_PASSWORD = "TBD";
 
     private static final String INPUT_TOPIC_MEN   = "input.men.avro";
     private static final String INPUT_TOPIC_WOMEN = "input.women.avro";
@@ -39,10 +39,10 @@ class GreeterItConfluent {
     static void registerProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.cloud.stream.kafka.binder.brokers", () -> KAFKA_BROKER_URL);
         registry.add("spring.cloud.stream.kafka.binder.configuration.schema.registry.url", () -> SCHEMA_REGISTRY_URL);
-        registry.add("kafka.user", () -> "YJWEKSEFWZHP7ACS");
-        registry.add("kafka.password", () -> "FaeUwVE2KcTX384VZ95k+LTKoiH9McgsSH//Y9eDCALksW34pxyfpTyt3PoNONsZ");
-        registry.add("schema-registry.user", () -> "MNXW6AGHW5L2E4WD");
-        registry.add("schema-registry.password", () -> "Ob0TwMwBiMj0nWvxxSz6MQ/59pDKKsBMd6hL1OdpZ7tw6g8tM0cbR1NsqGldc2rI");
+        registry.add("kafka.user", () -> "TBD");
+        registry.add("kafka.password", () -> "TBD");
+        registry.add("schema-registry.user", () -> "TBD");
+        registry.add("schema-registry.password", () -> "TBD");
     }
 
     @BeforeAll

@@ -3,8 +3,6 @@ HELP.md
 ### Maven ###
 code/target/
 !code/.mvn/wrapper/maven-wrapper.jar
-!code/src/main/**/target/
-!code/src/test/**/target/
 
 ### IntelliJ IDEA ###
 .idea
@@ -13,13 +11,7 @@ code/target/
 *.ipr
 
 ### Terraform ###
-/infrastructure/confluent/.terraform/providers/registry.terraform.io/confluentinc/confluent/1.75.0/darwin_arm64/
-/infrastructure/confluent/.terraform/providers/registry.terraform.io/confluentinc/confluent/1.75.0/
-/infrastructure/confluent/.terraform/providers/registry.terraform.io/confluentinc/confluent/
-/infrastructure/confluent/.terraform/providers/registry.terraform.io/confluentinc/
-/infrastructure/confluent/.terraform/providers/registry.terraform.io/
-/infrastructure/confluent/.terraform/providers/
-/infrastructure/confluent/.terraform/
+/infrastructure/confluent/.terraform
 /infrastructure/confluent/.terraform.lock.hcl
 
 ### Snyk ###
