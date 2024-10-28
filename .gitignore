@@ -16,3 +16,6 @@ code/target/
 
 ### Snyk ###
 code/snyk-code.sarif
+
+### Docker environment settings ###
+docker.env
