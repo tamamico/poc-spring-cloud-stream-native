@@ -10,7 +10,7 @@ logging:
 
 spring:
   application:
-    name: poc
+    name: greeter
   cloud:
     stream:
       bindings:

@@ -9,6 +9,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class KafkaGreetingVisitor
         extends GreetingVisitor {
@@ -28,6 +29,6 @@ public class KafkaGreetingVisitor
 
     @Override
     public void visit(final Customer customer) {
-        this.template.sendDefault("test", this.buildFrom(customer));
+        this.template.sendDefault(UUID.randomUUID().toString(), this.buildFrom(customer));
     }
 }
