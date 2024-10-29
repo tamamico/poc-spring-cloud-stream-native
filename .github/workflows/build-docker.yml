@@ -35,8 +35,8 @@ jobs:
         with:
           username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      - name: Build Docker native image
-        run: ./mvnw -B spring-boot:build-image -Pnative
+      - name: Build Docker image
+        run: ./mvnw -B spring-boot:build-image
       - name: Get Maven artifact version
         id: get-artifact-version
         run: echo value=$(./mvnw -B help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
