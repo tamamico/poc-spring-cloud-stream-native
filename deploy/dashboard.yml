@@ -1,4 +1,19 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dashboard
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: kubernetes-dashboard
+  namespace: dashboard
+spec:
+  interval: 1m
+  url: https://kubernetes.github.io/dashboard/
+---
 kind: HelmRelease
 metadata:
   name: kubernetes-dashboard
@@ -8,7 +23,7 @@ spec:
   chart:
     spec:
       chart: kubernetes-dashboard/kubernetes-dashboard
-      version: '7.10.0'
+      version: 7.10.0
       sourceRef:
         kind: HelmRepository
         name: kubernetes-dashboard
