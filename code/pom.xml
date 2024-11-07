@@ -185,9 +185,12 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <createdDate>now</createdDate>
-                    <imageName>ecristobalr/${project.artifactId}:${project.version}</imageName>
+                    <imageName>ghcr.io/tamamico/${project.artifactId}:${project.version}</imageName>
                     <image>
                         <builder>dashaun/builder:tiny</builder>
+                        <env>
+                            <BP_OCI_SOURCE>https://github.com/tamamico/poc-spring-cloud-stream-native</BP_OCI_SOURCE>
+                        </env>
                     </image>
                 </configuration>
             </plugin>

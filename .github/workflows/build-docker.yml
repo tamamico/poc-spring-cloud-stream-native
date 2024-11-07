@@ -7,6 +7,7 @@ permissions:
   pull-requests: read
   contents: read
   security-events: write
+  packages: write
 
 defaults:
   run:
@@ -37,6 +38,8 @@ jobs:
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       - name: Build Docker image
         run: ./mvnw -B spring-boot:build-image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get Maven artifact version
         id: get-artifact-version
         run: echo value=$(./mvnw -B help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
@@ -46,7 +49,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
+          image: tamamico/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
           args: --sarif-file-output=docker.sarif
       - name: Upload Docker image analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v3
