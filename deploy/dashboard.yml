@@ -42,6 +42,7 @@ spec:
   type: NodePort
   ports:
     - port: 443
+      targetPort: 8443
   selector:
     app: dashboard-kong
 ---
