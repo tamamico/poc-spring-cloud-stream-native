@@ -31,15 +31,14 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
-          username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker image
         run: ./mvnw -B spring-boot:build-image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get Maven artifact version
         id: get-artifact-version
         run: echo value=$(./mvnw -B help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_OUTPUT
@@ -57,5 +56,5 @@ jobs:
         with:
           sarif_file: docker.sarif
           category: docker
-      - name: Deploy Docker native image
-        run: docker push ecristobalr/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
+      - name: Deploy Docker image
+        run: docker push ghcr.io/tamamico/poc-scs-native:${{ steps.get-artifact-version.outputs.value }}
