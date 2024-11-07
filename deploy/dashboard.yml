@@ -36,7 +36,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dashboard
+  name: kubernetes-dashboard
+  namespace: dashboard
 spec:
   type: NodePort
   ports:
