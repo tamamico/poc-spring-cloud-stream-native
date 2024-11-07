@@ -32,3 +32,15 @@ spec:
   releaseName: dashboard
   values:
     replicaCount: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+spec:
+  type: NodePort
+  ports:
+    - port: 443
+      targetPort: 8443
+  selector:
+    app: dashboard-kong
