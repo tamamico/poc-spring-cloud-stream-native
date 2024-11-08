@@ -62,3 +62,7 @@ jobs:
         with:
           sarif_file: ./code/code.sarif
           category: source-code
+      - name: Deploy Maven artifact
+        run: ./mvnw -B deploy:deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
