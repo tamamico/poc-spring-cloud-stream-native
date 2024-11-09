@@ -49,7 +49,7 @@
         <kafka-avro-serializer.version>7.7.1</kafka-avro-serializer.version>
         <!-- Plugin versions -->
         <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
-        <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>5.0.0.4389</sonar-maven-plugin.version>
         <snyk-maven-plugin.version>2.3.0</snyk-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
