@@ -13,9 +13,3 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "docker"
-    directories:
-    - "/delivery"
-    - "/deploy"
-    schedule:
-      interval: "weekly"
