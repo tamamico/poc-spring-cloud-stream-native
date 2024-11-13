@@ -17,7 +17,10 @@ public class WhiteboardGreetingValidator
 
     @Override
     public void with(final java.util.function.Consumer<String> assertions) {
-        final String message = this.whiteboard.read().getMessage().toString();
+        final String message = this.whiteboard.read()
+                                              .getMessage()
+                                              .toString();
         assertions.accept(message);
     }
+
 }

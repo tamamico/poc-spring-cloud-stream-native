@@ -1,5 +1,7 @@
 package es.ecristobal.poc.scs;
 
+import java.util.function.Function;
+
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.avro.Output;
 import io.micrometer.observation.ObservationRegistry;
@@ -10,8 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Flux;
-
-import java.util.function.Function;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.observability.micrometer.Micrometer.observation;
@@ -31,12 +31,17 @@ class StreamConfiguration {
             final Greeter greeter,
             final ObservationRegistry registry
     ) {
-        return outer -> outer.flatMap(
-                inner -> inner.doOnNext(input -> LOGGER.atInfo().setMessage("Greeting {}").addArgument(input.value().getName()).log())
-                              .map(input -> MessageBuilder.withPayload(greeter.greet(input.value()))
-                                                          .setHeader("kafka_messageKey", input.key())
-                                                          .build())
-                              .tap(observation(registry)));
+        return outer -> outer.flatMap(inner -> inner.doOnNext(input -> LOGGER.atInfo()
+                                                                             .setMessage("Greeting {}")
+                                                                             .addArgument(input.value()
+                                                                                               .getName())
+                                                                             .log())
+                                                    .map(input -> MessageBuilder.withPayload(
+                                                                                        greeter.greet(input.value()))
+                                                                                .setHeader("kafka_messageKey",
+                                                                                           input.key())
+                                                                                .build())
+                                                    .tap(observation(registry)));
     }
 
 }

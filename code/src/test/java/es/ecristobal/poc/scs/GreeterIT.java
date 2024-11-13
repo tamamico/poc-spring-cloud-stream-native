@@ -1,5 +1,7 @@
 package es.ecristobal.poc.scs;
 
+import javax.security.auth.spi.LoginModule;
+
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory;
@@ -15,15 +17,12 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.redpanda.RedpandaContainer;
 
-import javax.security.auth.spi.LoginModule;
-import java.time.Duration;
+import static java.lang.String.format;
 
 import static es.ecristobal.poc.scs.TestScenarios.greetOk;
 import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaAuthentication;
 import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaUrls;
 import static io.restassured.RestAssured.given;
-import static java.lang.String.format;
-import static java.time.Duration.ofSeconds;
 
 @Testcontainers
 @AutoConfigureObservability
@@ -59,7 +58,8 @@ class GreeterIT {
     static void registerProperties(DynamicPropertyRegistry registry) {
         // Required properties
         registry.add("spring.cloud.stream.kafka.binder.brokers", broker::getBootstrapServers);
-        registry.add("spring.cloud.stream.kafka.binder.configuration.schema.registry.url", broker::getSchemaRegistryAddress);
+        registry.add("spring.cloud.stream.kafka.binder.configuration.schema.registry.url",
+                     broker::getSchemaRegistryAddress);
         registry.add("kafka.user", () -> KAFKA_USER);
         registry.add("kafka.password", () -> KAFKA_PASSWORD);
         registry.add("schema-registry.user", () -> KAFKA_USER);
@@ -97,18 +97,22 @@ class GreeterIT {
                                                                          .autoRegisterSchemas(true)
                                                                          .build();
         greetingVisitorBuilder = greetingFactory.greetingVisitorBuilder();
-        greetingValidator      = greetingFactory.greetingValidatorBuilder().topic(OUTPUT_TOPIC).build();
+        greetingValidator      = greetingFactory.greetingValidatorBuilder()
+                                                .topic(OUTPUT_TOPIC)
+                                                .build();
     }
 
     @Test
     void testGreetMen() {
-        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_MEN).build();
+        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_MEN)
+                                                                      .build();
         greetOk("Steve", greetingVisitor, greetingValidator);
     }
 
     @Test
     void testGreetWomen() {
-        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_WOMEN).build();
+        final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_WOMEN)
+                                                                      .build();
         greetOk("Laurene", greetingVisitor, greetingValidator);
     }
 

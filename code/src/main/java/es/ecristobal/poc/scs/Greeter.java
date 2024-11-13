@@ -10,6 +10,9 @@ class Greeter {
     Output greet(
             final Input input
     ) {
-        return Output.newBuilder().setMessage(format("Hello, %S!", input.getName())).build();
+        return Output.newBuilder()
+                     .setMessage(format("Hello, %S!", input.getName()))
+                     .build();
     }
+
 }

@@ -16,15 +16,19 @@ class GreeterTests {
 
     @BeforeAll
     static void setUp() {
+        //@formatter:off
         final WhiteboardGreetingFactory greetingFactory = WhiteboardGreetingFactory.builder()
-                                                                                   .function(input -> new Greeter().greet(input))
-                                                                                   .build();
-        greetingVisitor   = greetingFactory.greetingVisitorBuilder().build();
-        greetingValidator = greetingFactory.greetingValidatorBuilder().build();
+                .function(input -> new Greeter().greet(input)).build();
+        //@formatter:on
+        greetingVisitor   = greetingFactory.greetingVisitorBuilder()
+                                           .build();
+        greetingValidator = greetingFactory.greetingValidatorBuilder()
+                                           .build();
     }
 
     @Test
     void testGreet() {
         greetOk("Woz", greetingVisitor, greetingValidator);
     }
+
 }

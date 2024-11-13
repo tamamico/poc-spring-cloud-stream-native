@@ -1,9 +1,9 @@
 package es.ecristobal.poc.scs.screenplay.abilities.whiteboard;
 
+import java.util.function.Function;
+
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.avro.Output;
-
-import java.util.function.Function;
 
 class Whiteboard {
 
@@ -22,4 +22,5 @@ class Whiteboard {
     public Output read() {
         return this.output;
     }
+
 }

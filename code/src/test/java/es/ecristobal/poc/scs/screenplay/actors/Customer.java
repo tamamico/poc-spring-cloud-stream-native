@@ -7,4 +7,5 @@ public record Customer(String name) {
     public void accept(GreetingVisitor visitor) {
         visitor.visit(this);
     }
+
 }

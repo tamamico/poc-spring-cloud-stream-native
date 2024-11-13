@@ -1,5 +1,10 @@
 package es.ecristobal.poc.scs.screenplay.abilities.kafka;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.security.auth.spi.LoginModule;
+
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.subject.RecordNameStrategy;
@@ -10,16 +15,13 @@ import org.apache.kafka.common.security.scram.ScramLoginModule;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import javax.security.auth.spi.LoginModule;
-import java.util.HashMap;
-import java.util.Map;
+import static java.lang.String.format;
 
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY;
-import static java.lang.String.format;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
@@ -68,11 +70,14 @@ public class KafkaGreetingFactory {
 
     private Map<String, Object> getAuthenticationMap(final KafkaAuthentication authentication) {
         final Map<String, Object> authenticationMap = new HashMap<>(5);
-        authenticationMap.put("security.protocol", authentication.type().securityProtocol());
-        authenticationMap.put("sasl.mechanism", authentication.type().saslMechanism());
-        authenticationMap.put("sasl.jaas.config",
-                              format(JAAS_CONFIG_TEMPLATE, authentication.type().loginModuleClassName(), authentication.kafkaUsername(),
-                                     authentication.kafkaPassword()));
+        authenticationMap.put("security.protocol", authentication.type()
+                                                                 .securityProtocol());
+        authenticationMap.put("sasl.mechanism", authentication.type()
+                                                              .saslMechanism());
+        authenticationMap.put("sasl.jaas.config", format(JAAS_CONFIG_TEMPLATE, authentication.type()
+                                                                                             .loginModuleClassName(),
+                                                         authentication.kafkaUsername(),
+                                                         authentication.kafkaPassword()));
         authenticationMap.put(BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO");
         authenticationMap.put(USER_INFO_CONFIG, format(BASIC_AUTH_TEMPLATE, authentication.schemaRegistryUsername(),
                                                        authentication.schemaRegistryPassword()));
@@ -80,19 +85,19 @@ public class KafkaGreetingFactory {
     }
 
     public KafkaGreetingVisitor.KafkaGreetingVisitorBuilder greetingVisitorBuilder() {
-        return KafkaGreetingVisitor.builder().properties(this.producerProperties);
+        return KafkaGreetingVisitor.builder()
+                                   .properties(this.producerProperties);
     }
 
     public KafkaGreetingValidator.KafkaGreetingValidatorBuilder greetingValidatorBuilder() {
-        return KafkaGreetingValidator.builder().properties(this.consumerProperties);
+        return KafkaGreetingValidator.builder()
+                                     .properties(this.consumerProperties);
     }
 
     @Builder
     public record KafkaUrls(
-            String broker,
-            String schemaRegistry
-    ) {
-    }
+            String broker, String schemaRegistry
+    ) {}
 
     @Builder
     public record KafkaAuthentication(
@@ -122,5 +127,7 @@ public class KafkaGreetingFactory {
                 this.loginModuleClassName = loginModule.getName();
             }
         }
+
     }
+
 }

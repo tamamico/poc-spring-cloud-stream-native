@@ -1,10 +1,10 @@
 package es.ecristobal.poc.scs.screenplay.abilities.whiteboard;
 
+import java.util.function.Function;
+
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.avro.Output;
 import lombok.Builder;
-
-import java.util.function.Function;
 
 public class WhiteboardGreetingFactory {
 
@@ -16,10 +16,13 @@ public class WhiteboardGreetingFactory {
     }
 
     public WhiteboardGreetingVisitor.WhiteboardGreetingVisitorBuilder greetingVisitorBuilder() {
-        return WhiteboardGreetingVisitor.builder().whiteboard(this.whiteboard);
+        return WhiteboardGreetingVisitor.builder()
+                                        .whiteboard(this.whiteboard);
     }
 
     public WhiteboardGreetingValidator.WhiteboardGreetingValidatorBuilder greetingValidatorBuilder() {
-        return WhiteboardGreetingValidator.builder().whiteboard(this.whiteboard);
+        return WhiteboardGreetingValidator.builder()
+                                          .whiteboard(this.whiteboard);
     }
+
 }

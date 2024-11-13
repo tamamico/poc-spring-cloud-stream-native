@@ -7,7 +7,7 @@ output "poc-username" {
 }
 
 output "poc-password" {
-  value = confluent_api_key.cluster-poc-user.secret
+  value     = confluent_api_key.cluster-poc-user.secret
   sensitive = true
 }
 
@@ -16,6 +16,6 @@ output "test-username" {
 }
 
 output "test-password" {
-  value = confluent_api_key.cluster-poc-test.secret
+  value     = confluent_api_key.cluster-poc-test.secret
   sensitive = true
 }

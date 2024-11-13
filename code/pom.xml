@@ -7,7 +7,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.5</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <groupId>es.ecristobal</groupId>
@@ -16,8 +16,8 @@
 
     <name>PoC - Spring Cloud Stream + Reactive Kafka + GraalVM</name>
     <description>
-        Proof of concept to test an application based on Spring Cloud Stream with Reactive Kafka binder compiled with GraalVM
-        Native Image builder and packed in a Docker image
+        Proof of concept to test an application based on Spring Cloud Stream with Reactive Kafka binder compiled with
+        GraalVM Native Image builder and packed in a Docker image
     </description>
     <inceptionYear>2024</inceptionYear>
 

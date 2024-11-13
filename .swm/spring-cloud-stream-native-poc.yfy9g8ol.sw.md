@@ -14,7 +14,8 @@ There are 3 main goals behind this PoC:
 
 ## Functional
 
-The application will receive as an input a name, and it should output a greeting message for this name, using uppercase letters for it
+The application will receive as an input a name, and it should output a greeting message for this name, using uppercase
+letters for it
 
 **Examples:**&nbsp;
 

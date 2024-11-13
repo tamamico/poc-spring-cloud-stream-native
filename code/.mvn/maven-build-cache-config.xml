@@ -8,7 +8,7 @@
         <local>
             <maxBuildsCached>3</maxBuildsCached>
         </local>
-        <projectVersioning adjustMetaInf="true" />
+        <projectVersioning adjustMetaInf="true"/>
     </configuration>
     <input>
         <global>
@@ -23,7 +23,7 @@
     <executionControl>
         <runAlways>
             <plugins>
-                <plugin artifactId="maven-failsafe-plugin" />
+                <plugin artifactId="maven-failsafe-plugin"/>
             </plugins>
             <goalsLists>
                 <goalsList artifactId="maven-install-plugin">
@@ -42,15 +42,15 @@
             <plugins>
                 <plugin artifactId="maven-compiler-plugin" goal="compile">
                     <reconciles>
-                        <reconcile propertyName="source" />
-                        <reconcile propertyName="target" />
-                        <reconcile propertyName="debug" />
-                        <reconcile propertyName="debuglevel" />
+                        <reconcile propertyName="source"/>
+                        <reconcile propertyName="target"/>
+                        <reconcile propertyName="debug"/>
+                        <reconcile propertyName="debuglevel"/>
                     </reconciles>
                     <logs>
-                        <log propertyName="includes" />
-                        <log propertyName="excludes" />
-                        <log propertyName="argLine" />
+                        <log propertyName="includes"/>
+                        <log propertyName="excludes"/>
+                        <log propertyName="argLine"/>
                     </logs>
                 </plugin>
             </plugins>

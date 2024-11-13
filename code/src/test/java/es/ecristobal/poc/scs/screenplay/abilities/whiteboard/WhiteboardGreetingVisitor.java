@@ -20,4 +20,5 @@ public class WhiteboardGreetingVisitor
     public void visit(final Customer customer) {
         this.whiteboard.write(this.buildFrom(customer));
     }
+
 }

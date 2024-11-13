@@ -8,6 +8,9 @@ public abstract class GreetingVisitor {
     public abstract void visit(final Customer customer);
 
     protected Input buildFrom(final Customer customer) {
-        return Input.newBuilder().setName(customer.name()).build();
+        return Input.newBuilder()
+                    .setName(customer.name())
+                    .build();
     }
+
 }
