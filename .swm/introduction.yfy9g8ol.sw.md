@@ -1,5 +1,5 @@
 ---
-title: Spring Cloud Stream native PoC
+title: Introduction
 ---
 # &nbsp;Purpose
 
@@ -31,9 +31,5 @@ The application will receive as an input a name, and it should output a greeting
 7. It should **include production-ready features**: monitoring, tracing, etc.
 8. It should **listen to 2 topics**: one for men greetings and another for women ones
 9. If it can't deliver a greeting, the incoming message must be sent to a DLT with contextual information
-
-# Links
-
-<SwmLink doc-title="Source code" repo-id="Z2l0aHViJTNBJTNBcG9jLXNwcmluZy1jbG91ZC1zdHJlYW0tbmF0aXZlJTNBJTNBdGFtYW1pY28=" repo-name="poc-spring-cloud-stream-native" path="/.swm/source-code.43cq9let.sw.md">[Source code](https://app.swimm.io/repos/Z2l0aHViJTNBJTNBcG9jLXNwcmluZy1jbG91ZC1zdHJlYW0tbmF0aXZlJTNBJTNBdGFtYW1pY28%3D/docs/43cq9let)</SwmLink>
 
 <SwmMeta version="3.0.0"><sup>Powered by [Swimm](https://app.swimm.io/)</sup></SwmMeta>
