@@ -17,7 +17,10 @@ This playlist includes the necessary resources to master how do we manage the re
 <!-- Steps - Do not remove this comment -->
 1. [Introduction](introduction.yfy9g8ol.sw.md)
 2. [Delivery](delivery.62nu4nsh.sw.md)
-3. [Continuous Deployment](continuous-deployment.7e3ssy18.sw.md)
+3. [Infrastructure](infrastructure.2q2jd9dr.sw.md)
+4. [Continuous Deployment](continuous-deployment.7e3ssy18.sw.md)
+5. [Appendix: Confluent Cloud provider for Terraform](https://registry.terraform.io/providers/confluentinc/confluent/latest/docs)
+6. [Appendix: Flux documentation](https://fluxcd.io/flux/)
 
 
 <br/>

@@ -15,6 +15,7 @@ This playlist will help you in understanding the purpose of this PoC, explaining
 2. [Source code](source-code.43cq9let.sw.md)
 3. [Testing strategy](testing-strategy.z1p665rd.sw.md)
 4. [Continuous Integration](continuous-integration.axk7dgqi.sw.md)
+5. [Appendix: Spring Cloud Stream documentation](https://docs.spring.io/spring-cloud-stream/reference/index.html)
 
 
 <br/>
