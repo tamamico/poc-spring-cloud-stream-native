@@ -11,8 +11,9 @@ code/target/
 *.ipr
 
 ### Terraform ###
-/infrastructure/confluent/.terraform
-/infrastructure/confluent/.terraform.lock.hcl
+/infrastructure/*/.terraform
+/infrastructure/*/.terraform.lock.hcl
+/infrastructure/*/terraform.tfstate
 
 ### Snyk ###
-code/snyk-code.sarif
+**/snyk-*.sarif
