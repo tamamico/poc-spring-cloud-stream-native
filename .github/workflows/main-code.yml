@@ -26,3 +26,23 @@ jobs:
     name: Build application deliverable
     uses: ./.github/workflows/build-docker.yml
     secrets: inherit
+  clean-old-maven-artifacts:
+    needs: build-source-code
+    name: Clean up old Maven artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'es.ecristobal.poc-scs-native'
+          package-type: 'maven'
+          min-versions-to-keep: 2
+  clean-old-docker-images:
+    needs: build-application-deliverable
+    name: Clean up old Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'poc-scs-native'
+          package-type: 'docker'
+          min-versions-to-keep: 2
