@@ -44,5 +44,5 @@ jobs:
       - uses: actions/delete-package-versions@v5
         with:
           package-name: 'poc-scs-native'
-          package-type: 'docker'
+          package-type: 'container'
           min-versions-to-keep: 2
