@@ -59,6 +59,7 @@ jobs:
           sarif_file: ./code/code.sarif
           category: source-code
       - name: Deploy Maven artifact
+        if: github.actor != 'dependabot[bot]'
         run: ./mvnw -B jar:jar deploy:deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
