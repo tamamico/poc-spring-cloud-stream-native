@@ -1,5 +1,8 @@
-management.endpoints.web:
-  exposure.include: "*"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 logging:
   level:
@@ -51,3 +54,21 @@ spring:
               reactive-auto-commit: true
               standard-headers: both
               start-offset: latest
+---
+spring:
+  config:
+    activate:
+      on-cloud-platform: kubernetes
+    import: "kubernetes:"
+  cloud:
+    kubernetes:
+      reload:
+        enabled: true
+      config:
+        name: settings
+        namespace: poc
+        fail-fast: true
+      secrets:
+        name: secrets
+        namespace: poc
+        fail-fast: true

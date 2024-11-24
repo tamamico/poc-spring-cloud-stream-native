@@ -29,7 +29,8 @@
     </developers>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/tamamico/poc-spring-cloud-stream-native.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/tamamico/poc-spring-cloud-stream-native.git
+        </developerConnection>
     </scm>
 
     <distributionManagement>
@@ -84,6 +85,10 @@
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
             <version>${kafka-avro-serializer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-client-config</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
