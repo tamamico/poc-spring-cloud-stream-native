@@ -62,8 +62,6 @@ spring:
     import: "kubernetes:"
   cloud:
     kubernetes:
-      reload:
-        enabled: true
       config:
         name: settings
         namespace: poc
