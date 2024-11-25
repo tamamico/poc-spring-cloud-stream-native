@@ -110,8 +110,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: poc-user
-    apiGroup: ""
 roleRef:
+  apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: poc-reader
-  apiGroup: ""
