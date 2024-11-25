@@ -69,18 +69,6 @@ rules:
     resources:
       - configmaps
       - services
-      - endpoints
-      - pods
-    verbs:
-      - get
-      - list
-      - watch
-      - patch
-      - update
-  - apiGroups:
-      - apps
-    resources:
-      - deployments
     verbs:
       - get
       - list
