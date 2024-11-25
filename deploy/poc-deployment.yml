@@ -47,15 +47,60 @@ metadata:
   name: poc-user
   namespace: poc
 ---
-kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
+  name: poc-role
   namespace: poc
-  name: poc-reader
 rules:
-  - apiGroups: [ "", "extensions", "apps" ]
-    resources: [ "configmaps", "secrets" ]
-    verbs: [ "get", "list", "watch" ]
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - create
+      - update
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - services
+      - endpoints
+      - pods
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - routes
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - create
+      - update
+      - delete
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
