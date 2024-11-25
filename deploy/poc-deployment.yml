@@ -71,7 +71,6 @@ rules:
       - services
       - endpoints
       - pods
-      - configmaps
     verbs:
       - get
       - list
@@ -109,6 +108,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: poc-user
+    namespace: poc
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
