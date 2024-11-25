@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: poc-deployment
+  namespace: poc
   labels:
     app: poc-scs-native
 spec:
