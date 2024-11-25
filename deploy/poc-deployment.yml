@@ -28,3 +28,27 @@ spec:
               memory: "2G"
               cpu: "1"
               ephemeral-storage: "1G"
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: poc
+  name: poc-reader
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "configmaps", "pods", "services", "endpoints", "secrets" ]
+    verbs: [ "get", "list", "watch" ]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: poc-reader-binding
+  namespace: poc
+subjects:
+  - kind: ServiceAccount
+    name: default
+    apiGroup: ""
+roleRef:
+  kind: Role
+  name: poc-reader
+  apiGroup: ""
