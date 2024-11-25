@@ -53,28 +53,21 @@ metadata:
   namespace: poc
 rules:
   - apiGroups:
-      - ""
+      - extensions
     resources:
-      - configmaps
-      - services
+      - ingresses
     verbs:
       - get
       - list
-      - watch
-      - patch
-      - update
   - apiGroups:
       - ""
     resources:
-      - routes
+      - configmaps
+      - secrets
     verbs:
       - get
       - list
       - watch
-      - patch
-      - create
-      - update
-      - delete
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
