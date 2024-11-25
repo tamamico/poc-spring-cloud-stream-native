@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poc-deployment
+  labels:
+    app: poc-scs-native
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poc-scs-native
+  template:
+    metadata:
+      labels:
+        app: poc-scs-native
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: poc-scs-native
+          image: ghcr.io/tamamico/poc-scs-native:0.1.0-SNAPSHOT
+          resources:
+            requests:
+              memory: "1G"
+              cpu: "500m"
+              ephemeral-storage: "512M"
+            limits:
+              memory: "2G"
+              cpu: "1"
+              ephemeral-storage: "1G"
