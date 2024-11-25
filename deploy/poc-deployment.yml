@@ -112,4 +112,4 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: poc-reader
+  name: poc-role
