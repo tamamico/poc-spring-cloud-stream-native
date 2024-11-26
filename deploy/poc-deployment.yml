@@ -16,10 +16,6 @@ spec:
         app: poc-scs-native
     spec:
       serviceAccountName: poc-user
-      volumes:
-        - name: secrets
-          secret:
-            secretName: secrets
       containers:
         - name: poc-scs-native
           image: ghcr.io/tamamico/poc-scs-native:0.1.0-SNAPSHOT
@@ -43,10 +39,6 @@ spec:
               port: 8080
           ports:
             - containerPort: 8080
-          volumeMounts:
-            - name: secrets
-              readOnly: true
-              mountPath: /etc/secrets/poc
 ---
 apiVersion: v1
 kind: ServiceAccount
