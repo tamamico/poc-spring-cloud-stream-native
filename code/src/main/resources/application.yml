@@ -72,3 +72,4 @@ spring:
         name: secrets
         namespace: poc
         fail-fast: true
+        enabled: true
