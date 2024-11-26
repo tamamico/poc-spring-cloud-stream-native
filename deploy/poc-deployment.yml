@@ -16,6 +16,10 @@ spec:
         app: poc-scs-native
     spec:
       serviceAccountName: poc-user
+      volumes:
+        - name: secrets
+          secret:
+            secretName: secrets
       containers:
         - name: poc-scs-native
           image: ghcr.io/tamamico/poc-scs-native:0.1.0-SNAPSHOT
@@ -31,14 +35,18 @@ spec:
               ephemeral-storage: "1G"
           livenessProbe:
             httpGet:
-              path: "/actuator/health/liveness"
+              path: /actuator/health/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: "/actuator/health/readiness"
+              path: /actuator/health/readiness
               port: 8080
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: secrets
+              readOnly: true
+              mountPath: /etc/secrets/poc
 ---
 apiVersion: v1
 kind: ServiceAccount

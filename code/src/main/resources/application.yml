@@ -69,7 +69,5 @@ spring:
         namespace: poc
         fail-fast: true
       secrets:
-        name: secrets
-        namespace: poc
-        fail-fast: true
         enabled: true
+        paths: /etc/secrets/poc
