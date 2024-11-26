@@ -13,7 +13,7 @@ code/target/
 ### Terraform ###
 /infrastructure/*/.terraform
 /infrastructure/*/.terraform.lock.hcl
-/infrastructure/*/terraform.tfstate
+/infrastructure/*/terraform.tfstate*
 
 ### Snyk ###
 **/snyk-*.sarif
