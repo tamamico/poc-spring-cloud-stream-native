@@ -1,0 +1,43 @@
+name: Create bugfix branch for code
+
+on:
+  workflow_dispatch:
+    inputs:
+      ticket:
+        type: string
+        description: Jira bug ticket
+        required: true
+      version:
+        type: string
+        description: Version affected by the bug
+        required: true
+
+defaults:
+  run:
+    working-directory: ./code
+
+jobs:
+  create-branch:
+    name: Create bugfix branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ inputs.version }}
+      - name: Set-up GraalVM
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          cache: 'maven'
+      - name: Create bugfix branch
+        id: next-version
+        run: |
+          ./mvnw -B build-helper:parse-version release:branch \
+          -DbranchName=bugfix/${{ inputs.ticket }} \
+          -DupdateBranchVersions=true \
+          -DupdateWorkingCopyVersions=false \
+          -DreleaseVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT

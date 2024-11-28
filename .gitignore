@@ -3,6 +3,9 @@ HELP.md
 ### Maven ###
 code/target/
 !code/.mvn/wrapper/maven-wrapper.jar
+**/pom.xml.branch
+**/pom.xml.next
+**/pom.xml.releaseBackup
 
 ### IntelliJ IDEA ###
 .idea
