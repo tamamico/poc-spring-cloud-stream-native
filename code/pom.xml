@@ -38,8 +38,8 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Dependency versions -->
-        <spring-cloud.version>2023.0.3</spring-cloud.version>
-        <kafka-avro-serializer.version>7.7.1</kafka-avro-serializer.version>
+        <spring-cloud.version>2023.0.4</spring-cloud.version>
+        <kafka-avro-serializer.version>7.7.2</kafka-avro-serializer.version>
         <!-- Plugin versions -->
         <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
         <sonar-maven-plugin.version>5.0.0.4389</sonar-maven-plugin.version>
@@ -47,7 +47,7 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
-        <rewrite-maven-plugin.version>5.45.1</rewrite-maven-plugin.version>
+        <rewrite-maven-plugin.version>5.46.1</rewrite-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
