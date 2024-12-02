@@ -1,11 +1,13 @@
 HELP.md
 
 ### Maven ###
-code/target/
+code/**/target/
 !code/.mvn/wrapper/maven-wrapper.jar
-**/pom.xml.branch
-**/pom.xml.next
-**/pom.xml.releaseBackup
+code/**/pom.xml.branch
+code/**/pom.xml.next
+code/**/pom.xml.releaseBackup
+code/**/pom.xml.tag
+code/**/release.properties
 
 ### IntelliJ IDEA ###
 .idea
@@ -14,9 +16,9 @@ code/target/
 *.ipr
 
 ### Terraform ###
-/infrastructure/*/.terraform
-/infrastructure/*/.terraform.lock.hcl
-/infrastructure/*/terraform.tfstate*
+/infrastructure/**/.terraform
+/infrastructure/**/.terraform.lock.hcl
+/infrastructure/**/terraform.tfstate*
 
 ### Snyk ###
 **/snyk-*.sarif

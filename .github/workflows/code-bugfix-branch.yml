@@ -34,7 +34,6 @@ jobs:
           distribution: 'graalvm'
           cache: 'maven'
       - name: Create bugfix branch
-        id: next-version
         run: |
           ./mvnw -B build-helper:parse-version release:branch \
           -DbranchName=bugfix/${{ inputs.ticket }} \
