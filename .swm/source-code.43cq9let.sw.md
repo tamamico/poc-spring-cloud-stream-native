@@ -83,9 +83,9 @@ Avro schema for output message
 
 </SwmSnippet>
 
-- Use <SwmToken path="/code/pom.xml" pos="159:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
+- Use <SwmToken path="/code/pom.xml" pos="161:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
 
-<SwmSnippet path="/code/pom.xml" line="157">
+<SwmSnippet path="/code/pom.xml" line="159">
 
 ---
 
@@ -119,7 +119,7 @@ Maven plugin to generate Java classes from Avro schemas
 
 - Set-up Kafka with Avro serialization
 
-<SwmSnippet path="/code/pom.xml" line="82">
+<SwmSnippet path="/code/pom.xml" line="76">
 
 ---
 
@@ -137,7 +137,7 @@ Maven artifact with Kafka Avro serializers
 
 </SwmSnippet>
 
-<SwmSnippet path="code/src/main/resources/application.yml" line="31">
+<SwmSnippet path="/code/src/main/resources/application.yml" line="38">
 
 ---
 
@@ -151,7 +151,7 @@ Deserializer for incoming messages
 
 </SwmSnippet>
 
-<SwmSnippet path="/code/src/main/resources/application.yml" line="38">
+<SwmSnippet path="/code/src/main/resources/application.yml" line="45">
 
 ---
 
@@ -202,7 +202,7 @@ public class GreeterApplication {
 
 The next step is to configure Spring Cloud Stream, for which we need to add the required dependencies and, then, set-up the stream on a Spring bean:
 
-<SwmSnippet path="/code/pom.xml" line="72">
+<SwmSnippet path="/code/pom.xml" line="66">
 
 ---
 
@@ -257,7 +257,7 @@ Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecr
 
 Finally, to make everything work we have to add all required configuration in <SwmPath>[code/src/main/resources/application.yml](/code/src/main/resources/application.yml)</SwmPath>:
 
-<SwmSnippet path="/code/src/main/resources/application.yml" line="10">
+<SwmSnippet path="/code/src/main/resources/application.yml" line="15">
 
 ---
 
@@ -273,10 +273,12 @@ spring:
         greet-in-0:
           group: ${spring.application.name}
           destination: ^input\.(?:men|women)\.avro$
-          consumer.use-native-decoding: true
+          consumer:
+            use-native-decoding: true
         greet-out-0:
           destination: output.avro
-          producer.use-native-encoding: true
+          producer:
+            use-native-encoding: true
       kafka:
         binder:
           auto-create-topics: false
