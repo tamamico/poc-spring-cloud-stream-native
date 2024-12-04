@@ -6,9 +6,9 @@ on:
       - main
     paths:
       - 'code/**'
-      - '.github/workflows/**-code.yml'
+      - '.github/workflows/build-code.yml'
+      - '.github/workflows/main-code.yml'
       - '.github/workflows/build-docker.yml'
-      - '!.github/workflows/dependabot-code.yml'
 
 permissions:
   contents: read

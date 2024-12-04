@@ -6,7 +6,8 @@ on:
       - 'release/**'
     paths:
       - 'code/**'
-      - '.github/workflows/**-code.yml'
+      - '.github/workflows/build-code.yml'
+      - '.github/workflows/release-code.yml'
 
 permissions:
   contents: read
