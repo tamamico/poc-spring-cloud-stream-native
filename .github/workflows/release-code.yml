@@ -1,0 +1,54 @@
+name: Prepare release candidate
+
+on:
+  push:
+    branches:
+      - 'release/**'
+    paths:
+      - 'code/**'
+      - '.github/workflows/**-code.yml'
+
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write
+  packages: write
+
+jobs:
+  build-source-code:
+    name: Build source code
+    uses: ./.github/workflows/build-code.yml
+    secrets: inherit
+  prepare-release-candidate:
+    needs: build-source-code
+    name: Prepare release candidate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set-up GraalVM
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          cache: 'maven'
+      - name: Generate release candidate versions
+        id: release-candidate
+        run: |
+          getVersion()
+          {
+            echo $(./mvnw -B build-helper:parse-version help:evaluate \
+          -Dexpression=parsedVersion.$1 -DformatBuildNumber=RC%02d -q -DforceStdout)
+          }
+          MAJOR=$(getVersion majorVersion)
+          MINOR=$(getVersion minorVersion)
+          INCREMENTAL=$(getVersion incrementalVersion)
+          CURRENT_BUILD_NUMBER=$(getVersion buildNumber)
+          NEXT_BUILD_NUMBER=$(getVersion nextBuildNumber)
+          echo "current-version=$MAJOR.$MINOR.$INCREMENTAL-RC$CURRENT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "next-version=$MAJOR.$MINOR.$INCREMENTAL-RC$NEXT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+      - name: Prepare release
+        run: |
+          ./mvnw -B build-helper:parse-version release:prepare \
+          -DreleaseVersion=${{ steps.release-candidate.outputs.current-version }} \
+          -DdevelopmentVersion=${{ steps.release-candidate.outputs.next-version }}

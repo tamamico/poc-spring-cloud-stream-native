@@ -1,0 +1,29 @@
+name: Create release branch
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./code
+
+jobs:
+  create-release-branch:
+    name: Create release branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set-up GraalVM
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          cache: 'maven'
+      - name: Create release branch
+        run: |
+          ./mvnw -B build-helper:parse-version release:branch \
+          -DbranchName=release/\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion} \
+          -DdevelopmentVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0-SNAPSHOT
