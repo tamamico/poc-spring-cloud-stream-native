@@ -1,4 +1,4 @@
-name: Create bugfix branch for code
+name: Create bugfix branch
 
 on:
   workflow_dispatch:

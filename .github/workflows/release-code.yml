@@ -9,6 +9,12 @@ on:
       - 'code/**'
       - '.github/workflows/build-code.yml'
       - '.github/workflows/release-code.yml'
+  workflow_run:
+    workflows:
+      - Create release branch
+      - Create bugfix branch
+    types:
+      - completed
 
 permissions:
   contents: read
