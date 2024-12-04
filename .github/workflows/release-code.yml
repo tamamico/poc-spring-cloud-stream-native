@@ -1,9 +1,10 @@
-name: Prepare release candidate
+name: Build and prepare release candidate
 
 on:
   push:
     branches:
       - 'release/**'
+      - 'bugfix/**'
     paths:
       - 'code/**'
       - '.github/workflows/build-code.yml'
@@ -36,8 +37,7 @@ jobs:
       - name: Generate release candidate versions
         id: release-candidate
         run: |
-          getVersion()
-          {
+          getVersion() {
             echo $(./mvnw -B build-helper:parse-version help:evaluate \
           -Dexpression=parsedVersion.$1 -DformatBuildNumber=RC%02d -q -DforceStdout)
           }
