@@ -73,3 +73,7 @@ spring:
       secrets:
         enabled: true
         paths: /etc/secrets/poc
+logging:
+  structured:
+    format:
+      console: ecs
