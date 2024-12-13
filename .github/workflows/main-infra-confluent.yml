@@ -26,7 +26,7 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Run SonarCloud analysis
-        uses: sonarsource/sonarcloud-github-action@v4.0.0
+        uses: sonarsource/sonarqube-scan-action@v4.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
@@ -34,7 +34,6 @@ jobs:
           args: >
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY_INFRA }}
-            -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
   update-kafka:
     name: Update Kafka infrastructure
     runs-on: ubuntu-latest
