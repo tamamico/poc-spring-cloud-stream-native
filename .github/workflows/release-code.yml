@@ -12,7 +12,6 @@ on:
   workflow_run:
     workflows:
       - Create release branch
-      - Create bugfix branch
     types:
       - completed
 
