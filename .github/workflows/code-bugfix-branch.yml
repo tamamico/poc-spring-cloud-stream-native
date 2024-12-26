@@ -29,7 +29,6 @@ jobs:
           ref: v${{ inputs.version }}
           fetch-depth: 0
           fetch-tags: 'true'
-          token: ${{ secrets.PAT }}
       - name: Set-up GraalVM
         uses: actions/setup-java@v4.5.0
         with:
