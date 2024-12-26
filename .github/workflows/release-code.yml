@@ -67,5 +67,3 @@ jobs:
         working-directory: ./code
         run: |
           ./mvnw -B versions:set versions:commit -DnewVersion=${{ steps.release-candidate.outputs.next-version }}
-      - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5.0.1

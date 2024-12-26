@@ -45,5 +45,3 @@ jobs:
         run: |
           ./mvnw -B build-helper:parse-version release:update-versions versions:commit \
           -DdevelopmentVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
-      - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5.0.1
