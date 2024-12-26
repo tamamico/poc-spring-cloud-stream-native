@@ -11,7 +11,7 @@
 
     <groupId>es.ecristobal</groupId>
     <artifactId>poc-scs-native</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 
     <name>PoC - Spring Cloud Stream + Reactive Kafka + GraalVM</name>
     <description>
@@ -30,7 +30,7 @@
     <scm>
         <developerConnection>scm:git:https://github.com/tamamico/poc-spring-cloud-stream-native.git
         </developerConnection>
-      <tag>release/0.1.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <properties>
