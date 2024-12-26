@@ -36,6 +36,8 @@ jobs:
           java-version: '21'
           distribution: 'graalvm'
           cache: 'maven'
+      - name: Set-up Git user
+        uses: fregante/setup-git-user@v2
       - name: Generate release candidate versions
         id: release-candidate
         run: |

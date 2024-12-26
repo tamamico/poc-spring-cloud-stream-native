@@ -24,6 +24,8 @@ jobs:
           java-version: '21'
           distribution: 'graalvm'
           cache: 'maven'
+      - name: Set-up Git user
+        uses: fregante/setup-git-user@v2
       - name: Create release branch
         run: |
           ./mvnw -B build-helper:parse-version release:branch \
