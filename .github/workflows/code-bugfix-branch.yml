@@ -37,6 +37,8 @@ jobs:
           cache: 'maven'
       - name: Set-up Git user
         uses: fregante/setup-git-user@v2
+      - name: Set-up Git remote upstream creation
+        run: git config --global --add --bool push.autoSetupRemote true
       - name: Create bugfix branch
         run: git checkout -b bugfix/${{ inputs.ticket }} v${{ inputs.version }}
       - name: Update code version in branch
