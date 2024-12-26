@@ -26,8 +26,23 @@ jobs:
           cache: 'maven'
       - name: Set-up Git user
         uses: fregante/setup-git-user@v2
+      - name: Build release branch name
+        id: release-branch
+        run: |
+          getVersion() {
+            echo $(./mvnw -B build-helper:parse-version help:evaluate \
+            -Dexpression=parsedVersion.$1 -DformatBuildNumber=RC%02d -q -DforceStdout)
+          }
+          MAJOR=$(getVersion majorVersion)
+          MINOR=$(getVersion minorVersion)
+          INCREMENTAL=$(getVersion incrementalVersion)
+          echo "name=release\$MAJOR.$MINOR.$INCREMENTAL" >> "$GITHUB_OUTPUT"
       - name: Create release branch
         run: |
           ./mvnw -B build-helper:parse-version release:branch \
-          -DbranchName=release/\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} \
+          -DbranchName=${{ steps.release-branch.outputs.name }} \
           -DdevelopmentVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0-SNAPSHOT
+      - name: Switch to release branch
+        run: git checkout ${{ steps.release-branch.outputs.name }}
+      - name: Prepare release candidate
+        uses: ./.github/actions/release-candidate

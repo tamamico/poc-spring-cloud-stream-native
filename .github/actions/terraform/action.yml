@@ -3,23 +3,18 @@ name: Build infrastructure
 inputs:
   provider:
     required: true
-    type: string
     description: Infrastructure provider
   resource:
     required: true
-    type: string
     description: Resource type
   token:
     required: true
-    type: string
     description: Terraform Cloud API Token
   organization:
     required: true
-    type: string
     description: Terraform Cloud organization
   workspace-prefix:
     required: true
-    type: string
     description: Terraform Cloud workspace prefix
 
 runs:

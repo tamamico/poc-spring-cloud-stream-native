@@ -1,0 +1,38 @@
+name: Build infrastructure
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set-up GraalVM
+      uses: actions/setup-java@v4.5.0
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        cache: 'maven'
+    - name: Set-up Git user
+      uses: fregante/setup-git-user@v2
+    - name: Generate release candidate versions
+      id: release-candidate
+      run: |
+        getVersion() {
+          echo $(./mvnw -B build-helper:parse-version help:evaluate \
+        -Dexpression=parsedVersion.$1 -DformatBuildNumber=RC%02d -q -DforceStdout)
+        }
+        MAJOR=$(getVersion majorVersion)
+        MINOR=$(getVersion minorVersion)
+        INCREMENTAL=$(getVersion incrementalVersion)
+        CURRENT_BUILD_NUMBER=$(getVersion buildNumber)
+        NEXT_BUILD_NUMBER=$(getVersion nextBuildNumber)
+        echo "current-version=$MAJOR.$MINOR.$INCREMENTAL-RC$CURRENT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+        echo "next-version=$MAJOR.$MINOR.$INCREMENTAL-RC$NEXT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+    - name: Prepare release
+      run: |
+        ./mvnw -B release:prepare -DupdateWorkingCopyVersions=false \
+        -DreleaseVersion=${{ steps.release-candidate.outputs.current-version }}
+    - name: Bump release candidate version
+      run: |
+        ./mvnw -B versions:set versions:commit -DnewVersion=${{ steps.release-candidate.outputs.next-version }}
+    - name: Commit & Push changes
+      run: |
+        git commit -am "Bumped release candidate version"
+        git push
