@@ -9,11 +9,6 @@ on:
       - 'code/**'
       - '.github/workflows/build-code.yml'
       - '.github/workflows/release-code.yml'
-  workflow_run:
-    workflows:
-      - Create release branch
-    types:
-      - completed
 
 permissions:
   contents: write
@@ -67,3 +62,7 @@ jobs:
         working-directory: ./code
         run: |
           ./mvnw -B versions:set versions:commit -DnewVersion=${{ steps.release-candidate.outputs.next-version }}
+      - name: Commit & Push changes
+        run: |
+          git commit -am "Bumped release candidate version"
+          git push
