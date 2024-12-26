@@ -62,6 +62,10 @@ jobs:
       - name: Prepare release
         working-directory: ./code
         run: |
-          ./mvnw -B build-helper:parse-version release:prepare \
-          -DreleaseVersion=${{ steps.release-candidate.outputs.current-version }} \
-          -DdevelopmentVersion=${{ steps.release-candidate.outputs.next-version }}
+          ./mvnw -B release:prepare -DupdateWorkingCopyVersions=false \
+          -DreleaseVersion=${{ steps.release-candidate.outputs.current-version }}
+      - name: Bump release candidate version
+        working-directory: ./code
+        run: |
+          ./mvnw -B versions:set versions:commit \
+          -DnewVersion=${{ steps.release-candidate.outputs.next-version }}
