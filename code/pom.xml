@@ -28,10 +28,9 @@
     </developers>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/tamamico/poc-spring-cloud-stream-native.git
-        </developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <developerConnection>scm:git:https://github.com/tamamico/poc-spring-cloud-stream-native.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <!-- Maven settings -->
