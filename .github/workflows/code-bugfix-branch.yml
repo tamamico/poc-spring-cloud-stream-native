@@ -46,7 +46,7 @@ jobs:
           ./mvnw -B build-helper:parse-version release:update-versions versions:commit \
           -DdevelopmentVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
       - name: Update SCM tag in pom.xml
-        run: sed -i 's/v${{ inputs.version }}/bugfix/${{ inputs.ticket }}/g' pom.xml
+        run: sed -i 's#v${{ inputs.version }}#bugfix/${{ inputs.ticket }}#' pom.xml
       - name: Commit & Push changes
         run: |
           git commit -am "Bumped incremental version"
