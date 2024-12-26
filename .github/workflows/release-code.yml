@@ -46,6 +46,7 @@ jobs:
         uses: fregante/setup-git-user@v2
       - name: Generate release candidate versions
         id: release-candidate
+        working-directory: ./code
         run: |
           getVersion() {
             echo $(./mvnw -B build-helper:parse-version help:evaluate \
@@ -59,6 +60,7 @@ jobs:
           echo "current-version=$MAJOR.$MINOR.$INCREMENTAL-RC$CURRENT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
           echo "next-version=$MAJOR.$MINOR.$INCREMENTAL-RC$NEXT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
       - name: Prepare release
+        working-directory: ./code
         run: |
           ./mvnw -B build-helper:parse-version release:prepare \
           -DreleaseVersion=${{ steps.release-candidate.outputs.current-version }} \
