@@ -26,7 +26,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: tags/v${{ inputs.version }}
+          ref: v${{ inputs.version }}
           fetch-depth: 0
           fetch-tags: 'true'
       - name: Set-up GraalVM
