@@ -27,5 +27,5 @@ jobs:
       - name: Create release branch
         run: |
           ./mvnw -B build-helper:parse-version release:branch \
-          -DbranchName=release/\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion} \
+          -DbranchName=release/\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} \
           -DdevelopmentVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0-SNAPSHOT
