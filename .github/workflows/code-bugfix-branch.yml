@@ -38,9 +38,10 @@ jobs:
       - name: Set-up Git user
         uses: fregante/setup-git-user@v2
       - name: Create bugfix branch
+        run: git checkout -b bugfix/${{ inputs.ticket }} v${{ inputs.version }}
+      - name: Update code version in branch
         run: |
-          ./mvnw -B build-helper:parse-version release:branch \
-          -DbranchName=bugfix/${{ inputs.ticket }} \
-          -DupdateBranchVersions=true \
-          -DupdateWorkingCopyVersions=false \
-          -DreleaseVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
+          ./mvnw -B build-helper:parse-version release:branch versions:commit \
+          -DdevelopmentVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
+      - name: Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5.0.1
