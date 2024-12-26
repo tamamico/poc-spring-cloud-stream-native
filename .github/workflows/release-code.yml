@@ -17,10 +17,8 @@ on:
       - completed
 
 permissions:
-  contents: read
-  pull-requests: read
+  contents: write
   security-events: write
-  packages: write
 
 jobs:
   build-source-code:
