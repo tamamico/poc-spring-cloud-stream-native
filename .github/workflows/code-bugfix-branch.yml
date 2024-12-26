@@ -41,7 +41,13 @@ jobs:
         run: git config --global --add --bool push.autoSetupRemote true
       - name: Create bugfix branch
         run: git checkout -b bugfix/${{ inputs.ticket }} v${{ inputs.version }}
-      - name: Update code version in branch
+      - name: Bump incremental version
         run: |
           ./mvnw -B build-helper:parse-version release:update-versions versions:commit \
           -DdevelopmentVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
+      - name: Update SCM tag in pom.xml
+        run: sed -i 's/v${{ inputs.version }}/bugfix/${{ inputs.ticket }}/g' pom.xml
+      - name: Commit & Push changes
+        run: |
+          git commit -am "Bumped incremental version"
+          git push --set-upstream origin bugfix/${{ inputs.ticket }}
