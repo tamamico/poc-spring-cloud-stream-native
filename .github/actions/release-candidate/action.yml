@@ -1,9 +1,5 @@
 name: Build infrastructure
 
-defaults:
-  run:
-    working-directory: ./code
-
 runs:
   using: "composite"
   steps:
@@ -18,6 +14,7 @@ runs:
     - name: Generate release candidate versions
       id: release-candidate
       shell: bash
+      working-directory: ./code
       run: |
         getVersion() {
           echo $(./mvnw -B build-helper:parse-version help:evaluate \
@@ -32,11 +29,13 @@ runs:
         echo "next-version=$MAJOR.$MINOR.$INCREMENTAL-RC$NEXT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
     - name: Prepare release
       shell: bash
+      working-directory: ./code
       run: |
         ./mvnw -B release:prepare -DupdateWorkingCopyVersions=false \
         -DreleaseVersion=${{ steps.release-candidate.outputs.current-version }}
     - name: Bump release candidate version
       shell: bash
+      working-directory: ./code
       run: |
         ./mvnw -B versions:set versions:commit -DnewVersion=${{ steps.release-candidate.outputs.next-version }}
     - name: Commit & Push changes
