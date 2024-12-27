@@ -20,7 +20,7 @@ spring:
       bindings:
         greet-in-0:
           group: ${spring.application.name}
-          destination: ^input\.(?:men|women)\.avro$
+          destination: input.men.avro,input.women.avro
           consumer:
             use-native-decoding: true
         greet-out-0:
@@ -54,7 +54,6 @@ spring:
         bindings:
           greet-in-0:
             consumer:
-              destination-is-pattern: true
               reactive-auto-commit: true
               standard-headers: both
               start-offset: latest

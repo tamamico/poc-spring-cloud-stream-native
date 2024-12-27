@@ -83,9 +83,9 @@ Avro schema for output message
 
 </SwmSnippet>
 
-- Use <SwmToken path="/code/pom.xml" pos="161:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
+- Use <SwmToken path="/code/pom.xml" pos="160:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
 
-<SwmSnippet path="/code/pom.xml" line="159">
+<SwmSnippet path="/code/pom.xml" line="158">
 
 ---
 
@@ -119,7 +119,7 @@ Maven plugin to generate Java classes from Avro schemas
 
 - Set-up Kafka with Avro serialization
 
-<SwmSnippet path="/code/pom.xml" line="76">
+<SwmSnippet path="/code/pom.xml" line="75">
 
 ---
 
@@ -202,7 +202,7 @@ public class GreeterApplication {
 
 The next step is to configure Spring Cloud Stream, for which we need to add the required dependencies and, then, set-up the stream on a Spring bean:
 
-<SwmSnippet path="/code/pom.xml" line="66">
+<SwmSnippet path="/code/pom.xml" line="65">
 
 ---
 
@@ -272,7 +272,7 @@ spring:
       bindings:
         greet-in-0:
           group: ${spring.application.name}
-          destination: ^input\.(?:men|women)\.avro$
+          destination: input.men.avro,input.women.avro
           consumer:
             use-native-decoding: true
         greet-out-0:
@@ -306,7 +306,6 @@ spring:
         bindings:
           greet-in-0:
             consumer:
-              destination-is-pattern: true
               reactive-auto-commit: true
               standard-headers: both
               start-offset: latest
