@@ -13,6 +13,7 @@ runs:
       uses: fregante/setup-git-user@v2
     - name: Generate release candidate versions
       id: release-candidate
+      shell: bash
       run: |
         getVersion() {
           echo $(./mvnw -B build-helper:parse-version help:evaluate \
@@ -26,13 +27,16 @@ runs:
         echo "current-version=$MAJOR.$MINOR.$INCREMENTAL-RC$CURRENT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
         echo "next-version=$MAJOR.$MINOR.$INCREMENTAL-RC$NEXT_BUILD_NUMBER" >> "$GITHUB_OUTPUT"
     - name: Prepare release
+      shell: bash
       run: |
         ./mvnw -B release:prepare -DupdateWorkingCopyVersions=false \
         -DreleaseVersion=${{ steps.release-candidate.outputs.current-version }}
     - name: Bump release candidate version
+      shell: bash
       run: |
         ./mvnw -B versions:set versions:commit -DnewVersion=${{ steps.release-candidate.outputs.next-version }}
     - name: Commit & Push changes
+      shell: bash
       run: |
         git commit -am "Bumped release candidate version"
         git push

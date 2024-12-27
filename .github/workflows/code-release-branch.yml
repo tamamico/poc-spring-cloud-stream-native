@@ -36,7 +36,7 @@ jobs:
           MAJOR=$(getVersion majorVersion)
           MINOR=$(getVersion minorVersion)
           INCREMENTAL=$(getVersion incrementalVersion)
-          echo "name=release\$MAJOR.$MINOR.$INCREMENTAL" >> "$GITHUB_OUTPUT"
+          echo "name=release/$MAJOR.$MINOR.$INCREMENTAL" >> "$GITHUB_OUTPUT"
       - name: Create release branch
         run: |
           ./mvnw -B build-helper:parse-version release:branch \
