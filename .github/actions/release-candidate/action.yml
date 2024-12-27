@@ -1,5 +1,9 @@
 name: Build infrastructure
 
+defaults:
+  run:
+    working-directory: ./code
+
 runs:
   using: "composite"
   steps:
