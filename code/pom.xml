@@ -29,7 +29,7 @@
 
     <scm>
         <developerConnection>scm:git:https://github.com/tamamico/poc-spring-cloud-stream-native.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>release/0.1.0</tag>
     </scm>
 
     <properties>
