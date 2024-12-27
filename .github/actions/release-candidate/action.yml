@@ -38,8 +38,3 @@ runs:
       working-directory: ./code
       run: |
         ./mvnw -B versions:set versions:commit -DnewVersion=${{ steps.release-candidate.outputs.next-version }}
-    - name: Commit & Push changes
-      shell: bash
-      run: |
-        git commit -am "Bumped release candidate version"
-        git push

@@ -51,5 +51,3 @@ jobs:
         run: |
           git commit -am "Bumped incremental version"
           git push --set-upstream origin bugfix/${{ inputs.ticket }}
-      - name: Prepare release candidate
-        uses: ./.github/actions/release-candidate

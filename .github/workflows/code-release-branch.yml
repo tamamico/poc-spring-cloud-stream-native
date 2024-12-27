@@ -46,3 +46,8 @@ jobs:
         run: git checkout ${{ steps.release-branch.outputs.name }}
       - name: Prepare release candidate
         uses: ./.github/actions/release-candidate
+      - name: Commit & Push changes
+        shell: bash
+        run: |
+          git commit -am "Bumped release candidate version"
+          git push --set-upstream origin ${{ steps.release-branch.outputs.name }}
