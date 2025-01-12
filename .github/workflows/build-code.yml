@@ -38,7 +38,6 @@ jobs:
         uses: atomicjar/testcontainers-cloud-setup-action@v1
         with:
           token: ${{ secrets.TC_CLOUD_TOKEN }}
-          wait: true
       - name: Build & Test
         run: ./mvnw -B clean verify
       - name: Run SonarCloud analysis
