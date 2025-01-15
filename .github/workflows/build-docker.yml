@@ -27,6 +27,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'graalvm'
+          cache: 'maven'
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
