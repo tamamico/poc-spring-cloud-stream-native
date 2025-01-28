@@ -15,10 +15,5 @@ code/**/release.properties
 *.iml
 *.ipr
 
-### Terraform ###
-/infrastructure/**/.terraform
-/infrastructure/**/.terraform.lock.hcl
-/infrastructure/**/terraform.tfstate*
-
 ### Snyk ###
 **/snyk-*.sarif
