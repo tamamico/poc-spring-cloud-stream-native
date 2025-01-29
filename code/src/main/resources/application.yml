@@ -5,6 +5,9 @@ management:
     health:
       probes:
         enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
 
 logging:
   level:
@@ -14,7 +17,7 @@ logging:
 
 spring:
   application:
-    name: poc-greeter
+    name: poc-scs-native
   cloud:
     stream:
       bindings:
@@ -62,16 +65,7 @@ spring:
   config:
     activate:
       on-cloud-platform: kubernetes
-    import: "kubernetes:"
-  cloud:
-    kubernetes:
-      config:
-        name: settings
-        namespace: poc
-        fail-fast: true
-      secrets:
-        enabled: true
-        paths: /etc/secrets/poc
+    import: "configtree:/etc/config/*/,configtree:/etc/secrets/*/"
 logging:
   structured:
     format:
