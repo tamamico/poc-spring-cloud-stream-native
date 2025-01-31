@@ -5,15 +5,16 @@ import java.util.function.Function;
 import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.avro.Output;
 import io.micrometer.observation.ObservationRegistry;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Flux;
+import reactor.kafka.receiver.ReceiverOffset;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.kafka.support.KafkaHeaders.ACKNOWLEDGMENT;
 import static reactor.core.observability.micrometer.Micrometer.observation;
 
 @Configuration
@@ -27,21 +28,26 @@ class StreamConfiguration {
     }
 
     @Bean
-    Function<Flux<Flux<ConsumerRecord<String, Input>>>, Flux<Message<Output>>> greet(
+    Function<Flux<Message<Input>>, Flux<Message<Output>>> greet(
             final Greeter greeter,
             final ObservationRegistry registry
     ) {
-        return outer -> outer.flatMap(inner -> inner.doOnNext(input -> LOGGER.atInfo()
-                                                                             .setMessage("Greeting {}")
-                                                                             .addArgument(input.value()
-                                                                                               .getName())
-                                                                             .log())
-                                                    .map(input -> MessageBuilder.withPayload(
-                                                                                        greeter.greet(input.value()))
-                                                                                .setHeader("kafka_messageKey",
-                                                                                           input.key())
-                                                                                .build())
-                                                    .tap(observation(registry)));
+        return flux -> flux.doOnNext(input -> LOGGER.atInfo()
+                                                    .setMessage("Greeting {}")
+                                                    .addArgument(input.getPayload()
+                                                                      .getName())
+                                                    .log())
+                           .doOnNext(message -> message.getHeaders()
+                                                       .get(ACKNOWLEDGMENT, ReceiverOffset.class)
+                                                       .acknowledge())
+                           .map(input -> this.buildMessageFrom(input, greeter))
+                           .tap(observation(registry));
+    }
+
+    private Message<Output> buildMessageFrom(final Message<Input> input, final Greeter greeter) {
+        return MessageBuilder.withPayload(greeter.greet(input.getPayload()))
+                             .copyHeaders(input.getHeaders())
+                             .build();
     }
 
 }
