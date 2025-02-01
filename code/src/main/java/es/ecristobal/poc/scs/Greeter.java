@@ -11,7 +11,7 @@ class Greeter {
             final Input input
     ) {
         return Output.newBuilder()
-                     .setMessage(format("Hello, %S!", input.getName()))
+                     .setMessage(format("Hello, %S!", input.getWho()))
                      .build();
     }
 

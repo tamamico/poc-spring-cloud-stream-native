@@ -35,7 +35,7 @@ class StreamConfiguration {
         return flux -> flux.doOnNext(input -> LOGGER.atInfo()
                                                     .setMessage("Greeting {}")
                                                     .addArgument(input.getPayload()
-                                                                      .getName())
+                                                                      .getWho())
                                                     .log())
                            .doOnNext(message -> message.getHeaders()
                                                        .get(ACKNOWLEDGMENT, ReceiverOffset.class)

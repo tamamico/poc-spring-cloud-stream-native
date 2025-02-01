@@ -4,7 +4,7 @@
     "namespace" : "es.ecristobal.poc.scs.avro",
     "fields" : [
         {
-            "name" : "name",
+            "name" : "who",
             "type" : "string"
         }
     ]

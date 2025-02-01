@@ -9,7 +9,7 @@ public abstract class GreetingVisitor {
 
     protected Input buildFrom(final Customer customer) {
         return Input.newBuilder()
-                    .setName(customer.name())
+                    .setWho(customer.name())
                     .build();
     }
 
