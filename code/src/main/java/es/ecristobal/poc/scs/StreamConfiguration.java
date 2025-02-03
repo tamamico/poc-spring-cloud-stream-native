@@ -6,6 +6,7 @@ import es.ecristobal.poc.scs.avro.Input;
 import es.ecristobal.poc.scs.avro.Output;
 import io.micrometer.observation.ObservationRegistry;
 import org.slf4j.Logger;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -17,6 +18,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.kafka.support.KafkaHeaders.ACKNOWLEDGMENT;
 import static reactor.core.observability.micrometer.Micrometer.observation;
 
+@RegisterReflectionForBinding
 @Configuration
 class StreamConfiguration {
 
