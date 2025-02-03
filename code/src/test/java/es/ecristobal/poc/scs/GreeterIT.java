@@ -19,7 +19,6 @@ import org.testcontainers.redpanda.RedpandaContainer;
 
 import static java.lang.String.format;
 
-import static es.ecristobal.poc.scs.TestScenarios.greetOk;
 import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaAuthentication;
 import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaUrls;
 import static io.restassured.RestAssured.given;
@@ -28,7 +27,8 @@ import static io.restassured.RestAssured.given;
 @AutoConfigureObservability
 @SpringBootTest
 @SuppressWarnings("java:S2699")
-class GreeterIT {
+class GreeterIT
+        extends TestScenarios {
 
     private static final String DOCKER_IMAGE = "docker.redpanda.com/redpandadata/redpanda:v24.1.2";
 
@@ -106,14 +106,14 @@ class GreeterIT {
     void testGreetMen() {
         final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_MEN)
                                                                       .build();
-        greetOk("Steve", greetingVisitor, greetingValidator);
+        this.greetOk("Steve", greetingVisitor, greetingValidator);
     }
 
     @Test
     void testGreetWomen() {
         final GreetingVisitor greetingVisitor = greetingVisitorBuilder.topic(INPUT_TOPIC_WOMEN)
                                                                       .build();
-        greetOk("Laurene", greetingVisitor, greetingValidator);
+        this.greetOk("Laurene", greetingVisitor, greetingValidator);
     }
 
 }

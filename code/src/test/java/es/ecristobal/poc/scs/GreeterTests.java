@@ -6,10 +6,9 @@ import es.ecristobal.poc.scs.screenplay.abilities.whiteboard.WhiteboardGreetingF
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static es.ecristobal.poc.scs.TestScenarios.greetOk;
-
 @SuppressWarnings("java:S2699")
-class GreeterTests {
+class GreeterTests
+        extends TestScenarios {
 
     private static GreetingVisitor   greetingVisitor;
     private static GreetingValidator greetingValidator;
@@ -28,7 +27,7 @@ class GreeterTests {
 
     @Test
     void testGreet() {
-        greetOk("Woz", greetingVisitor, greetingValidator);
+        this.greetOk("Woz", greetingVisitor, greetingValidator);
     }
 
 }

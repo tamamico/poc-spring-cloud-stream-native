@@ -16,7 +16,7 @@ class TestScenarios {
 
     private static final Pattern GREETING_PATTERN = compile("^Hello, ([A-Z]++)!$");
 
-    static void greetOk(
+    void greetOk(
             final String customerName,
             final GreetingVisitor greetingVisitor,
             final GreetingValidator greetingValidator
