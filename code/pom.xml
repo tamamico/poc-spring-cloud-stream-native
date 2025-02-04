@@ -49,6 +49,8 @@
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
         <rewrite-maven-plugin.version>6.0.5</rewrite-maven-plugin.version>
+        <!-- Sonar settings -->
+        <sonar.exclusions>**/NativeApplicationHints.java</sonar.exclusions>
     </properties>
 
     <dependencyManagement>
