@@ -20,7 +20,7 @@ Method implementing business logic for our PoC, using classes wrapping input and
             final Input input
     ) {
         return Output.newBuilder()
-                     .setMessage(format("Hello, %S!", input.getName()))
+                     .setMessage(format("Hello, %S!", input.getWho()))
                      .build();
     }
 ```
@@ -48,7 +48,7 @@ Avro schema for input message
     "namespace" : "es.ecristobal.poc.scs.avro",
     "fields" : [
         {
-            "name" : "name",
+            "name" : "who",
             "type" : "string"
         }
     ]
@@ -83,9 +83,9 @@ Avro schema for output message
 
 </SwmSnippet>
 
-- Use <SwmToken path="/code/pom.xml" pos="160:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
+- Use <SwmToken path="/code/pom.xml" pos="164:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
 
-<SwmSnippet path="/code/pom.xml" line="158">
+<SwmSnippet path="/code/pom.xml" line="162">
 
 ---
 
@@ -119,7 +119,7 @@ Maven plugin to generate Java classes from Avro schemas
 
 - Set-up Kafka with Avro serialization
 
-<SwmSnippet path="/code/pom.xml" line="75">
+<SwmSnippet path="/code/pom.xml" line="79">
 
 ---
 
@@ -137,28 +137,28 @@ Maven artifact with Kafka Avro serializers
 
 </SwmSnippet>
 
-<SwmSnippet path="/code/src/main/resources/application.yml" line="38">
+<SwmSnippet path="code/src/main/resources/application.properties" line="18">
 
 ---
 
 Deserializer for incoming messages
 
 ```
-            value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+spring.cloud.stream.kafka.binder.consumer-properties.value.deserializer=io.confluent.kafka.serializers.KafkaAvroDeserializer
 ```
 
 ---
 
 </SwmSnippet>
 
-<SwmSnippet path="/code/src/main/resources/application.yml" line="45">
+<SwmSnippet path="code/src/main/resources/application.properties" line="24">
 
 ---
 
 Serializer for outgoing messages
 
-```yaml
-            value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+```
+spring.cloud.stream.kafka.binder.producer-properties.value.serializer=io.confluent.kafka.serializers.KafkaAvroSerializer
 ```
 
 ---
@@ -202,7 +202,7 @@ public class GreeterApplication {
 
 The next step is to configure Spring Cloud Stream, for which we need to add the required dependencies and, then, set-up the stream on a Spring bean:
 
-<SwmSnippet path="/code/pom.xml" line="65">
+<SwmSnippet path="/code/pom.xml" line="69">
 
 ---
 
@@ -225,29 +225,32 @@ Maven dependency for [Reactive Kafka binder](https://docs.spring.io/spring-cloud
 
 </SwmSnippet>
 
-<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" line="29">
+<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" line="28">
 
 ---
 
-Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="34:23:23" line-data="        return outer -&gt; outer.flatMap(inner -&gt; inner.doOnNext(input -&gt; LOGGER.atInfo()">`LOGGER`</SwmToken> and <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="44:4:4" line-data="                                                    .tap(observation(registry)));">`observation`</SwmToken>)
+Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="33:15:15" line-data="        return flux -&gt; flux.doOnNext(input -&gt; log.atInfo()">`log`</SwmToken> and <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="46:4:4" line-data="                           .tap(observation(registry));">`observation`</SwmToken>)
 
 ```java
     @Bean
-    Function<Flux<Flux<ConsumerRecord<String, Input>>>, Flux<Message<Output>>> greet(
+    Function<Flux<Message<Input>>, Flux<Message<Output>>> greet(
             final Greeter greeter,
             final ObservationRegistry registry
     ) {
-        return outer -> outer.flatMap(inner -> inner.doOnNext(input -> LOGGER.atInfo()
-                                                                             .setMessage("Greeting {}")
-                                                                             .addArgument(input.value()
-                                                                                               .getName())
-                                                                             .log())
-                                                    .map(input -> MessageBuilder.withPayload(
-                                                                                        greeter.greet(input.value()))
-                                                                                .setHeader("kafka_messageKey",
-                                                                                           input.key())
-                                                                                .build())
-                                                    .tap(observation(registry)));
+        return flux -> flux.doOnNext(input -> log.atInfo()
+                                                 .setMessage("Greeting {}")
+                                                 .addArgument(input.getPayload().getWho())
+                                                 .log())
+                           .map(input -> {
+                               input.getHeaders()
+                                    .get(KafkaHeaders.ACKNOWLEDGMENT, ReceiverOffset.class)
+                                    .acknowledge();
+                               return MessageBuilder.withPayload(greeter.greet(input.getPayload()))
+                                                    .setHeader(KafkaHeaders.KEY, input.getHeaders()
+                                                                                      .get("kafka_receivedMessageKey"))
+                                                    .build();
+                           })
+                           .tap(observation(registry));
     }
 ```
 
@@ -255,60 +258,42 @@ Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecr
 
 </SwmSnippet>
 
-Finally, to make everything work we have to add all required configuration in <SwmPath>[code/src/main/resources/application.yml](/code/src/main/resources/application.yml)</SwmPath>:
+Finally, to make everything work we have to add all required configuration in <SwmPath>[code/…/resources/application.properties](/code/src/main/resources/application.properties)</SwmPath>:
 
-<SwmSnippet path="/code/src/main/resources/application.yml" line="15">
+<SwmSnippet path="code/src/main/resources/application.properties" line="8">
 
 ---
 
 Spring Cloud Stream configuration
 
-```yaml
-spring:
-  application:
-    name: poc-greeter
-  cloud:
-    stream:
-      bindings:
-        greet-in-0:
-          group: ${spring.application.name}
-          destination: input.men.avro,input.women.avro
-          consumer:
-            use-native-decoding: true
-        greet-out-0:
-          destination: output.avro
-          producer:
-            use-native-encoding: true
-      kafka:
-        binder:
-          auto-create-topics: false
-          consumer-properties:
-            specific.avro.reader: true
-            basic.auth.credentials.source: USER_INFO
-            basic.auth.user.info: ${schema-registry.user}:${schema-registry.password}
-            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-            value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
-          producer-properties:
-            auto.register.schemas: false
-            basic.auth.credentials.source: USER_INFO
-            basic.auth.user.info: ${schema-registry.user}:${schema-registry.password}
-            key.serializer: org.apache.kafka.common.serialization.StringSerializer
-            value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-            value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
-          configuration:
-            metadata.max.age.ms: 1000
-            security.protocol: SASL_SSL
-            sasl.mechanism: PLAIN
-            sasl.jaas.config: >
-              ${kafka.login.module:org.apache.kafka.common.security.plain.PlainLoginModule}
-              required username='${kafka.user}' password='${kafka.password}';
-        bindings:
-          greet-in-0:
-            consumer:
-              reactive-auto-commit: true
-              standard-headers: both
-              start-offset: latest
+```
+spring.cloud.stream.bindings.greet-in-0.group=${spring.application.name}
+spring.cloud.stream.bindings.greet-in-0.destination=input.men.avro,input.women.avro
+spring.cloud.stream.bindings.greet-in-0.consumer.use-native-decoding=true
+spring.cloud.stream.bindings.greet-out-0.destination=output.avro
+spring.cloud.stream.bindings.greet-out-0.producer.use-native-encoding=true
+spring.cloud.stream.kafka.binder.auto-create-topics=false
+spring.cloud.stream.kafka.binder.consumer-properties.specific.avro.reader=true
+spring.cloud.stream.kafka.binder.consumer-properties.basic.auth.credentials.source=USER_INFO
+spring.cloud.stream.kafka.binder.consumer-properties.basic.auth.user.info=${schema-registry.user}:${schema-registry.password}
+spring.cloud.stream.kafka.binder.consumer-properties.key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+spring.cloud.stream.kafka.binder.consumer-properties.value.deserializer=io.confluent.kafka.serializers.KafkaAvroDeserializer
+spring.cloud.stream.kafka.binder.consumer-properties.value.subject.name.strategy=io.confluent.kafka.serializers.subject.RecordNameStrategy
+spring.cloud.stream.kafka.binder.producer-properties.auto.register.schemas=false
+spring.cloud.stream.kafka.binder.producer-properties.basic.auth.credentials.source=USER_INFO
+spring.cloud.stream.kafka.binder.producer-properties.basic.auth.user.info=${schema-registry.user}:${schema-registry.password}
+spring.cloud.stream.kafka.binder.producer-properties.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.cloud.stream.kafka.binder.producer-properties.value.serializer=io.confluent.kafka.serializers.KafkaAvroSerializer
+spring.cloud.stream.kafka.binder.producer-properties.value.subject.name.strategy=io.confluent.kafka.serializers.subject.RecordNameStrategy
+spring.cloud.stream.kafka.binder.configuration.metadata.max.age.ms=1000
+spring.cloud.stream.kafka.binder.configuration.security.protocol=SASL_SSL
+spring.cloud.stream.kafka.binder.configuration.sasl.mechanism=PLAIN
+spring.cloud.stream.kafka.binder.configuration.sasl.jaas.config=\
+  ${kafka.login.module:org.apache.kafka.common.security.plain.PlainLoginModule} \
+  required username='${kafka.user}' password='${kafka.password}';
+spring.cloud.stream.kafka.binder.enable-observation=true
+spring.cloud.stream.kafka.bindings.greet-in-0.consumer.standard-headers=both
+spring.cloud.stream.kafka.bindings.greet-in-0.consumer.start-offset=latest
 ```
 
 ---
