@@ -189,7 +189,6 @@
                     <createdDate>now</createdDate>
                     <imageName>ghcr.io/tamamico/${project.artifactId}:${project.version}</imageName>
                     <image>
-                        <builder>dashaun/builder:tiny</builder>
                         <env>
                             <BP_OCI_SOURCE>https://github.com/tamamico/poc-spring-cloud-stream-native</BP_OCI_SOURCE>
                             <BP_OCI_DESCRIPTION>PoC to use Spring Cloud Stream with GraalVM</BP_OCI_DESCRIPTION>
