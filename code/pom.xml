@@ -181,6 +181,18 @@
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
+                <configuration>
+                    <agent>
+                        <enabled>true</enabled>
+                        <metadataCopy>
+                            <disabledStages>
+                                <stage>main</stage>
+                            </disabledStages>
+                            <merge>true</merge>
+                            <outputDirectory>${project.basedir}/src/main/resources/META-INF/native-image</outputDirectory>
+                        </metadataCopy>
+                    </agent>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>

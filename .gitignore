@@ -17,3 +17,6 @@ code/**/release.properties
 
 ### Snyk ###
 **/snyk-*.sarif
+
+### GraalVM Hints ###
+/code/src/main/resources/META-INF/native-image/
