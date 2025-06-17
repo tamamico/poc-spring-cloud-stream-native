@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaAuthentication;
 import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaUrls;
 
-@SuppressWarnings({"java:S2699", "java:S3577"})
+@SuppressWarnings("java:S3577")
 class MessageProducer
         extends TestScenarios {
 
