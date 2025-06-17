@@ -6,7 +6,6 @@ import io.confluent.kafka.schemaregistry.client.rest.entities.ErrorMessage;
 import io.confluent.kafka.schemaregistry.client.rest.entities.Schema;
 import io.confluent.kafka.schemaregistry.client.rest.entities.SchemaReference;
 import io.confluent.kafka.schemaregistry.client.rest.entities.SchemaString;
-import io.confluent.kafka.schemaregistry.client.rest.entities.SchemaTypeConverter;
 import io.confluent.kafka.schemaregistry.client.rest.entities.requests.ConfigUpdateRequest;
 import io.confluent.kafka.schemaregistry.client.rest.entities.requests.RegisterSchemaRequest;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
@@ -39,8 +38,6 @@ class NativeApplicationHints
                  .registerConstructor(accessibleConstructor(RecordNameStrategy.class), INVOKE);
             hints.reflection()
                  .registerConstructor(accessibleConstructor(TopicNameStrategy.class), INVOKE);
-            hints.reflection()
-                 .registerConstructor(accessibleConstructor(SchemaTypeConverter.class), INVOKE);
             hints.reflection()
                  .registerType(SchemaString.class, DECLARED_FIELDS, INVOKE_DECLARED_METHODS)
                  .registerConstructor(accessibleConstructor(SchemaString.class), INVOKE);
