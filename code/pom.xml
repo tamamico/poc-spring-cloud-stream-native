@@ -40,7 +40,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Dependency versions -->
         <spring-cloud.version>2025.0.0</spring-cloud.version>
-        <kafka-avro-serializer.version>7.9.1</kafka-avro-serializer.version>
+        <kafka-avro-serializer.version>8.0.0</kafka-avro-serializer.version>
         <!-- Plugin versions -->
         <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
         <sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
@@ -181,6 +181,18 @@
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
+                <configuration>
+                    <agent>
+                        <enabled>true</enabled>
+                        <metadataCopy>
+                            <disabledStages>
+                                <stage>main</stage>
+                            </disabledStages>
+                            <merge>true</merge>
+                            <outputDirectory>${project.basedir}/src/main/resources/META-INF/native-image</outputDirectory>
+                        </metadataCopy>
+                    </agent>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>
