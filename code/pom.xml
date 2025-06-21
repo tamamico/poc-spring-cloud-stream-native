@@ -353,6 +353,13 @@
                         <configuration>
                             <agent>
                                 <enabled>true</enabled>
+                                <defaultMode>conditional</defaultMode>
+                                <modes>
+                                    <conditional>
+                                        <userCodeFilterPath>exclusions.json</userCodeFilterPath>
+                                        <parallel>true</parallel>
+                                    </conditional>
+                                </modes>
                                 <metadataCopy>
                                     <disabledStages>
                                         <stage>main</stage>
