@@ -1,12 +1,24 @@
 {
   "rules": [
-    {"excludeClasses": "**"},
-    {"includeClasses": "es.ecristobal.poc.scs.**"},
-    {"includeClasses": "org.apache.avro.**"},
-    {"includeClasses": "io.confluent.kafka.**"},
-    {"excludeClasses": "es.ecristobal.poc.scs.screenplay.**"}
+    {
+      "excludeClasses": "**"
+    },
+    {
+      "includeClasses": "es.ecristobal.poc.scs.**"
+    },
+    {
+      "includeClasses": "org.apache.avro.**"
+    },
+    {
+      "includeClasses": "io.confluent.kafka.**"
+    },
+    {
+      "excludeClasses": "es.ecristobal.poc.scs.screenplay.**"
+    }
   ],
   "regexRules": [
-    {"excludeClasses": "es\\.ecristobal\\.poc\\.scs\\..*Test.*"}
+    {
+      "excludeClasses": "es\\.ecristobal\\.poc\\.scs\\..*Test.*"
+    }
   ]
 }

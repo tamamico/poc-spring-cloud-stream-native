@@ -32,7 +32,8 @@ class StreamConfiguration {
     ) {
         return flux -> flux.doOnNext(input -> log.atInfo()
                                                  .setMessage("Greeting {}")
-                                                 .addArgument(input.getPayload().getWho())
+                                                 .addArgument(input.getPayload()
+                                                                   .getWho())
                                                  .log())
                            .map(input -> {
                                input.getHeaders()

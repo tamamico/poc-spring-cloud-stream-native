@@ -1,11 +1,11 @@
 {
-    "type" : "record",
-    "name" : "Input",
-    "namespace" : "es.ecristobal.poc.scs.avro",
-    "fields" : [
+    "type": "record",
+    "name": "Input",
+    "namespace": "es.ecristobal.poc.scs.avro",
+    "fields": [
         {
-            "name" : "who",
-            "type" : "string"
+            "name": "who",
+            "type": "string"
         }
     ]
 }
