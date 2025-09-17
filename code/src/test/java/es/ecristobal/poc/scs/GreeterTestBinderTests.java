@@ -2,7 +2,8 @@ package es.ecristobal.poc.scs;
 
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
-import es.ecristobal.poc.scs.screenplay.abilities.testbinder.TestBinderGreetingFactory;
+import es.ecristobal.poc.scs.screenplay.abilities.testbinder.TestBinderGreetingValidator;
+import es.ecristobal.poc.scs.screenplay.abilities.testbinder.TestBinderGreetingVisitor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,32 +17,27 @@ import org.springframework.cloud.stream.binder.test.OutputDestination;
 class GreeterTestBinderTests
         extends TestScenarios {
 
-    @Autowired
-    private InputDestination input;
+    private final GreetingVisitor   greetingVisitor;
+    private final GreetingValidator greetingValidator;
 
     @Autowired
-    private OutputDestination output;
+    GreeterTestBinderTests(final InputDestination input, final OutputDestination output) {
+        this.greetingVisitor   = TestBinderGreetingVisitor.builder()
+                                                          .inputDestination(input)
+                                                          .build();
+        this.greetingValidator = TestBinderGreetingValidator.builder()
+                                                            .outputDestination(output)
+                                                            .build();
+    }
 
     @Test
     void testGreetMen() {
-        final TestBinderGreetingFactory greetingFactory = TestBinderGreetingFactory.builder()
-                                                                                   .inputDestination(input)
-                                                                                   .outputDestination(output)
-                                                                                   .build();
-        final GreetingVisitor   greetingVisitor   = greetingFactory.greetingVisitor();
-        final GreetingValidator greetingValidator = greetingFactory.greetingValidator();
-        this.greetOk("Steve", greetingVisitor, greetingValidator);
+        this.greetOk("Steve", this.greetingVisitor, this.greetingValidator);
     }
 
     @Test
     void testGreetWomen() {
-        final TestBinderGreetingFactory greetingFactory = TestBinderGreetingFactory.builder()
-                                                                                   .inputDestination(input)
-                                                                                   .outputDestination(output)
-                                                                                   .build();
-        final GreetingVisitor   greetingVisitor   = greetingFactory.greetingVisitor();
-        final GreetingValidator greetingValidator = greetingFactory.greetingValidator();
-        this.greetOk("Laurene", greetingVisitor, greetingValidator);
+        this.greetOk("Laurene", this.greetingVisitor, this.greetingValidator);
     }
 
 }

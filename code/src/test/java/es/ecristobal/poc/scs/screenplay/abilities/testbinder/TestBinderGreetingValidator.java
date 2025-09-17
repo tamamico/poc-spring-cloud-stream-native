@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
+import lombok.Builder;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,7 +16,8 @@ public class TestBinderGreetingValidator
 
     private final OutputDestination outputDestination;
 
-    TestBinderGreetingValidator(final OutputDestination outputDestination) {
+    @Builder
+    private TestBinderGreetingValidator(final OutputDestination outputDestination) {
         this.outputDestination = outputDestination;
     }
 

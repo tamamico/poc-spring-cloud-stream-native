@@ -2,6 +2,7 @@ package es.ecristobal.poc.scs.screenplay.abilities.testbinder;
 
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.actors.Customer;
+import lombok.Builder;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 
 import static org.springframework.integration.support.MessageBuilder.withPayload;
@@ -11,7 +12,8 @@ public class TestBinderGreetingVisitor
 
     private final InputDestination inputDestination;
 
-    TestBinderGreetingVisitor(final InputDestination inputDestination) {
+    @Builder
+    private TestBinderGreetingVisitor(final InputDestination inputDestination) {
         this.inputDestination = inputDestination;
     }
 
