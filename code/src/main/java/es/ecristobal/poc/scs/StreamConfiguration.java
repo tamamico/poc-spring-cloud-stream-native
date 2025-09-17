@@ -14,6 +14,8 @@ import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.ReceiverOffset;
 
+import static java.util.Optional.ofNullable;
+
 import static reactor.core.observability.micrometer.Micrometer.observation;
 
 @Slf4j
@@ -36,9 +38,9 @@ class StreamConfiguration {
                                                                    .getWho())
                                                  .log())
                            .map(input -> {
-                               input.getHeaders()
-                                    .get(KafkaHeaders.ACKNOWLEDGMENT, ReceiverOffset.class)
-                                    .acknowledge();
+                               ofNullable(input.getHeaders()
+                                               .get(KafkaHeaders.ACKNOWLEDGMENT, ReceiverOffset.class))
+                               .ifPresent(ReceiverOffset::acknowledge);
                                return MessageBuilder.withPayload(greeter.greet(input.getPayload()))
                                                     .setHeader(KafkaHeaders.KEY, input.getHeaders()
                                                                                       .get("kafka_receivedMessageKey"))

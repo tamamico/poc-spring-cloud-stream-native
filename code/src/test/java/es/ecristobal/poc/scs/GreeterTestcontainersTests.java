@@ -27,7 +27,7 @@ import static io.restassured.RestAssured.given;
 @AutoConfigureObservability
 @SpringBootTest
 @SuppressWarnings("java:S2699")
-class GreeterTests
+class GreeterTestcontainersTests
         extends TestScenarios {
 
     private static final String DOCKER_IMAGE = "docker.redpanda.com/redpandadata/redpanda:v24.1.2";
