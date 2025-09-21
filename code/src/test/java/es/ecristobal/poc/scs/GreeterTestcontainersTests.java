@@ -6,6 +6,7 @@ import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingVisitor;
+import io.restassured.http.ContentType;
 import org.apache.kafka.common.security.scram.ScramLoginModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ import static io.restassured.RestAssured.given;
 class GreeterTestcontainersTests
         extends TestScenarios {
 
-    private static final String DOCKER_IMAGE = "docker.redpanda.com/redpandadata/redpanda:v24.1.2";
+    private static final String DOCKER_IMAGE = "docker.redpanda.com/redpandadata/redpanda:latest";
 
     private static final Class<? extends LoginModule> KAFKA_LOGIN_MODULE = ScramLoginModule.class;
     private static final String                       KAFKA_USER         = "admin";
@@ -75,7 +76,7 @@ class GreeterTestcontainersTests
     @BeforeAll
     static void setUp() {
         final String adminUrl = format("%s/v1/security/users", broker.getAdminAddress());
-        given().contentType("application/json")
+        given().contentType(ContentType.JSON)
                .body(format(USER_SETUP, KAFKA_USER, KAFKA_PASSWORD, SASL_MECHANISM))
                .post(adminUrl)
                .then()
