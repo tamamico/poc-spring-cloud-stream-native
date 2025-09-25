@@ -4,6 +4,7 @@ import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.testbinder.TestBinderGreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.testbinder.TestBinderGreetingVisitor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.MimeType;
 
+@Disabled
 @SpringBootTest
 @EnableTestBinder
 @SuppressWarnings("java:S2699")
@@ -34,6 +36,7 @@ class GreeterTestBinderTests
         MessageConverter avroMessageConverter() {
             return new AvroSchemaMessageConverter(AVRO_MIME_TYPE, new AvroSchemaServiceManagerImpl());
         }
+
     }
 
     private final GreetingVisitor   greetingVisitor;

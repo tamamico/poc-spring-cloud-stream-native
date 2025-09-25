@@ -32,7 +32,7 @@ jobs:
       - name: Set-up GraalVM
         uses: actions/setup-java@v5.0.0
         with:
-          java-version: '24'
+          java-version: '25'
           distribution: 'graalvm'
           cache: 'maven'
       - name: Set-up Git user
