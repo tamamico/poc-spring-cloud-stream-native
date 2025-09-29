@@ -40,7 +40,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Dependency versions -->
         <spring-cloud.version>2025.0.0</spring-cloud.version>
-        <opentelemetry-instrumentation-bom.version>2.20.0</opentelemetry-instrumentation-bom.version>
+        <opentelemetry-instrumentation-bom.version>2.20.1</opentelemetry-instrumentation-bom.version>
         <kafka-avro-serializer.version>8.0.0</kafka-avro-serializer.version>
         <!-- Plugin versions -->
         <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
