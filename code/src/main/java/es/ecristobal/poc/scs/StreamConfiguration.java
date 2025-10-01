@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.ReceiverOffset;
-import reactor.util.context.Context;
 
 import static java.util.Optional.ofNullable;
 
@@ -21,6 +20,7 @@ import static org.springframework.integration.support.MessageBuilder.withPayload
 import static org.springframework.kafka.support.KafkaHeaders.ACKNOWLEDGMENT;
 import static org.springframework.kafka.support.KafkaHeaders.KEY;
 import static reactor.core.publisher.Hooks.enableAutomaticContextPropagation;
+import static reactor.util.context.Context.of;
 
 @Slf4j
 @Configuration
@@ -51,7 +51,8 @@ class StreamConfiguration {
             ofNullable(message.getHeaders()
                               .get(ACKNOWLEDGMENT, ReceiverOffset.class)).ifPresent(ReceiverOffset::acknowledge);
             return greeter.greet(input)
-                          .contextWrite(Context.of(USER_NAME, input.getWho().toString()))
+                          .contextWrite(of(USER_NAME, input.getWho()
+                                                           .toString()))
                           .map(output -> withPayload(output).setHeader(KEY, message.getHeaders()
                                                                                    .get(KAFKA_KEY))
                                                             .build());

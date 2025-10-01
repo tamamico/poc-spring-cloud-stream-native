@@ -4,6 +4,11 @@
     "namespace": "es.ecristobal.poc.scs.avro",
     "fields": [
         {
+            "name": "date",
+            "type": "int",
+            "logicalType": "date"
+        },
+        {
             "name": "message",
             "type": "string"
         }
