@@ -9,19 +9,20 @@ However, the second [non-functional requirement](https://app.swimm.io/workspaces
 
 With both things in mind, the code needed to implement the business logic is the following one:
 
-<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/Greeter.java" line="10">
+<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/Greeter.java" line="18">
 
 ---
 
 Method implementing business logic for our PoC, using classes wrapping input and output Avro messages
 
 ```java
-    Output greet(
+    Mono<Output> greet(
             final Input input
     ) {
-        return Output.newBuilder()
-                     .setMessage(format("Hello, %S!", input.getWho()))
-                     .build();
+        return just(input.getWho()).doOnNext(name -> log.info("Received person name to greet"))
+                                   .map(name -> newBuilder().setMessage(format("Hello, %S!", name))
+                                                            .setDate(valueOf(now().atStartOfDay()).getNanos())
+                                                            .build());
     }
 ```
 
@@ -43,13 +44,13 @@ Avro schema for input message
 
 ```avsc
 {
-    "type" : "record",
-    "name" : "Input",
-    "namespace" : "es.ecristobal.poc.scs.avro",
-    "fields" : [
+    "type": "record",
+    "name": "Input",
+    "namespace": "es.ecristobal.poc.scs.avro",
+    "fields": [
         {
-            "name" : "who",
-            "type" : "string"
+            "name": "who",
+            "type": "string"
         }
     ]
 }
@@ -67,13 +68,18 @@ Avro schema for output message
 
 ```avsc
 {
-    "type" : "record",
-    "name" : "Output",
-    "namespace" : "es.ecristobal.poc.scs.avro",
-    "fields" : [
+    "type": "record",
+    "name": "Output",
+    "namespace": "es.ecristobal.poc.scs.avro",
+    "fields": [
         {
-            "name" : "message",
-            "type" : "string"
+            "name": "date",
+            "type": "int",
+            "logicalType": "date"
+        },
+        {
+            "name": "message",
+            "type": "string"
         }
     ]
 }
@@ -83,9 +89,9 @@ Avro schema for output message
 
 </SwmSnippet>
 
-- Use <SwmToken path="/code/pom.xml" pos="164:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
+- Use <SwmToken path="/code/pom.xml" pos="194:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
 
-<SwmSnippet path="/code/pom.xml" line="162">
+<SwmSnippet path="/code/pom.xml" line="192">
 
 ---
 
@@ -119,7 +125,7 @@ Maven plugin to generate Java classes from Avro schemas
 
 - Set-up Kafka with Avro serialization
 
-<SwmSnippet path="/code/pom.xml" line="79">
+<SwmSnippet path="/code/pom.xml" line="87">
 
 ---
 
@@ -137,7 +143,7 @@ Maven artifact with Kafka Avro serializers
 
 </SwmSnippet>
 
-<SwmSnippet path="code/src/main/resources/application.properties" line="18">
+<SwmSnippet path="/code/src/main/resources/application.properties" line="19">
 
 ---
 
@@ -151,7 +157,7 @@ spring.cloud.stream.kafka.binder.consumer-properties.value.deserializer=io.confl
 
 </SwmSnippet>
 
-<SwmSnippet path="code/src/main/resources/application.properties" line="24">
+<SwmSnippet path="/code/src/main/resources/application.properties" line="25">
 
 ---
 
@@ -169,7 +175,7 @@ spring.cloud.stream.kafka.binder.producer-properties.value.serializer=io.conflue
 
 We have a very straightforward set-up for our application, adding only some complexity to comply with sixth and seventh non-functional requirements.
 
-First of all, we have the Spring Boot application class, whose only particularity is the addition of <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/GreeterApplication.java" pos="12:1:3" line-data="        enableAutomaticContextPropagation();">`enableAutomaticContextPropagation()`</SwmToken> method call to propagate span and trace IDs:
+First of all, we have the Spring Boot application class, whose only particularity is the addition of <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="34:1:3" line-data="        enableAutomaticContextPropagation();">`enableAutomaticContextPropagation()`</SwmToken> method call to propagate span and trace IDs:
 
 <SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/GreeterApplication.java" line="1">
 
@@ -183,13 +189,11 @@ package es.ecristobal.poc.scs;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import static org.springframework.boot.SpringApplication.run;
-import static reactor.core.publisher.Hooks.enableAutomaticContextPropagation;
 
 @SpringBootApplication
 public class GreeterApplication {
 
     public static void main(String[] args) {
-        enableAutomaticContextPropagation();
         run(GreeterApplication.class, args);
     }
 
@@ -202,7 +206,7 @@ public class GreeterApplication {
 
 The next step is to configure Spring Cloud Stream, for which we need to add the required dependencies and, then, set-up the stream on a Spring bean:
 
-<SwmSnippet path="/code/pom.xml" line="69">
+<SwmSnippet path="/code/pom.xml" line="77">
 
 ---
 
@@ -225,32 +229,46 @@ Maven dependency for [Reactive Kafka binder](https://docs.spring.io/spring-cloud
 
 </SwmSnippet>
 
-<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" line="28">
+<SwmSnippet path="code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" line="28">
 
 ---
 
-Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="33:15:15" line-data="        return flux -&gt; flux.doOnNext(input -&gt; log.atInfo()">`log`</SwmToken> and <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="46:4:4" line-data="                           .tap(observation(registry));">`observation`</SwmToken>)
+Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/Greeter.java" pos="21:18:18" line-data="        return just(input.getWho()).doOnNext(name -&gt; log.info(&quot;Received person name to greet&quot;))">`log`</SwmToken>)
 
 ```java
+
+    private static final String KAFKA_KEY = "kafka_receivedMessageKey";
+    private static final String USER_NAME = "user.name";
+
+    @PostConstruct
+    public void init() {
+        enableAutomaticContextPropagation();
+    }
+
+    @Bean
+    Greeter greeter() {
+        return new Greeter();
+    }
+
     @Bean
     Function<Flux<Message<Input>>, Flux<Message<Output>>> greet(
-            final Greeter greeter,
-            final ObservationRegistry registry
+            final Greeter greeter
     ) {
-        return flux -> flux.doOnNext(input -> log.atInfo()
-                                                 .setMessage("Greeting {}")
-                                                 .addArgument(input.getPayload().getWho())
-                                                 .log())
-                           .map(input -> {
-                               input.getHeaders()
-                                    .get(KafkaHeaders.ACKNOWLEDGMENT, ReceiverOffset.class)
-                                    .acknowledge();
-                               return MessageBuilder.withPayload(greeter.greet(input.getPayload()))
-                                                    .setHeader(KafkaHeaders.KEY, input.getHeaders()
-                                                                                      .get("kafka_receivedMessageKey"))
-                                                    .build();
-                           })
-                           .tap(observation(registry));
+        getInstance().registerThreadLocalAccessor(USER_NAME, () -> MDC.get(USER_NAME),
+                                                  username -> MDC.put(USER_NAME, username),
+                                                  () -> MDC.remove(USER_NAME));
+        return flux -> flux.flatMap(message -> {
+            final Input input = message.getPayload();
+            ofNullable(message.getHeaders()
+                              .get(ACKNOWLEDGMENT, ReceiverOffset.class)).ifPresent(ReceiverOffset::acknowledge);
+            return greeter.greet(input)
+                          .contextWrite(of(USER_NAME, input.getWho()
+                                                           .toString()))
+                          .map(output -> withPayload(output).setHeader(KEY, message.getHeaders()
+                                                                                   .get(KAFKA_KEY))
+                                                            .build());
+
+        });
     }
 ```
 
@@ -260,7 +278,7 @@ Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecr
 
 Finally, to make everything work we have to add all required configuration in <SwmPath>[code/…/resources/application.properties](/code/src/main/resources/application.properties)</SwmPath>:
 
-<SwmSnippet path="code/src/main/resources/application.properties" line="8">
+<SwmSnippet path="/code/src/main/resources/application.properties" line="9">
 
 ---
 
