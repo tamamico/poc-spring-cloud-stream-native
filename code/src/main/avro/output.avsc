@@ -5,7 +5,7 @@
     "fields": [
         {
             "name": "date",
-            "type": "int",
+            "type": "long",
             "logicalType": "date"
         },
         {
