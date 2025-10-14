@@ -9,7 +9,7 @@ However, the second [non-functional requirement](https://app.swimm.io/workspaces
 
 With both things in mind, the code needed to implement the business logic is the following one:
 
-<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/Greeter.java" line="18">
+<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/Greeter.java" line="17">
 
 ---
 
@@ -19,9 +19,9 @@ Method implementing business logic for our PoC, using classes wrapping input and
     Mono<Output> greet(
             final Input input
     ) {
-        return just(input.getWho()).doOnNext(name -> log.info("Received person name to greet"))
+        return just(input.getWho()).doOnNext(name -> log.info("Greeting {}", name))
                                    .map(name -> newBuilder().setMessage(format("Hello, %S!", name))
-                                                            .setDate(valueOf(now().atStartOfDay()).getNanos())
+                                                            .setDate(now().toEpochDay())
                                                             .build());
     }
 ```
@@ -74,7 +74,7 @@ Avro schema for output message
     "fields": [
         {
             "name": "date",
-            "type": "int",
+            "type": "long",
             "logicalType": "date"
         },
         {
@@ -229,11 +229,11 @@ Maven dependency for [Reactive Kafka binder](https://docs.spring.io/spring-cloud
 
 </SwmSnippet>
 
-<SwmSnippet path="code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" line="28">
+<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" line="28">
 
 ---
 
-Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/Greeter.java" pos="21:18:18" line-data="        return just(input.getWho()).doOnNext(name -&gt; log.info(&quot;Received person name to greet&quot;))">`log`</SwmToken>)
+Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/Greeter.java" pos="20:18:18" line-data="        return just(input.getWho()).doOnNext(name -&gt; log.info(&quot;Greeting {}&quot;, name))">`log`</SwmToken>)
 
 ```java
 
