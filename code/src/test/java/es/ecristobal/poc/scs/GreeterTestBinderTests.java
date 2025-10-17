@@ -4,7 +4,6 @@ import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.testbinder.TestBinderGreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.testbinder.TestBinderGreetingVisitor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +11,6 @@ import org.springframework.cloud.stream.binder.test.EnableTestBinder;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 
-@Disabled
 @SpringBootTest
 @EnableTestBinder
 @SuppressWarnings("java:S2699")
