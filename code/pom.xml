@@ -40,10 +40,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Dependency versions -->
         <spring-cloud.version>2025.0.0</spring-cloud.version>
-        <opentelemetry-instrumentation-bom.version>2.20.1</opentelemetry-instrumentation-bom.version>
-        <kafka-avro-serializer.version>8.0.2</kafka-avro-serializer.version>
+        <opentelemetry-instrumentation-bom.version>2.21.0</opentelemetry-instrumentation-bom.version>
+        <kafka-avro-serializer.version>8.1.0</kafka-avro-serializer.version>
         <!-- Plugin versions -->
-        <avro-maven-plugin.version>1.12.0</avro-maven-plugin.version>
+        <avro-maven-plugin.version>1.12.1</avro-maven-plugin.version>
         <sonar-maven-plugin.version>5.2.0.4988</sonar-maven-plugin.version>
         <snyk-maven-plugin.version>2.3.0</snyk-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
@@ -256,6 +256,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <!--suppress UnresolvedMavenProperty -->
                     <apiToken>${env.SNYK_TOKEN}</apiToken>
                     <args>
                         <arg>--all-projects</arg>
@@ -278,6 +279,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <!--suppress UnresolvedMavenProperty -->
                     <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                 </configuration>
             </plugin>
