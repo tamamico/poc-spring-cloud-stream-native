@@ -39,7 +39,7 @@
         <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Dependency versions -->
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud.version>2025.1.1</spring-cloud.version>
         <opentelemetry-instrumentation-bom.version>2.21.0</opentelemetry-instrumentation-bom.version>
         <kafka-avro-serializer.version>8.1.0</kafka-avro-serializer.version>
         <!-- Plugin versions -->
