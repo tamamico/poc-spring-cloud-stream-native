@@ -76,7 +76,8 @@ class GreeterTestcontainersTests
     }
 
     @BeforeAll
-    static void setUp() throws Exception {
+    static void setUp()
+            throws Exception {
         final String adminUrl = format("%s/v1/security/users", broker.getAdminAddress());
         final HttpRequest request = HttpRequest.newBuilder()
                                                .uri(URI.create(adminUrl))
@@ -84,9 +85,10 @@ class GreeterTestcontainersTests
                                                .POST(HttpRequest.BodyPublishers.ofString(
                                                        format(USER_SETUP, KAFKA_USER, KAFKA_PASSWORD, SASL_MECHANISM)))
                                                .build();
-        final HttpResponse<String> response = HttpClient.newHttpClient()
-                                                        .send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(200, response.statusCode());
+        try(final HttpClient client = HttpClient.newHttpClient()) {
+            final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, response.statusCode());
+        }
         final KafkaUrls urls = KafkaUrls.builder()
                                         .broker(broker.getBootstrapServers())
                                         .schemaRegistry(broker.getSchemaRegistryAddress())
