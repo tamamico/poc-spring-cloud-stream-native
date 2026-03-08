@@ -1,16 +1,19 @@
 package es.ecristobal.poc.scs;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 import javax.security.auth.spi.LoginModule;
 
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingValidator;
 import es.ecristobal.poc.scs.screenplay.abilities.GreetingVisitor;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory;
 import es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingVisitor;
-import io.restassured.http.ContentType;
 import org.apache.kafka.common.security.scram.ScramLoginModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -22,10 +25,9 @@ import static java.lang.String.format;
 
 import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaAuthentication;
 import static es.ecristobal.poc.scs.screenplay.abilities.kafka.KafkaGreetingFactory.KafkaUrls;
-import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
-@AutoConfigureObservability
 @SpringBootTest
 @SuppressWarnings("java:S2699")
 class GreeterTestcontainersTests
@@ -74,13 +76,17 @@ class GreeterTestcontainersTests
     }
 
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws Exception {
         final String adminUrl = format("%s/v1/security/users", broker.getAdminAddress());
-        given().contentType(ContentType.JSON)
-               .body(format(USER_SETUP, KAFKA_USER, KAFKA_PASSWORD, SASL_MECHANISM))
-               .post(adminUrl)
-               .then()
-               .statusCode(200);
+        final HttpRequest request = HttpRequest.newBuilder()
+                                               .uri(URI.create(adminUrl))
+                                               .header("Content-Type", "application/json")
+                                               .POST(HttpRequest.BodyPublishers.ofString(
+                                                       format(USER_SETUP, KAFKA_USER, KAFKA_PASSWORD, SASL_MECHANISM)))
+                                               .build();
+        final HttpResponse<String> response = HttpClient.newHttpClient()
+                                                        .send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
         final KafkaUrls urls = KafkaUrls.builder()
                                         .broker(broker.getBootstrapServers())
                                         .schemaRegistry(broker.getSchemaRegistryAddress())

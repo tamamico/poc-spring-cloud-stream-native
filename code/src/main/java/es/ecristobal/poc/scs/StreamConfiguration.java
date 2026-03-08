@@ -11,13 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import reactor.core.publisher.Flux;
-import reactor.kafka.receiver.ReceiverOffset;
-
-import static java.util.Optional.ofNullable;
 
 import static io.micrometer.context.ContextRegistry.getInstance;
 import static org.springframework.integration.support.MessageBuilder.withPayload;
-import static org.springframework.kafka.support.KafkaHeaders.ACKNOWLEDGMENT;
 import static org.springframework.kafka.support.KafkaHeaders.KEY;
 import static reactor.core.publisher.Hooks.enableAutomaticContextPropagation;
 import static reactor.util.context.Context.of;
@@ -48,8 +44,6 @@ class StreamConfiguration {
                                                   () -> MDC.remove(USER_NAME));
         return flux -> flux.flatMap(message -> {
             final Input input = message.getPayload();
-            ofNullable(message.getHeaders()
-                              .get(ACKNOWLEDGMENT, ReceiverOffset.class)).ifPresent(ReceiverOffset::acknowledge);
             return greeter.greet(input)
                           .contextWrite(of(USER_NAME, input.getWho()
                                                            .toString()))
