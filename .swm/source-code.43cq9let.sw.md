@@ -89,9 +89,9 @@ Avro schema for output message
 
 </SwmSnippet>
 
-- Use <SwmToken path="/code/pom.xml" pos="194:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
+- Use <SwmToken path="/code/pom.xml" pos="189:4:8" line-data="                &lt;artifactId&gt;avro-maven-plugin&lt;/artifactId&gt;">`avro-maven-plugin`</SwmToken> to auto-generate the Java classes mapping aforementioned Avro schema
 
-<SwmSnippet path="/code/pom.xml" line="192">
+<SwmSnippet path="/code/pom.xml" line="187">
 
 ---
 
@@ -175,7 +175,7 @@ spring.cloud.stream.kafka.binder.producer-properties.value.serializer=io.conflue
 
 We have a very straightforward set-up for our application, adding only some complexity to comply with sixth and seventh non-functional requirements.
 
-First of all, we have the Spring Boot application class, whose only particularity is the addition of <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="34:1:3" line-data="        enableAutomaticContextPropagation();">`enableAutomaticContextPropagation()`</SwmToken> method call to propagate span and trace IDs:
+First of all, we have the Spring Boot application class, whose only particularity is the addition of <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" pos="30:1:3" line-data="        enableAutomaticContextPropagation();">`enableAutomaticContextPropagation()`</SwmToken> method call to propagate span and trace IDs:
 
 <SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/GreeterApplication.java" line="1">
 
@@ -215,7 +215,7 @@ Maven dependency for [Reactive Kafka binder](https://docs.spring.io/spring-cloud
 ```xml
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-kafka-reactive</artifactId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -229,14 +229,13 @@ Maven dependency for [Reactive Kafka binder](https://docs.spring.io/spring-cloud
 
 </SwmSnippet>
 
-<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" line="28">
+<SwmSnippet path="/code/src/main/java/es/ecristobal/poc/scs/StreamConfiguration.java" line="25">
 
 ---
 
 Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecristobal/poc/scs/Greeter.java" pos="20:18:18" line-data="        return just(input.getWho()).doOnNext(name -&gt; log.info(&quot;Greeting {}&quot;, name))">`log`</SwmToken>)
 
 ```java
-
     private static final String KAFKA_KEY = "kafka_receivedMessageKey";
     private static final String USER_NAME = "user.name";
 
@@ -259,8 +258,6 @@ Bean setting up the stream (including <SwmToken path="/code/src/main/java/es/ecr
                                                   () -> MDC.remove(USER_NAME));
         return flux -> flux.flatMap(message -> {
             final Input input = message.getPayload();
-            ofNullable(message.getHeaders()
-                              .get(ACKNOWLEDGMENT, ReceiverOffset.class)).ifPresent(ReceiverOffset::acknowledge);
             return greeter.greet(input)
                           .contextWrite(of(USER_NAME, input.getWho()
                                                            .toString()))
